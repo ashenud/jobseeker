@@ -5,6 +5,11 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      PYTHONPYCACHEPREFIX: /tmp/jobseeker-cache/pycache
+      RUFF_CACHE_DIR: /tmp/jobseeker-cache/ruff
+      MYPY_CACHE_DIR: /tmp/jobseeker-cache/mypy
+      PRE_COMMIT_HOME: /tmp/jobseeker-cache/pre-commit
     volumes: [".:/app"]
     ports: ["127.0.0.1:8000:8000"]
     depends_on: [db, redis]
@@ -14,6 +19,11 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      PYTHONPYCACHEPREFIX: /tmp/jobseeker-cache/pycache
+      RUFF_CACHE_DIR: /tmp/jobseeker-cache/ruff
+      MYPY_CACHE_DIR: /tmp/jobseeker-cache/mypy
+      PRE_COMMIT_HOME: /tmp/jobseeker-cache/pre-commit
     volumes: [".:/app"]
     command: celery -A job_agent.workers.app:celery_app worker -Q ingestion,processing,llm,notifications,maintenance --loglevel=INFO
     depends_on: [db, redis]
@@ -23,6 +33,11 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      PYTHONPYCACHEPREFIX: /tmp/jobseeker-cache/pycache
+      RUFF_CACHE_DIR: /tmp/jobseeker-cache/ruff
+      MYPY_CACHE_DIR: /tmp/jobseeker-cache/mypy
+      PRE_COMMIT_HOME: /tmp/jobseeker-cache/pre-commit
     volumes: [".:/app"]
     command: celery -A job_agent.workers.app:celery_app beat --loglevel=INFO
     depends_on: [redis]

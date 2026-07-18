@@ -2,9 +2,9 @@
 
 **Current milestone:** 00 (`IN_PROGRESS`)
 **Last completed milestone:** None in the recovery sequence
-**Overall state:** The complete Milestone 00 Docker matrix passes, including 64
-tests and pre-commit. Raw preflight logs are preserved locally but excluded from
-the clean implementation diff, which passes `git diff --cached --check`.
+**Overall state:** Milestone 00 recovery is in progress. Container tool caches are
+now routed outside bind-mounted checkouts, the abandoned temp worktree is removed,
+and clean reproduction will use a true clone with its own `.git` directory.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-19
 
@@ -36,7 +36,7 @@ coordinating agent reruns the required gates.
 
 | ID | Milestone | Status | Existing assets to revalidate or replace | Acceptance evidence |
 |---:|---|---|---|---|
-| 00 | Recovery harness and Docker tooling container | IN_PROGRESS | Complete preflight passed; prepare implementation commit and reproduce it from a clean worktree | Machine preflight captured; acceptance receipt not yet generated |
+| 00 | Recovery harness and Docker tooling container | IN_PROGRESS | Clean-reproduction cache and Git-boundary fixes applied; rerun the full matrix and create a replacement implementation commit | Prior main/clean captures preserved; no acceptance receipt yet |
 | 01 | Project charter and working-demo contract | PENDING | Charter and ADRs | Not run |
 | 02 | Compliance and platform policy registry | PENDING | Policy models/config/tests | Not run |
 | 03 | Positioning profile, portfolio inputs, and success metrics | PENDING | Profile/scoring YAML | Not run |

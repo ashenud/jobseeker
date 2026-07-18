@@ -26,5 +26,6 @@ packages = ["job_agent"]
 module = ["yaml", "bleach"]
 ignore_missing_imports = true
 [tool.pytest.ini_options]
+cache_dir = "/tmp/jobseeker-cache/pytest"
 testpaths = ["tests"]
 markers = ["live: opt-in live external tests"]
