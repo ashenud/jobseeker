@@ -23,3 +23,13 @@ RECOVERED
 These failures were related to Milestone 02 implementation and were fixed in this
 milestone. Neither failure justified skipping the milestone or advancing its
 dependency chain.
+
+BLOCKED (authoritative main-capture invocation)
+- Command: scripts/run_milestone_00_gates.sh --output-dir
+  artifacts/verification/milestone-02-main --reference-dir
+  artifacts/verification/milestone-02-main --project-name jobseeker_m02_main
+  --run-label main
+- Exit: 126
+- Output: /bin/bash: line 1: scripts/run_milestone_00_gates.sh: Permission denied
+- Cause: the tracked wrapper has no executable bit; no Docker gate had started.
+- Resolution: invoke the same repository-native wrapper explicitly through bash.
