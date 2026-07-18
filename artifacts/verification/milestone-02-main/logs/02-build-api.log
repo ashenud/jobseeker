@@ -1,0 +1,79 @@
+ Image jobseeker_m02_main_final-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 564B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 665B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 110B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 22.07kB 0.1s done
+#5 DONE 0.1s
+
+#6 [ 1/13] FROM docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de
+#6 resolve docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de 0.1s done
+#6 DONE 0.1s
+
+#7 [ 5/13] COPY src /app/src
+#7 CACHED
+
+#8 [ 2/13] RUN apt-get update     && apt-get install --yes --no-install-recommends git     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [ 3/13] WORKDIR /app
+#9 CACHED
+
+#10 [ 4/13] COPY pyproject.toml README.md /app/
+#10 CACHED
+
+#11 [ 8/13] COPY .codex /app/.codex
+#11 CACHED
+
+#12 [ 6/13] RUN pip install --no-cache-dir --disable-pip-version-check -e ".[dev]"
+#12 CACHED
+
+#13 [ 7/13] COPY .agents /app/.agents
+#13 CACHED
+
+#14 [ 9/13] COPY config /app/config
+#14 CACHED
+
+#15 [10/13] COPY docs /app/docs
+#15 DONE 0.2s
+
+#16 [11/13] COPY scripts /app/scripts
+#16 DONE 0.2s
+
+#17 [12/13] COPY tests /app/tests
+#17 DONE 0.2s
+
+#18 [13/13] COPY .pre-commit-config.yaml AGENTS.md CHANGELOG.md IMPLEMENTATION_STATUS.md Makefile /app/
+#18 DONE 0.3s
+
+#19 exporting to image
+#19 exporting layers
+#19 exporting layers 1.0s done
+#19 exporting manifest sha256:a59e9a5e6f648d10f449ccc510fe51dfdce048dcf48ad416064bc756ce9faeaa
+#19 exporting manifest sha256:a59e9a5e6f648d10f449ccc510fe51dfdce048dcf48ad416064bc756ce9faeaa 0.2s done
+#19 exporting config sha256:e8e3d6d3f333e072cbeb419c96996ee62209ed839613d314bb93ff9776a00144
+#19 exporting config sha256:e8e3d6d3f333e072cbeb419c96996ee62209ed839613d314bb93ff9776a00144 0.1s done
+#19 exporting attestation manifest sha256:7e4c1d644f2e4e79c8b15b27152d378198a36a92624180d241c7de8e20aa0738
+#19 exporting attestation manifest sha256:7e4c1d644f2e4e79c8b15b27152d378198a36a92624180d241c7de8e20aa0738 0.1s done
+#19 exporting manifest list sha256:ce68561af6bed655024834de6cc6d70c899b04e85867bd14e8e76a26528b1f12
+#19 exporting manifest list sha256:ce68561af6bed655024834de6cc6d70c899b04e85867bd14e8e76a26528b1f12 0.1s done
+#19 naming to docker.io/library/jobseeker_m02_main_final-api:latest 0.0s done
+#19 unpacking to docker.io/library/jobseeker_m02_main_final-api:latest
+#19 unpacking to docker.io/library/jobseeker_m02_main_final-api:latest 0.3s done
+#19 DONE 1.9s
+
+#20 resolving provenance for metadata file
+#20 DONE 0.0s
+ Image jobseeker_m02_main_final-api Built 

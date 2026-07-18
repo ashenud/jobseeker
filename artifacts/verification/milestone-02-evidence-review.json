@@ -1,0 +1,68 @@
+{
+  "result": "PASS",
+  "acceptance": {
+    "M02-AC01": {
+      "result": "PASS",
+      "references": [
+        "config/platform_policy.yaml",
+        "config/platform_policy.example.yaml",
+        "src/job_agent/policy/models.py",
+        "src/job_agent/policy/service.py",
+        "tests/test_policy.py",
+        "artifacts/verification/milestone-02-main/logs/09-pytest.log"
+      ]
+    },
+    "M02-AC02": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/policy/service.py",
+        "src/job_agent/policy/exceptions.py",
+        "src/job_agent/sources/adapters.py",
+        "src/job_agent/submission/service.py",
+        "tests/test_policy.py",
+        "artifacts/verification/milestone-02-main/logs/09-pytest.log"
+      ]
+    },
+    "M02-AC03": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/policy/models.py",
+        "src/job_agent/policy/service.py",
+        "tests/test_policy.py",
+        "artifacts/verification/milestone-02-main/logs/09-pytest.log"
+      ]
+    },
+    "M02-AC04": {
+      "result": "PASS",
+      "references": [
+        "config/platform_policy.yaml",
+        "docs/PLATFORM_AUDIT.md",
+        "docs/milestones/02-compliance-and-platform-policy-registry.md",
+        "tests/test_policy.py",
+        "artifacts/verification/milestone-02-main/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-02-main/logs/09-pytest.log"
+      ]
+    },
+    "M02-AC05": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/cli.py",
+        "src/job_agent/policy/models.py",
+        "src/job_agent/policy/service.py",
+        "tests/test_cli.py",
+        "tests/test_policy.py",
+        "artifacts/verification/milestone-02-main/metadata.tsv",
+        "artifacts/verification/milestone-02-main/manifest.tsv",
+        "artifacts/verification/milestone-02-main/logs/03-image-digest.log",
+        "artifacts/verification/milestone-02-main/logs/09-pytest.log",
+        "artifacts/verification/milestone-02-main/logs/10-pre-commit.log",
+        "artifacts/verification/milestone-02-clean/metadata.tsv",
+        "artifacts/verification/milestone-02-clean/manifest.tsv",
+        "artifacts/verification/milestone-02-clean/checkout-status.log",
+        "artifacts/verification/milestone-02-clean/logs/03-image-digest.log",
+        "artifacts/verification/milestone-02-clean/logs/09-pytest.log",
+        "artifacts/verification/milestone-02-clean/logs/10-pre-commit.log"
+      ]
+    }
+  }
+}

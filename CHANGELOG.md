@@ -15,9 +15,13 @@
 - Accepted Milestone 01 with a frozen working-demo charter, manual owner
   submission boundary, Docker-only/local-first ADRs, conditional source and AI
   goals, executable document semantics, and 101-test main/clean evidence.
+- Accepted Milestone 02 with a strict versioned platform-policy schema,
+  disabled-by-default live/write authority, pre-I/O connector denial, bounded
+  single-use confirmations, secret-free audit decisions, CLI checks, and
+  128-test main/clean evidence.
 
-No application milestone beyond the recovery harness is claimed complete by this
-documentation reset.
+No milestone beyond the accepted recovery entries in `IMPLEMENTATION_STATUS.md`
+is claimed complete by this documentation reset.
 
 ## 0.22.0 - 2026-07-18
 
