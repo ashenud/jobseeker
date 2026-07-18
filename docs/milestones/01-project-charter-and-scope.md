@@ -2,95 +2,64 @@
 
 ## Recovery gate
 
-The previous charter is reusable but not accepted until it incorporates
-`docs/DEMO_ACCEPTANCE.md`. Acceptance requires a testable user-visible demo flow,
-explicit assisted-submission boundary, named live-read and AI integration goals,
-Docker-only runtime scope, non-goals, and no unresolved owner decision. Record the
-review as `M01-AC01` through `M01-AC04` in the milestone evidence receipt.
+Milestone 00 must be `DONE`. The prior charter and ADRs are unaccepted inputs
+until this milestone proves alignment with `docs/DEMO_ACCEPTANCE.md`, the
+assisted-submission boundary, conditional integration authority, Docker-only
+execution, measurable safety outcomes, and frozen downstream decisions.
 
 ## Goal
 
-Freeze a realistic MVP so Codex does not build an unsafe or unnecessarily complex “apply everywhere” bot. This milestone converts the broad idea into explicit product boundaries, user stories, non-goals, and success conditions.
-
-## Key decision
-
-The product is a **job intelligence and proposal preparation system with human approval**. It is not a stealth scraper, browser bot, spam engine, or universal auto-apply service.
+Freeze a realistic local MVP: permitted opportunity intelligence and
+evidence-grounded proposal preparation with owner review and manual owner
+submission. It is not a scraper, messaging bot, universal auto-apply service, or
+authorization for any named integration.
 
 ## Required deliverables
-
-Create:
 
 - `docs/PROJECT_CHARTER.md`
 - `docs/adr/0001-human-in-the-loop-boundary.md`
 - `docs/adr/0002-local-first-mvp.md`
-- an updated `README.md` architecture summary
-- a first entry in `CHANGELOG.md`
+- an aligned `README.md` product and execution summary
+- executable M01 semantics in `scripts/validate_docs.py` with focused negative
+  tests
 
-## Scope to approve
+The coordinator records changelog delivery and accepts ADR status only after
+Docker gates, evidence, clean reproduction, and independent review pass.
 
-### MVP capabilities
+## Frozen scope
 
-1. Ingest jobs from allowed APIs, RSS/JSON feeds, email/manual copy, and user-provided URLs/text.
-2. Store raw source payloads and normalized job records.
-3. Deduplicate cross-posted and repeatedly fetched jobs.
-4. Apply deterministic filters for service relevance, budget, geography, recency, and banned categories.
-5. Use an LLM only after deterministic filtering.
-6. Score fit and explain the score with structured output.
-7. Retrieve verified portfolio evidence.
-8. Draft a short, human-sounding proposal without invented claims.
-9. Present a review queue with edit, approve, skip, and reason capture.
-10. Assist submission by opening the source page and copying text; optional official API actions remain disabled by default.
-11. Track application state and follow-up reminders.
-12. Produce weekly performance reports.
+- Approval prepares and locks content; it never transmits. The demo ends with the
+  owner submitting manually and recording the reference.
+- No official write connector is included in the MVP demo.
+- Manual capture is required. Jobicy RSS/API and Remote OK JSON/RSS are conditional
+  live-read goals. OpenAI Responses API structured output is a conditional,
+  opt-in real-AI goal.
+- Naming a goal grants no permission, credential, spend, endpoint, model, scrape,
+  or write authority. Milestones 02, 08, and 10 own those decisions and stop
+  fail-closed when required inputs are absent.
+- Behance and Upwork remain manual unless a later current policy explicitly
+  permits a narrower action.
+- Application and toolchain work executes in Docker Compose containers. The host
+  is limited to Git, Docker/Compose, file inspection, Codex controls, and thin
+  Docker wrappers.
+- The measurable hard targets are zero duplicate normalized jobs after repeat
+  ingestion, zero unsupported claims, and zero unapproved external actions.
 
-### Non-goals for MVP
+## Acceptance-to-test map
 
-- Automatic login to marketplaces.
-- CAPTCHA solving or anti-bot evasion.
-- Unattended bulk bidding.
-- Automated LinkedIn connection requests or messaging.
-- Scraping a platform that forbids it.
-- Replacing the user’s judgment on price, claims, portfolio attachment, or client risk.
-- A public multi-tenant SaaS.
-- Mobile apps.
-- Full CRM integrations.
-- Sending cold email without approval.
+| Stable ID | Observable acceptance | Docker evidence |
+|---|---|---|
+| **M01-AC01** | The charter contains the ordered browser-visible demo journey from clean start through manual submission, persistence, release checks, and restore; it defines zero duplicates, unsupported claims, and unapproved actions. | `python scripts/validate_docs.py` and focused charter tests in `pytest -q` |
+| **M01-AC02** | Charter, ADR 0001, and README separate approval, preparation, and manual owner submission; name conditional source/AI goals without granting authority; exclude official writes from the demo. | Semantic validator, negative permission/approval tests, and independent policy review |
+| **M01-AC03** | Charter, ADR 0002, prompt, and README consistently require Docker-only application/toolchain/runtime execution and the local-first host boundary. | Semantic validator, negative Docker-scope tests, and clean-checkout Docker reproduction |
+| **M01-AC04** | Prompt dependency is 00 and includes the demo contract; downstream decisions are frozen with M02/M08/M10 authoritative; both ADRs remain proposed until evidence; no owner scope decision is unresolved. | Semantic validator, negative dependency/unresolved-decision tests, receipt mapping, and reviewer `GO` |
 
-## Primary user stories
-
-- As the owner, I can see only jobs relevant to packaging, branding, Amazon creative, 3D product visualization, architectural visualization, and production design.
-- As the owner, I can understand why a job scored highly or poorly.
-- As the owner, I can see which portfolio projects support a proposal’s claims.
-- As the owner, I can edit and approve a proposal in under two minutes.
-- As the owner, I can prevent any platform from being contacted automatically.
-- As the owner, I can see what produced interviews and wins.
-
-## Constraints
-
-- Runs on one Windows PC through WSL 2 and Docker Desktop.
-- Must survive restarts without duplicating jobs or proposals.
-- Must work without paid LLM calls in development and degraded mode.
-- Initial UI is local-only.
-- All externally visible actions are auditable.
-- Platform policy is configuration plus code enforcement, not a note in documentation.
-
-## Decisions to document
-
-1. Human approval is a hard product boundary.
-2. Local-first is the initial deployment target.
-3. The runtime is provider-neutral even though Codex builds it.
-4. The owner’s portfolio and proposal style are private source data.
-5. The app prioritizes quality and account safety over maximum application volume.
-
-
-## Acceptance criteria
-
-- [ ] The charter contains MVP, non-goals, user stories, constraints, risks, and measurable success criteria.
-- [ ] Human approval is defined as mandatory before external communication by default.
-- [ ] Local-first and provider-neutral decisions are recorded as ADRs.
-- [ ] The scope explicitly prohibits bypass and stealth techniques.
-- [ ] The owner can read the charter and decide what the product will and will not do.
+Each acceptance entry in `artifacts/verification/milestone-01.json` records a
+`PASS` only from real command logs and reviewer references.
 
 ## Stop condition
 
-Do not start environment setup or code until the charter exists and passes acceptance checks. After that, an autonomous full-workflow run may continue into later milestones without separate user review. Scope drift here multiplies every later cost, so later work must still follow the approved charter and stop at the first unresolved blocker or failing required check.
+Do not begin Milestone 02 if any charter semantic check, Docker gate, clean
+reproduction, evidence mapping, or independent review fails. A missing permission,
+credential, current policy, endpoint/model selection, private evidence input, or
+budget blocks its owning downstream milestone; it never broadens this charter.

@@ -1,10 +1,10 @@
 # Implementation status
 
-**Current milestone:** 01 (`READY`)
+**Current milestone:** 01 (`IN_PROGRESS`)
 **Last completed milestone:** 00
-**Overall state:** Milestone 00 is accepted. Main and clean-checkout matrices each
-passed ten gates and 76 tests for `b5b45af`; the evidence analyst returned PASS,
-the policy/release reviewer returned GO, and the validated receipt is recorded.
+**Overall state:** Milestone 00 is accepted. Milestone 01 charter semantics and
+all 13 focused contract tests now pass; full Docker, clean reproduction, evidence,
+and independent review remain in progress.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-19
 
@@ -37,7 +37,7 @@ coordinating agent reruns the required gates.
 | ID | Milestone | Status | Existing assets to revalidate or replace | Acceptance evidence |
 |---:|---|---|---|---|
 | 00 | Recovery harness and Docker tooling container | DONE | Docker-only harness, fail-closed controls, portable machine evidence, clean reproduction, and independent review accepted | `artifacts/verification/milestone-00.json` (tested commit `b5b45af0e2bcd143cda9e05ef5d36a91351f0b45`) |
-| 01 | Project charter and working-demo contract | READY | Charter and ADRs | Not run |
+| 01 | Project charter and working-demo contract | IN_PROGRESS | Charter/ADR/README semantics pass focused checks; complete the full evidence pipeline | Focused gate: 13 passed; no acceptance receipt yet |
 | 02 | Compliance and platform policy registry | PENDING | Policy models/config/tests | Not run |
 | 03 | Positioning profile, portfolio inputs, and success metrics | PENDING | Profile/scoring YAML | Not run |
 | 04 | Docker-only development and runtime foundation | PENDING | Dockerfile, Compose, scripts, packaging | Not run |

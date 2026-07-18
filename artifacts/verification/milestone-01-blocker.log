@@ -1,0 +1,51 @@
+Milestone 01 focused charter-contract date: 2026-07-19
+Result: BLOCKED
+
+Passed commands:
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py
+- docker compose --profile dev run --rm --no-deps api ruff check scripts/validate_docs.py tests/test_charter_contract.py
+
+Failed command:
+- docker compose --profile dev run --rm --no-deps api pytest -q tests/test_charter_contract.py
+
+Exit code: 1
+Result: 2 failed, 11 passed
+
+Failures:
+- `Remote OK JSON/RSS` is split across a Markdown line, so the mutation helper
+  cannot find the raw contiguous phrase even though semantic normalization does.
+- `OpenAI Responses API structured output` has both split and contiguous copies;
+  replacing only the contiguous copy leaves the normalized required phrase.
+
+The charter goal phrases and their negative tests must use one unambiguous
+representation before the focused Docker gate and complete matrix rerun.
+
+Milestone 01 focused charter-contract retry: 2026-07-19
+Result: BLOCKED
+
+Passed commands:
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py
+- docker compose --profile dev run --rm --no-deps api ruff check scripts/validate_docs.py tests/test_charter_contract.py
+
+Failed command:
+- docker compose --profile dev run --rm --no-deps api pytest -q tests/test_charter_contract.py
+
+Exit code: 1
+Result: 1 failed, 12 passed
+
+The two named-goal cases now pass. The remaining lifecycle test copies the real
+ledger but hardcodes an `IN_PROGRESS` row replacement. Because the first failed
+gate correctly changed Milestone 01 to `BLOCKED`, the fixture setup found no
+matching row. It must transition any non-DONE M01 row to DONE for the isolated
+validator test.
+
+Milestone 01 focused recovery resumed: 2026-07-19
+Result: IN_PROGRESS
+
+Fresh focused Docker results:
+- Documentation validation: PASS
+- Ruff: PASS
+- Charter contract: 13 passed
+
+The complete main matrix, implementation commit, clean reproduction, receipt,
+independent reviews, and final receipt validation remain required.

@@ -14,6 +14,10 @@ Invoke `$jobseeker-milestone` and follow its state transitions, evidence schema,
 - `IMPLEMENTATION_STATUS.md`
 - `docs/milestones/00-index.md`
 - `docs/milestones/01-project-charter-and-scope.md`
+- `docs/DEMO_ACCEPTANCE.md`
+- `docs/PROJECT_CHARTER.md`
+- `docs/adr/0001-human-in-the-loop-boundary.md`
+- `docs/adr/0002-local-first-mvp.md`
 
 ## Required pattern files
 
@@ -28,9 +32,10 @@ Invoke `$jobseeker-milestone` and follow its state transitions, evidence schema,
 
 ## Objective
 
-Implement only milestone **01**: Frozen MVP boundary and constraints.
+Implement only milestone **01**: frozen MVP boundary, observable demo contract,
+and fail-closed downstream decisions.
 
-Dependencies recorded in the master index: **None**.
+Dependencies recorded in the master index: **00**.
 
 ## Instructions
 

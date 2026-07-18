@@ -2,21 +2,38 @@
 
 Jobseeker is a **local, platform-agnostic freelance job discovery, scoring, proposal-drafting, review, and tracking application** for a senior graphic designer / brand designer / 3D visualizer.
 
-The central rule is deliberate: **automate discovery, normalization, scoring, drafting, notifications, and tracking; require human approval before any external submission unless a platform has an official, explicitly permitted API and the user has enabled it.**
+The central rule is deliberate: **automate permitted discovery, normalization,
+scoring, drafting, notifications, and tracking; keep transmission manual in the
+MVP demo. Approval never transmits—it only prepares reviewed content for the
+owner to copy/open and submit manually.**
 
-> **Recovery status (2026-07-18):** the previous repository was an unverified
-> scaffold, not a working MVP. All milestone completion claims have been reset.
-> Start with Milestone 00; do not use the current code as an application demo.
-> The required end state is defined in `docs/DEMO_ACCEPTANCE.md`.
+> **Recovery status:** follow `IMPLEMENTATION_STATUS.md`, the only progress
+> ledger. Existing later-milestone application code remains unverified until its
+> owning milestone passes Docker evidence and independent review. The required
+> end state is defined in `docs/DEMO_ACCEPTANCE.md`.
 
 
 ## MVP charter summary
 
-The Milestone 01 charter freezes the MVP as a job intelligence and proposal preparation system with a mandatory human approval boundary. The application may ingest permitted opportunities, store raw and normalized records, deduplicate jobs, apply deterministic filters, score remaining jobs, retrieve portfolio evidence, draft truthful proposals, present a review queue, assist manual submission, and track outcomes.
+The Milestone 01 charter freezes the MVP as a job intelligence and proposal
+preparation system. The application may ingest permitted opportunities, store and
+deduplicate records, filter and score jobs, retrieve portfolio evidence, draft
+truthful proposals, present a review queue, prepare a manual submission package,
+and track outcomes. Approval, package preparation, manual owner submission, and
+the recorded outcome are distinct states; no official write connector is part of
+the MVP demo.
+
+Manual capture is required. Jobicy RSS/API and Remote OK JSON/RSS are conditional
+read goals, and OpenAI Responses API structured output is a conditional opt-in AI
+goal. Naming them grants no permission, credential, spend, endpoint, model, or
+write authority; Milestones 02, 08, and 10 are authoritative.
 
 The MVP explicitly does **not** perform automatic marketplace login, CAPTCHA solving, stealth or anti-bot evasion, unattended bulk bidding, automated LinkedIn outreach, forbidden scraping, public SaaS operation, mobile apps, full CRM integrations, or unapproved cold email.
 
-Success for the first production-readiness pilot means the owner can run the app locally for seven consecutive days, ingest permitted jobs from at least three source types, suppress duplicates, reject poor fits deterministically, score and explain remaining jobs, produce evidence-grounded proposal drafts, require owner review before submission, and track outcomes within configured policy, privacy, and cost limits.
+Success requires zero duplicate normalized jobs after repeat ingestion, zero
+unsupported proposal claims, zero unapproved external actions, and zero
+transmissions caused by approval, alongside persisted review, audit, restart, and
+backup/restore evidence.
 
 ## What is included
 
@@ -45,15 +62,16 @@ Success for the first production-readiness pilot means the owner can run the app
 2. Open Codex in this trusted repository so project agents, skills, hooks, and rules load.
 3. Review/trust the project hooks with `/hooks` and confirm roles with `/subagents`.
 4. Read `AGENTS.md`, `IMPLEMENTATION_STATUS.md`, `docs/milestones/00-index.md`, and `docs/DEMO_ACCEPTANCE.md`.
-5. Start Prompt 00. It establishes the Docker tooling container and validators;
-   every later application/check command must execute in Docker.
-6. For a full run, continue sequentially and stop automatically at the first
+5. Select only the sole `READY` or `IN_PROGRESS` prompt named by
+   `IMPLEMENTATION_STATUS.md`; never infer progress from scaffold files.
+6. Continue sequentially only after the current milestone has Docker evidence and
+   independent `GO`; stop automatically at the first
    failed gate, policy uncertainty, or required credential gap.
 
 Suggested first Codex instruction:
 
 ```text
-Use $jobseeker-milestone to execute docs/prompts/00-index.md. Continue through the numbered recovery prompts only after each milestone has passing Docker evidence and an independent GO. Stop at the first blocker and never mark a placeholder or failed gate DONE.
+Use $jobseeker-milestone to execute the sole READY or IN_PROGRESS prompt in IMPLEMENTATION_STATUS.md. Continue only after passing Docker evidence and an independent GO. Stop at the first blocker and never mark a placeholder or failed gate DONE.
 ```
 
 ## Approved local architecture
@@ -68,7 +86,8 @@ Permitted APIs / RSS / JSON / manual capture / user-provided text
         -> private portfolio evidence retrieval
         -> proposal draft with factuality guardrails
         -> local human review queue
-        -> manual submit assistance or disabled-by-default permitted API connector
+        -> locked copy/open/manual-submit package
+        -> owner submits manually and records the reference
         -> CRM states, follow-ups, metrics, and weekly reports
 ```
 
@@ -78,6 +97,20 @@ smokes run in Docker Compose. Runtime LLM, embedding, notification, and source
 integrations remain provider-neutral and include deterministic offline test modes,
 but the final demo requires bounded real permitted-source and real-AI evidence.
 
+All application builds, dependency resolution, Python commands, migrations,
+tests, linters, type checks, evaluations, servers, workers, schedulers, release
+checks, backups, and restores run inside Docker containers. The host is limited to
+Git, Docker/Compose orchestration, read-only file inspection, Codex controls, and
+thin wrappers that invoke Docker Compose.
+
 ## Operating boundary
 
-This project must never include CAPTCHA bypass, stealth browsing, credential theft, cookie harvesting, anti-bot evasion, proxy rotation intended to evade controls, mass unsolicited messaging, or unapproved auto-bidding. Human approval is mandatory before external communication by default. Platform terms change; missing, unknown, stale, `manual_only`, and `disabled` policy states fail closed, and every connector is disabled until its policy record is reviewed and approved.
+This project must never include CAPTCHA bypass, stealth browsing, credential
+theft, cookie harvesting, anti-bot evasion, proxy rotation intended to evade
+controls, mass unsolicited messaging, or unapproved auto-bidding. Approval never
+causes external communication. Platform terms change; missing, unknown, stale,
+`manual_only`, and `disabled` policy states fail closed before I/O. A future write
+proposal remains outside the MVP and would require current permission for the
+exact action, an owner feature flag, a single-use per-action confirmation token,
+and an audit record containing the action ID, policy decision, timestamp,
+destination, checksum, and outcome.

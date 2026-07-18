@@ -2,28 +2,40 @@
 
 ## Status
 
-Accepted
+Proposed (revalidation)
 
 ## Context
 
-The product goal is to help the owner find and respond to suitable freelance design work without creating an unsafe mass-bidding bot. Marketplace rules vary and may change. External communications, submissions, follow-ups, and account-affecting actions create reputational and account risk if performed without review.
+External submissions, messages, follow-ups, and account-affecting actions create
+reputational and platform risk. Marketplace rules differ and change. The product
+must distinguish reviewing content from causing an external action.
 
 ## Decision
 
-Human approval is a hard product boundary. By default, the system may discover, normalize, deduplicate, filter, score, draft, notify, and track work locally, but it must not communicate externally or submit proposals without explicit owner approval for the individual action.
+Approval is not transmission. Approving a proposal only locks the reviewed
+revision and prepares a copy/open/manual-submit package. It never submits, sends,
+messages, follows up, fills a remote form, or calls a write endpoint.
 
-Any future official API write connector must satisfy all of the following before it can perform an external action:
+The MVP demo ends at manual owner submission: the owner leaves the application,
+submits on the source platform, and returns to record the manual reference and
+outcome. The demo includes no official write connector.
 
-1. the platform policy registry explicitly permits the exact action and cites the permission source;
-2. the connector has a disabled-by-default feature flag that the owner turns on;
-3. the owner provides a per-action confirmation token or equivalent explicit confirmation; and
-4. the action is audited with IDs, timestamps, decision state, and outcome.
+Missing, unknown, stale, `manual_only`, or `disabled` policy decisions block
+network/write behavior before I/O. Behance and Upwork remain manual capture and
+manual owner submission unless later current policy explicitly permits a narrower
+action.
 
-`manual_only`, `disabled`, missing, stale, or unknown platform policy modes are hard blocks. The system will not include CAPTCHA solving, fingerprint spoofing, stealth plugins, hidden browser automation, proxy rotation intended to evade controls, rate-limit evasion, credential harvesting, cookie storage, or unattended bulk bidding.
+A future official write connector is outside this ADR's MVP authorization. It
+would require a separately accepted scope, current documented permission for the
+exact action, an owner-enabled feature flag, a single-use per-action confirmation
+token, and an audit event with action ID, policy decision, timestamp, destination,
+payload checksum, and outcome. Approval alone could satisfy none of those gates.
 
 ## Consequences
 
-- The MVP optimizes proposal quality, safety, and owner control over application volume.
-- Some workflows remain slower than fully automated submission, but account and reputation risk is reduced.
-- Later source adapters and submission helpers must enforce policy and approval state in code, not only in UI text.
-- Tests must verify fail-closed behavior around platform policy and external actions.
+- Approval, package preparation, manual submission, and recorded outcome are
+  separate auditable states.
+- Retryable jobs and scheduled tasks cannot transmit approved content.
+- Tests must prove approval causes zero external calls and tokens cannot be reused.
+- CAPTCHA solving, credential/cookie capture, stealth, evasion, and unattended
+  bulk bidding remain prohibited.

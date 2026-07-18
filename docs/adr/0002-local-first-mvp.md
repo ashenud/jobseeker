@@ -1,22 +1,38 @@
-# ADR 0002: Local-first MVP
+# ADR 0002: Local-first Docker MVP
 
 ## Status
 
-Accepted
+Proposed (revalidation)
 
 ## Context
 
-The owner needs a private application that can run on one Windows PC using WSL 2 and Docker Desktop. The system will process sensitive portfolio context, proposal drafts, job notes, outcomes, and possibly client information. A public SaaS deployment would add authentication, tenancy, hosting, privacy, and operational burdens before the product boundary is proven.
+The owner needs a private application on one Windows PC using WSL 2 and Docker
+Desktop. Portfolio evidence, job notes, proposal revisions, outcomes, and secrets
+do not justify the tenancy and exposure of a public SaaS before the product
+boundary is proven.
 
 ## Decision
 
-The MVP is local-first. Runtime services will target the owner’s Windows PC through WSL 2 and Docker Desktop, with a local-only dashboard by default. Persistent services such as PostgreSQL, pgvector, Redis, and workers belong behind Docker Compose in later implementation milestones. Runtime LLM, embedding, notification, and source integrations must use provider-neutral interfaces and support development without paid LLM calls.
+The MVP is local-first and Docker-only. The host may run Git, Docker/Compose
+orchestration, read-only file inspection, Codex control-plane operations, and
+thin shell wrappers whose application work is executed through Docker Compose.
 
-Private portfolio data, proposal style, evidence records, and owner notes are private source data. They must not be hardcoded into proposal logic, committed as secrets, or sent to providers except through explicit configured runtime providers and guarded workflows.
+All application builds, dependency resolution, Python commands, migrations,
+tests, linters, type checks, evaluations, development servers, API processes,
+workers, schedulers, release checks, backups, and restores execute inside Docker
+containers. PostgreSQL/pgvector and Redis are container services; the dashboard
+binds locally by default. Host Python environments are not part of the workflow.
+
+Runtime source, AI, embedding, and notification integrations remain
+provider-neutral and disabled or offline in deterministic development modes.
+Naming a provider does not select a credential, endpoint, model, or budget.
 
 ## Consequences
 
-- The MVP can be validated without operating a public multi-tenant service.
-- Backup, restore, startup, and health checks remain necessary because the local PC may sleep or go offline.
-- Future hosted deployment requires a separate ADR covering authentication, tenancy, network exposure, secret management, and data protection.
-- Provider-neutral boundaries prevent the app from being coupled to Codex or any single runtime LLM provider.
+- Clean-checkout, restart, backup, and restore evidence must reproduce with only
+  Docker Engine/Desktop and Docker Compose required on the host.
+- Private source material stays in documented private inputs and secret mechanisms.
+- PC sleep and offline time are visible local limitations, handled by health and
+  stale-source signals rather than hidden hosted behavior.
+- A public, remote, or multi-tenant deployment requires a separate ADR covering
+  authentication, tenancy, exposure, secret management, and data protection.
