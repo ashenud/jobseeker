@@ -32,6 +32,14 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern = ["docker", "compose", "--profile", "dev", "down", "-v"],
+    decision = "prompt",
+    justification = "Removing profiled Compose volumes destroys local database state; confirm a disposable test scope or verified backup.",
+    match = ["docker compose --profile dev down -v"],
+    not_match = ["docker compose --profile dev down"],
+)
+
+prefix_rule(
     pattern = ["docker", "system", "prune"],
     decision = "prompt",
     justification = "System-wide Docker pruning can affect unrelated projects.",

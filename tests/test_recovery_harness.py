@@ -216,6 +216,7 @@ def test_completion_hook_cwd_cannot_bypass_done_evidence(
         ("docker container exec api pytest", "docker container exec"),
         ("docker buildx build .", "docker buildx build"),
         ("./scripts/custom-check.sh", "scripts/custom-check.sh"),
+        ("make db-reset", "make"),
         ("make host-check", "make"),
     ],
 )
@@ -240,6 +241,14 @@ def test_host_toolchain_and_wrapper_bypasses_are_denied(command: str, denied: st
 def test_compose_git_files_and_approved_wrappers_are_allowed(command: str) -> None:
     boundary = load_module(".codex/hooks/enforce_docker_boundary.py", "docker_boundary_allowed")
     assert boundary.blocked_segment(command) is None
+
+
+def test_destructive_make_target_cannot_reenter_approved_wrappers() -> None:
+    boundary = load_module(".codex/hooks/enforce_docker_boundary.py", "docker_boundary_make")
+    assert "db-reset" not in boundary.APPROVED_MAKE_TARGETS
+    assert boundary.blocked_segment("make db-reset") == "make"
+    for target in ("lint", "type", "test"):
+        assert boundary.blocked_segment(f"make {target}") is None
 
 
 def write_gate_capture(root: Path, test_count: int = 12) -> Path:

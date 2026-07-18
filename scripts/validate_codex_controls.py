@@ -114,6 +114,7 @@ def validate_config_and_rules() -> list[str]:
         'pattern=["git","clean"]',
         'pattern=["git","push",["--force","-f"]]',
         'pattern=["docker","compose","down","-v"]',
+        'pattern=["docker","compose","--profile","dev","down","-v"]',
         'pattern=["docker","system","prune"]',
         'pattern=["docker","volume","rm"]',
         'pattern=["docker","compose","--profile","live"]',
@@ -267,6 +268,7 @@ def validate_boundary_cases() -> list[str]:
         "docker container exec api pytest": "docker container exec",
         "docker buildx build .": "docker buildx build",
         "./scripts/not-approved.sh": "scripts/not-approved.sh",
+        "make db-reset": "make",
         "make unknown-target": "make",
     }
     for command, expected in denied.items():
@@ -289,6 +291,8 @@ def validate_boundary_cases() -> list[str]:
     for command in allowed:
         if hook.blocked_segment(command) is not None:
             errors.append(f"allowed command was blocked: {command!r}")
+    if "db-reset" in hook.APPROVED_MAKE_TARGETS:
+        errors.append("destructive Make target db-reset must not be approved by the Docker boundary")
     return errors
 
 

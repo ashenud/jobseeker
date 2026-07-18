@@ -36,7 +36,6 @@ APPROVED_SHELL_WRAPPERS = {
 APPROVED_MAKE_TARGETS = {
     "bootstrap",
     "check",
-    "db-reset",
     "down",
     "eval",
     "lint",

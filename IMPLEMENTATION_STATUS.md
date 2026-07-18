@@ -2,9 +2,9 @@
 
 **Current milestone:** 00 (`IN_PROGRESS`)
 **Last completed milestone:** None in the recovery sequence
-**Overall state:** Milestone 00 recovery is in progress. Container tool caches are
-now routed outside bind-mounted checkouts, the abandoned temp worktree is removed,
-and clean reproduction will use a true clone with its own `.git` directory.
+**Overall state:** Milestone 00 recovery closed the independent reviewer's
+destructive `make db-reset` bypass. Focused checks and the complete main/clean
+evidence matrices must pass before a fresh independent review.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-19
 
@@ -36,7 +36,7 @@ coordinating agent reruns the required gates.
 
 | ID | Milestone | Status | Existing assets to revalidate or replace | Acceptance evidence |
 |---:|---|---|---|---|
-| 00 | Recovery harness and Docker tooling container | IN_PROGRESS | Clean-reproduction cache and Git-boundary fixes applied; rerun the full matrix and create a replacement implementation commit | Prior main/clean captures preserved; no acceptance receipt yet |
+| 00 | Recovery harness and Docker tooling container | IN_PROGRESS | `make db-reset` is denied and the direct profiled volume-removal command is prompt-guarded; rerun all gates | Main/clean captures for `023ea6c` are superseded by the reviewer NO-GO; no replacement acceptance receipt yet |
 | 01 | Project charter and working-demo contract | PENDING | Charter and ADRs | Not run |
 | 02 | Compliance and platform policy registry | PENDING | Policy models/config/tests | Not run |
 | 03 | Positioning profile, portfolio inputs, and success metrics | PENDING | Profile/scoring YAML | Not run |
