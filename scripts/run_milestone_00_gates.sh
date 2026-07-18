@@ -1,51 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(git rev-parse --show-toplevel)"
-output_dir="${M00_OUTPUT_DIR:-artifacts/verification/milestone-00-main}"
-run_label="${M00_RUN_LABEL:-main}"
-project_name="${COMPOSE_PROJECT_NAME:-jobseeker_m00_main}"
-
-while (($#)); do
-    case "$1" in
-        --output-dir)
-            output_dir="$2"
-            shift 2
-            ;;
-        --project-name)
-            project_name="$2"
-            shift 2
-            ;;
-        --run-label)
-            run_label="$2"
-            shift 2
-            ;;
-        *)
-            echo "unknown argument: $1" >&2
-            exit 2
-            ;;
-    esac
-done
-
-case "$output_dir" in
-    /*) ;;
-    *) output_dir="$repo_root/$output_dir" ;;
-esac
-
-export COMPOSE_PROJECT_NAME="$project_name"
-mkdir -p "$output_dir/logs"
-manifest="$output_dir/manifest.tsv"
-metadata="$output_dir/metadata.tsv"
-tested_commit="$(git rev-parse HEAD)"
-image_digest=""
-
-printf 'gate_id\tcommand\texit_code\tduration_seconds\tlog_ref\ttest_count\tresult\n' >"$manifest"
+validate_reference_dir() {
+    local value="$1"
+    local segment
+    local -a segments
+    if [[ -z "$value" || "$value" == /* || "$value" == *$'\t'* || "$value" == *$'\n'* ]]; then
+        echo "reference directory must be a nonempty repository-relative path" >&2
+        return 2
+    fi
+    IFS='/' read -r -a segments <<<"$value"
+    for segment in "${segments[@]}"; do
+        if [[ "$segment" == ".." ]]; then
+            echo "reference directory must not contain '..' traversal" >&2
+            return 2
+        fi
+    done
+}
 
 reference_for() {
-    local path="$1"
-    case "$path" in
-        "$repo_root"/*) printf '%s' "${path#"$repo_root"/}" ;;
-        *) printf '%s' "$path" ;;
+    local physical_path="$1"
+    local gate_id="$2"
+    if [[ "$reference_dir_set" == "true" ]]; then
+        printf '%s/logs/%s.log' "${reference_dir%/}" "$gate_id"
+        return
+    fi
+    case "$physical_path" in
+        "$repo_root"/*) printf '%s' "${physical_path#"$repo_root"/}" ;;
+        *) printf '%s' "$physical_path" ;;
     esac
 }
 
@@ -95,7 +77,7 @@ run_gate() {
     if ((exit_code != 0)) || { [[ "$expects_tests" == "yes" ]] && ((test_count <= 0)); }; then
         result="FAIL"
     fi
-    log_ref="$(reference_for "$log")"
+    log_ref="$(reference_for "$log" "$gate_id")"
     printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
         "$gate_id" "$command_text" "$exit_code" "$duration" "$log_ref" "$test_count" "$result" \
         >>"$manifest"
@@ -109,23 +91,89 @@ run_gate() {
     fi
 }
 
-run_gate 01-compose-config no docker compose --profile dev config --quiet || exit $?
-run_gate 02-build-api no docker compose --profile dev build api || exit $?
-run_gate 03-image-digest no docker image inspect "${project_name}-api" --format '{{.Id}}' || exit $?
-image_digest="$(tail -n 1 "$output_dir/logs/03-image-digest.log")"
-run_gate 04-validate-docs no \
-    docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py || exit $?
-run_gate 05-validate-milestone no \
-    docker compose --profile dev run --rm --no-deps api \
-    python scripts/validate_milestone.py --all || exit $?
-run_gate 06-validate-codex-controls no \
-    docker compose --profile dev run --rm --no-deps api \
-    python scripts/validate_codex_controls.py || exit $?
-run_gate 07-ruff no docker compose --profile dev run --rm --no-deps api ruff check . || exit $?
-run_gate 08-mypy no docker compose --profile dev run --rm --no-deps api mypy src || exit $?
-run_gate 09-pytest yes docker compose --profile dev run --rm --no-deps api pytest -q || exit $?
-run_gate 10-pre-commit no \
-    docker compose --profile dev run --rm --no-deps api sh -c \
-    'git config --global --add safe.directory /app && pre-commit run --all-files' || exit $?
+main() {
+    output_dir="${M00_OUTPUT_DIR:-artifacts/verification/milestone-00-main}"
+    run_label="${M00_RUN_LABEL:-main}"
+    project_name="${COMPOSE_PROJECT_NAME:-jobseeker_m00_main}"
+    reference_dir=""
+    reference_dir_set="false"
 
-write_metadata "PASS"
+    while (($#)); do
+        case "$1" in
+            --output-dir)
+                (($# >= 2)) || { echo "--output-dir requires a value" >&2; return 2; }
+                output_dir="$2"
+                shift 2
+                ;;
+            --reference-dir)
+                (($# >= 2)) || { echo "--reference-dir requires a value" >&2; return 2; }
+                reference_dir="$2"
+                reference_dir_set="true"
+                shift 2
+                ;;
+            --project-name)
+                (($# >= 2)) || { echo "--project-name requires a value" >&2; return 2; }
+                project_name="$2"
+                shift 2
+                ;;
+            --run-label)
+                (($# >= 2)) || { echo "--run-label requires a value" >&2; return 2; }
+                run_label="$2"
+                shift 2
+                ;;
+            *)
+                echo "unknown argument: $1" >&2
+                return 2
+                ;;
+        esac
+    done
+
+    if [[ "$reference_dir_set" == "true" ]]; then
+        validate_reference_dir "$reference_dir"
+    fi
+    repo_root="$(git rev-parse --show-toplevel)"
+    case "$output_dir" in
+        /*) ;;
+        *) output_dir="$repo_root/$output_dir" ;;
+    esac
+
+    export COMPOSE_PROJECT_NAME="$project_name"
+    mkdir -p "$output_dir/logs"
+    manifest="$output_dir/manifest.tsv"
+    metadata="$output_dir/metadata.tsv"
+    tested_commit="$(git rev-parse HEAD)"
+    image_digest=""
+
+    printf 'gate_id\tcommand\texit_code\tduration_seconds\tlog_ref\ttest_count\tresult\n' \
+        >"$manifest"
+
+    run_gate 01-compose-config no docker compose --profile dev config --quiet || return $?
+    run_gate 02-build-api no docker compose --profile dev build api || return $?
+    run_gate 03-image-digest no \
+        docker image inspect "${project_name}-api" --format '{{.Id}}' || return $?
+    image_digest="$(tail -n 1 "$output_dir/logs/03-image-digest.log")"
+    run_gate 04-validate-docs no \
+        docker compose --profile dev run --rm --no-deps api \
+        python scripts/validate_docs.py || return $?
+    run_gate 05-validate-milestone no \
+        docker compose --profile dev run --rm --no-deps api \
+        python scripts/validate_milestone.py --all || return $?
+    run_gate 06-validate-codex-controls no \
+        docker compose --profile dev run --rm --no-deps api \
+        python scripts/validate_codex_controls.py || return $?
+    run_gate 07-ruff no \
+        docker compose --profile dev run --rm --no-deps api ruff check . || return $?
+    run_gate 08-mypy no \
+        docker compose --profile dev run --rm --no-deps api mypy src || return $?
+    run_gate 09-pytest yes \
+        docker compose --profile dev run --rm --no-deps api pytest -q || return $?
+    run_gate 10-pre-commit no \
+        docker compose --profile dev run --rm --no-deps api sh -c \
+        'git config --global --add safe.directory /app && pre-commit run --all-files' || return $?
+
+    write_metadata "PASS"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi

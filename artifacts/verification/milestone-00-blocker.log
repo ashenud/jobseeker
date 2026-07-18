@@ -232,3 +232,60 @@ Result: IN_PROGRESS
 
 The focused Docker checks, replacement implementation commit, complete main and
 clean matrices, and fresh independent reviews remain required.
+
+Receipt-generation retry date: 2026-07-19
+Result: BLOCKED
+
+Replacement implementation commit `4e5aa71af1ef158d4d11018b3dc54234813a7338`
+passed the complete main and true-clone clean matrices with 66 tests. Fresh
+independent reviews returned evidence PASS and policy/release GO. The required
+receipt generator then exited 1:
+
+- Command: `docker compose --profile dev run --rm --no-deps api python
+  scripts/generate_milestone_00_receipt.py --main-manifest
+  artifacts/verification/milestone-00-main/manifest.tsv --clean-manifest
+  artifacts/verification/milestone-00-clean/manifest.tsv --policy-review
+  artifacts/verification/milestone-00-policy-review.json --evidence-review
+  artifacts/verification/milestone-00-evidence-review.json`
+- Error: `clean gate 01-compose-config log escapes repository:
+  /home/kesh/projects/codex-workspace/jobseeker/artifacts/verification/
+  milestone-00-clean/logs/01-compose-config.log`
+
+The clean runner used an absolute physical output directory and copied that
+absolute prefix into `manifest.tsv`. Receipt validation correctly rejects
+absolute references. The runner must support a repository-relative logical
+reference directory while writing physical clean evidence outside the clone.
+The clean capture, receipt generation, validation, and fresh reviews must rerun.
+
+Evidence-portability focused-test date: 2026-07-19
+Result: BLOCKED
+
+Passed focused commands:
+- `docker compose --profile dev run --rm --no-deps api ruff check
+  tests/test_recovery_harness.py`
+- `docker compose --profile dev run --rm --no-deps api python
+  scripts/validate_codex_controls.py`
+
+Failed focused command:
+- `docker compose --profile dev run --rm --no-deps api pytest -q
+  tests/test_recovery_harness.py`
+
+Exit code: 1
+Result: 4 failed, 49 passed
+
+All four unsafe-reference cases expected exit 2 but received exit 128 because
+`main` called `git rev-parse --show-toplevel` before parsing and validating
+`--reference-dir`. The container rejected `/app` as a dubious-ownership Git
+repository. Argument validation must precede Git repository discovery.
+
+Evidence-portability recovery resumed: 2026-07-19
+Result: IN_PROGRESS
+
+Argument parsing and logical-reference validation now precede Git access. Fresh
+focused Docker results:
+- Ruff: PASS
+- Codex control validation: PASS
+- Recovery harness: 57 passed
+
+The replacement implementation commit, complete main/clean matrices, receipt,
+receipt validation, and fresh independent reviews remain required.

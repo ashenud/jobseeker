@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import shlex
 import shutil
+import subprocess
 from types import ModuleType
 from typing import Any, Callable
 
@@ -361,6 +362,108 @@ def test_receipt_generator_rejects_missing_log_reference(tmp_path: Path) -> None
     missing.unlink()
     with pytest.raises(generator.EvidenceError, match="not a regular file"):
         generator.read_manifest(tmp_path, manifest, "main")
+
+
+def test_gate_runner_separates_physical_output_from_log_references(tmp_path: Path) -> None:
+    runner = ROOT / "scripts" / "run_milestone_00_gates.sh"
+    clean_checkout = tmp_path / "clean-checkout"
+    physical_log = (
+        tmp_path
+        / "main-repository"
+        / "artifacts"
+        / "verification"
+        / "milestone-00-clean"
+        / "logs"
+        / "09-pytest.log"
+    )
+    logical = "artifacts/verification/milestone-00-clean"
+    shell = """
+source "$1"
+repo_root="$2"
+reference_dir="$3"
+reference_dir_set=true
+validate_reference_dir "$reference_dir"
+reference_for "$4" "09-pytest"
+"""
+    result = subprocess.run(
+        [
+            "bash",
+            "-c",
+            shell,
+            "runner-reference-test",
+            str(runner),
+            str(clean_checkout),
+            logical,
+            str(physical_log),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert result.stdout == f"{logical}/logs/09-pytest.log"
+
+
+@pytest.mark.parametrize(
+    "logical",
+    ["", "/absolute/reference", "../escape", "artifacts/../escape"],
+)
+def test_gate_runner_rejects_unsafe_log_reference_directories(
+    tmp_path: Path, logical: str
+) -> None:
+    runner = ROOT / "scripts" / "run_milestone_00_gates.sh"
+    result = subprocess.run(
+        ["bash", str(runner), "--reference-dir", logical],
+        check=False,
+        capture_output=True,
+        cwd=tmp_path,
+        text=True,
+    )
+    assert result.returncode == 2
+
+
+@pytest.mark.parametrize(
+    "option",
+    ["--output-dir", "--reference-dir", "--project-name", "--run-label"],
+)
+def test_gate_runner_rejects_missing_option_values_before_git(
+    tmp_path: Path, option: str
+) -> None:
+    runner = ROOT / "scripts" / "run_milestone_00_gates.sh"
+    result = subprocess.run(
+        ["bash", str(runner), option],
+        check=False,
+        capture_output=True,
+        cwd=tmp_path,
+        text=True,
+    )
+    assert result.returncode == 2
+
+
+def test_gate_runner_default_reference_behavior_is_preserved(tmp_path: Path) -> None:
+    runner = ROOT / "scripts" / "run_milestone_00_gates.sh"
+    physical_log = tmp_path / "artifacts" / "verification" / "main" / "logs" / "07-ruff.log"
+    shell = """
+source "$1"
+repo_root="$2"
+reference_dir=""
+reference_dir_set=false
+reference_for "$3" "07-ruff"
+"""
+    result = subprocess.run(
+        [
+            "bash",
+            "-c",
+            shell,
+            "runner-reference-test",
+            str(runner),
+            str(tmp_path),
+            str(physical_log),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert result.stdout == "artifacts/verification/main/logs/07-ruff.log"
 
 
 def test_codex_controls_are_structurally_valid() -> None:
