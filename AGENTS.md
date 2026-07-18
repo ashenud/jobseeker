@@ -6,7 +6,7 @@ Build a reliable local application that helps the owner find suitable freelance 
 
 ## Mandatory workflow
 
-1. Read `IMPLEMENTATION_STATUS.md` and `docs/00-(index).md` before every substantial task.
+1. Read `IMPLEMENTATION_STATUS.md` and `docs/milestones/00-index.md` before every substantial task.
 2. Work on exactly one milestone at a time unless the user explicitly authorizes a dependency fix.
 3. Read the complete milestone document before editing code.
 4. Create a brief implementation plan and list the files you expect to change.

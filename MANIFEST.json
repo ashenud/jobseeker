@@ -10,9 +10,29 @@
     "bytes": 210
   },
   {
+    "path": ".pytest_cache/.gitignore",
+    "sha256": "3ed731b65d06150c138e2dadb0be0697550888a6b47eb8c45ecc9adba8b8e9bd",
+    "bytes": 37
+  },
+  {
+    "path": ".pytest_cache/CACHEDIR.TAG",
+    "sha256": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4",
+    "bytes": 191
+  },
+  {
+    "path": ".pytest_cache/README.md",
+    "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad",
+    "bytes": 302
+  },
+  {
+    "path": ".pytest_cache/v/cache/nodeids",
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "bytes": 2
+  },
+  {
     "path": "AGENTS.md",
-    "sha256": "6163a764d284f1890c81ac3c192013ee7b030d3807de58ed2919d9b0c8ddf369",
-    "bytes": 3799
+    "sha256": "5e800903c959edb0ec161de29f242577a2154d7799b52d9dd71748c3632de4d5",
+    "bytes": 3808
   },
   {
     "path": "IMPLEMENTATION_STATUS.md",
@@ -20,9 +40,14 @@
     "bytes": 1826
   },
   {
+    "path": "MANIFEST.json",
+    "sha256": "b7b42aa09ed551ba5b1a6ad1a1b7f057581d495cd3b2a33262fc83f457d2e1ee",
+    "bytes": 8474
+  },
+  {
     "path": "README.md",
-    "sha256": "3086cdcc155b41407423c31e91412dbd5f30c59434827e9af8807a80f5d022f4",
-    "bytes": 2898
+    "sha256": "9e4076ae718d5d7f57d942a30408db991123722cf52152facbbd537ee7bd36d1",
+    "bytes": 3268
   },
   {
     "path": "config/platform_policy.example.yaml",
@@ -60,169 +85,349 @@
     "bytes": 343
   },
   {
-    "path": "docs/00-(index).md",
-    "sha256": "6e33c5583488425b2410aa0a1f1c21cb2d8e9dfeefd8540608c7477267c0b029",
-    "bytes": 7349
-  },
-  {
-    "path": "docs/01-(project-charter-and-scope).md",
-    "sha256": "a7f8764fa45ed73a056261af141e5a0722dadeccc9a33ba685b392356426c8d0",
-    "bytes": 4191
-  },
-  {
-    "path": "docs/02-(compliance-and-platform-policy-registry).md",
-    "sha256": "bd32361a364a3059d0b375fcb9cfdd90330184df5bef7479fcc957867008083e",
-    "bytes": 4550
-  },
-  {
-    "path": "docs/03-(positioning-profile-and-success-metrics).md",
-    "sha256": "ddd06a69db98c226433a3e2267baebdbc4f3d866b2977953c42797a37826cb25",
-    "bytes": 4222
-  },
-  {
-    "path": "docs/04-(local-environment-and-repository-bootstrap).md",
-    "sha256": "604993541d1f6dda92424865bffc63f4f3c6aa739ae95f39097b306c9e96744f",
-    "bytes": 3443
-  },
-  {
-    "path": "docs/05-(architecture-boundaries-and-state-machines).md",
-    "sha256": "c148d2b6098413f783ff1dad3c19ade438f78077e6251eb3e5854d90a251f209",
-    "bytes": 4030
-  },
-  {
-    "path": "docs/06-(database-schema-and-migrations).md",
-    "sha256": "dd9b615368a6a81bccade97c268af01cf814daddc62c24204347c1c4d036746b",
-    "bytes": 3656
-  },
-  {
-    "path": "docs/07-(source-adapter-framework).md",
-    "sha256": "d2a2d4d53e282a7f34fcae133eaa09bd0883a02790c2f2e9fe94ca4ab0c76ae6",
-    "bytes": 3009
-  },
-  {
-    "path": "docs/08-(initial-compliant-source-integrations).md",
-    "sha256": "45e28ba61b180fff8f1c189a870481f7039d84bdc6c04b62e27d0464fd36c390",
-    "bytes": 3277
-  },
-  {
-    "path": "docs/09-(normalization-deduplication-and-rules).md",
-    "sha256": "b51e54ec3327a0e8738b47ac4d60dc4b17270e135062de246752093257e0d198",
-    "bytes": 3399
-  },
-  {
-    "path": "docs/10-(llm-gateway-and-structured-scoring).md",
-    "sha256": "b8d094aa024a53afb4fdfd8cc921f99c36356e6b0379007b1571e8d5967be1aa",
-    "bytes": 3339
-  },
-  {
-    "path": "docs/11-(portfolio-knowledge-base-and-retrieval).md",
-    "sha256": "29644288b66430b9ee99ab5155992dbefea22d54b9990e926e1e29d8e04858a6",
-    "bytes": 3190
-  },
-  {
-    "path": "docs/12-(proposal-generation-and-factuality-guardrails).md",
-    "sha256": "a5aa510f92edc9d98c6c0e955322835bd6cb20815235606e036b1e51588a3e86",
-    "bytes": 3277
-  },
-  {
-    "path": "docs/13-(human-review-dashboard-and-notifications).md",
-    "sha256": "05fc5ca338b2d9f65c019397a40beec8496cf7a2b1718adcb16f6c572e40b881",
-    "bytes": 2974
-  },
-  {
-    "path": "docs/14-(submission-assistance-and-permitted-connectors).md",
-    "sha256": "2a8f0dde7c729c252c0fcf01e8871ac280978ef323a7d833403ff6e1f1989919",
-    "bytes": 3059
-  },
-  {
-    "path": "docs/15-(crm-follow-ups-and-feedback-capture).md",
-    "sha256": "6d6f138ba36100bf286b178c73cb5ca26fa282dbf9ada1dab11b85b794c27281",
-    "bytes": 2608
-  },
-  {
-    "path": "docs/16-(workers-scheduling-idempotency-and-reliability).md",
-    "sha256": "177c68c078eb294dbcacec80aefa254fe48ee2669ff2cb23007a3f4b403c4d29",
-    "bytes": 2822
-  },
-  {
-    "path": "docs/17-(security-secrets-privacy-and-retention).md",
-    "sha256": "707c6c2aed10c0f9441dd389b559dc22bb9ab2738d97d017f9a72206f170a5f4",
-    "bytes": 3248
-  },
-  {
-    "path": "docs/18-(testing-evaluations-and-quality-gates).md",
-    "sha256": "0764598ea7a7274edf32f07fc1428b669122419764d8a62dc9ef844e3841c2b2",
-    "bytes": 2983
-  },
-  {
-    "path": "docs/19-(observability-cost-controls-and-operations).md",
-    "sha256": "e9dde03b9b65e7044c20d70e990de59ba9376324bf79184b732b0e57cb47bd99",
-    "bytes": 2665
-  },
-  {
-    "path": "docs/20-(local-deployment-startup-backup-and-recovery).md",
-    "sha256": "90bd8eb5e9c7eae4036ee51f2a5cc06d8542df8acd98e3aca4fd9b9ce0cedf83",
-    "bytes": 2718
-  },
-  {
-    "path": "docs/21-(codex-implementation-workflow-and-release-discipline).md",
-    "sha256": "3b166c65f741298da2014e32dd0fe4403a161d69ce5e7806d9744edd90f8f612",
-    "bytes": 3243
-  },
-  {
-    "path": "docs/22-(pilot-launch-tuning-and-production-readiness).md",
-    "sha256": "0dc3832d0bbfa2f35bf3338ce74f26f615aa84d309367a3814b49176b11716ea",
-    "bytes": 3637
-  },
-  {
-    "path": "docs/90-(data-contracts-and-json-schemas).md",
+    "path": "docs/90-data-contracts-and-json-schemas.md",
     "sha256": "0bec53b280a263415605d6106a7ac3b055780e27086e10ddfd2ecb621946fdaa",
     "bytes": 2532
   },
   {
-    "path": "docs/91-(configuration-reference).md",
+    "path": "docs/91-configuration-reference.md",
     "sha256": "d4d8c451d883b215f1ee5cce20dd7452d49c781823002191db9d114fa6469fc4",
     "bytes": 1514
   },
   {
-    "path": "docs/92-(codex-prompt-library).md",
-    "sha256": "70a93eaf0ec6060e45fcf28dd08127882c3a1933447dcbad1c58635dcc493408",
-    "bytes": 2048
+    "path": "docs/92-codex-prompt-library.md",
+    "sha256": "e1e355a2c6749450aa7bbe84c48b0d1ac590ed017452b3bf62763ec2f0b617fc",
+    "bytes": 2066
   },
   {
-    "path": "docs/93-(platform-connector-checklists).md",
+    "path": "docs/93-platform-connector-checklists.md",
     "sha256": "dda47631d012744c71a2b48b96119ac975cca5f35b897e79daa5d555f984b0ff",
     "bytes": 1815
   },
   {
-    "path": "docs/94-(test-and-evaluation-dataset-guide).md",
+    "path": "docs/94-test-and-evaluation-dataset-guide.md",
     "sha256": "269789e349ab94a93c971216dc9247a4dd1742f7510e23e827d19cd6ffc44ad8",
     "bytes": 1180
   },
   {
-    "path": "docs/95-(operations-runbooks).md",
+    "path": "docs/95-operations-runbooks.md",
     "sha256": "4bdc86816337f5dffbc1fac0471a95ab8ca3f2be7150bb8fbc1a0c3a458fd872",
     "bytes": 1271
   },
   {
-    "path": "docs/96-(risk-register).md",
+    "path": "docs/96-risk-register.md",
     "sha256": "a7520575b199332ff3ca264ccfab9366f6f97e761b1c61021afebc18feed980d",
     "bytes": 1456
   },
   {
-    "path": "docs/97-(glossary).md",
+    "path": "docs/97-glossary.md",
     "sha256": "e246eeb9b844624f2e973f8f4f34c71b375eef2b8834c3d668bf08ff648b166c",
     "bytes": 1366
   },
   {
-    "path": "docs/98-(source-guideline-page-notes).md",
+    "path": "docs/98-source-guideline-page-notes.md",
     "sha256": "a31abd6b17ab4acea62a64e22f85d9b6dd512d49d8ddb25f2e2bd6759c8d1e8f",
     "bytes": 1904
   },
   {
-    "path": "docs/99-(official-reference-links).md",
+    "path": "docs/99-official-reference-links.md",
     "sha256": "d33ca4d2fe15f317545eb44baf57806b534c7cca352f9946fc7c681ad6e7ebea",
     "bytes": 2724
+  },
+  {
+    "path": "docs/milestones/00-index.md",
+    "sha256": "27d9706719c828d720615415c2ac1237e9d091f6a9c3694e76c91c65f956cfc9",
+    "bytes": 7600
+  },
+  {
+    "path": "docs/milestones/01-project-charter-and-scope.md",
+    "sha256": "6603e2b4ee238ab74a89eab74adcd92edc088b0fab3dafea9da32e5f536dd3c7",
+    "bytes": 4200
+  },
+  {
+    "path": "docs/milestones/02-compliance-and-platform-policy-registry.md",
+    "sha256": "bd32361a364a3059d0b375fcb9cfdd90330184df5bef7479fcc957867008083e",
+    "bytes": 4550
+  },
+  {
+    "path": "docs/milestones/03-positioning-profile-and-success-metrics.md",
+    "sha256": "ddd06a69db98c226433a3e2267baebdbc4f3d866b2977953c42797a37826cb25",
+    "bytes": 4222
+  },
+  {
+    "path": "docs/milestones/04-local-environment-and-repository-bootstrap.md",
+    "sha256": "604993541d1f6dda92424865bffc63f4f3c6aa739ae95f39097b306c9e96744f",
+    "bytes": 3443
+  },
+  {
+    "path": "docs/milestones/05-architecture-boundaries-and-state-machines.md",
+    "sha256": "c148d2b6098413f783ff1dad3c19ade438f78077e6251eb3e5854d90a251f209",
+    "bytes": 4030
+  },
+  {
+    "path": "docs/milestones/06-database-schema-and-migrations.md",
+    "sha256": "dd9b615368a6a81bccade97c268af01cf814daddc62c24204347c1c4d036746b",
+    "bytes": 3656
+  },
+  {
+    "path": "docs/milestones/07-source-adapter-framework.md",
+    "sha256": "d2a2d4d53e282a7f34fcae133eaa09bd0883a02790c2f2e9fe94ca4ab0c76ae6",
+    "bytes": 3009
+  },
+  {
+    "path": "docs/milestones/08-initial-compliant-source-integrations.md",
+    "sha256": "45e28ba61b180fff8f1c189a870481f7039d84bdc6c04b62e27d0464fd36c390",
+    "bytes": 3277
+  },
+  {
+    "path": "docs/milestones/09-normalization-deduplication-and-rules.md",
+    "sha256": "b51e54ec3327a0e8738b47ac4d60dc4b17270e135062de246752093257e0d198",
+    "bytes": 3399
+  },
+  {
+    "path": "docs/milestones/10-llm-gateway-and-structured-scoring.md",
+    "sha256": "b8d094aa024a53afb4fdfd8cc921f99c36356e6b0379007b1571e8d5967be1aa",
+    "bytes": 3339
+  },
+  {
+    "path": "docs/milestones/11-portfolio-knowledge-base-and-retrieval.md",
+    "sha256": "29644288b66430b9ee99ab5155992dbefea22d54b9990e926e1e29d8e04858a6",
+    "bytes": 3190
+  },
+  {
+    "path": "docs/milestones/12-proposal-generation-and-factuality-guardrails.md",
+    "sha256": "a5aa510f92edc9d98c6c0e955322835bd6cb20815235606e036b1e51588a3e86",
+    "bytes": 3277
+  },
+  {
+    "path": "docs/milestones/13-human-review-dashboard-and-notifications.md",
+    "sha256": "05fc5ca338b2d9f65c019397a40beec8496cf7a2b1718adcb16f6c572e40b881",
+    "bytes": 2974
+  },
+  {
+    "path": "docs/milestones/14-submission-assistance-and-permitted-connectors.md",
+    "sha256": "2a8f0dde7c729c252c0fcf01e8871ac280978ef323a7d833403ff6e1f1989919",
+    "bytes": 3059
+  },
+  {
+    "path": "docs/milestones/15-crm-follow-ups-and-feedback-capture.md",
+    "sha256": "6d6f138ba36100bf286b178c73cb5ca26fa282dbf9ada1dab11b85b794c27281",
+    "bytes": 2608
+  },
+  {
+    "path": "docs/milestones/16-workers-scheduling-idempotency-and-reliability.md",
+    "sha256": "177c68c078eb294dbcacec80aefa254fe48ee2669ff2cb23007a3f4b403c4d29",
+    "bytes": 2822
+  },
+  {
+    "path": "docs/milestones/17-security-secrets-privacy-and-retention.md",
+    "sha256": "707c6c2aed10c0f9441dd389b559dc22bb9ab2738d97d017f9a72206f170a5f4",
+    "bytes": 3248
+  },
+  {
+    "path": "docs/milestones/18-testing-evaluations-and-quality-gates.md",
+    "sha256": "0764598ea7a7274edf32f07fc1428b669122419764d8a62dc9ef844e3841c2b2",
+    "bytes": 2983
+  },
+  {
+    "path": "docs/milestones/19-observability-cost-controls-and-operations.md",
+    "sha256": "e9dde03b9b65e7044c20d70e990de59ba9376324bf79184b732b0e57cb47bd99",
+    "bytes": 2665
+  },
+  {
+    "path": "docs/milestones/20-local-deployment-startup-backup-and-recovery.md",
+    "sha256": "90bd8eb5e9c7eae4036ee51f2a5cc06d8542df8acd98e3aca4fd9b9ce0cedf83",
+    "bytes": 2718
+  },
+  {
+    "path": "docs/milestones/21-codex-implementation-workflow-and-release-discipline.md",
+    "sha256": "b497d4296232803a8f30b717a71db80b6b51f5bf550fc49494787bce5b901fea",
+    "bytes": 3241
+  },
+  {
+    "path": "docs/milestones/22-pilot-launch-tuning-and-production-readiness.md",
+    "sha256": "0dc3832d0bbfa2f35bf3338ce74f26f615aa84d309367a3814b49176b11716ea",
+    "bytes": 3637
+  },
+  {
+    "path": "docs/patterns/00-codex-execution.md",
+    "sha256": "31de38e6e0c355212635d858fbeb6eb93165ed360c7417799c15fb6c4585b721",
+    "bytes": 1816
+  },
+  {
+    "path": "docs/patterns/01-docker-local-environment.md",
+    "sha256": "804fc5a93a651043df0fdd39d747ea4d2ae6fdad2139024f672f83fbcf9fac22",
+    "bytes": 728
+  },
+  {
+    "path": "docs/patterns/02-python-project-standards.md",
+    "sha256": "4d7bd40bc41df2ed85c101778769709846c75f26747b1eafc301da5288ba2959",
+    "bytes": 678
+  },
+  {
+    "path": "docs/patterns/03-fastapi-dashboard.md",
+    "sha256": "acc551b4664dad1a5af5fa292d9d24b03512074b0f266300d673a6a259ff0a42",
+    "bytes": 650
+  },
+  {
+    "path": "docs/patterns/04-database-migrations.md",
+    "sha256": "243f5eb0cec40e1154d89f886f2e78475bd226b9a2dc90747613e839cb12f326",
+    "bytes": 597
+  },
+  {
+    "path": "docs/patterns/05-configuration-secrets.md",
+    "sha256": "d0ff5eeacdc1f8f46dde8aa5d67ec25a7b2fd3ccd8ea451669d3b858b3bba169",
+    "bytes": 609
+  },
+  {
+    "path": "docs/patterns/06-policy-compliance.md",
+    "sha256": "9288b68d1d83619d3a32861b45e10a75fb1a6380be95fc835c823af67ff97236",
+    "bytes": 765
+  },
+  {
+    "path": "docs/patterns/07-background-jobs.md",
+    "sha256": "0df728f42b5ba0cf3e5d8b21caed80bed4153e813cf7839d903a1d939c00e0d6",
+    "bytes": 590
+  },
+  {
+    "path": "docs/patterns/08-llm-and-retrieval.md",
+    "sha256": "e3dde13e1490289759d2056751a93054809434a1c325165165b4096f12c925f9",
+    "bytes": 604
+  },
+  {
+    "path": "docs/patterns/09-testing-quality-gates.md",
+    "sha256": "ad56257eb6dc2f9bcef9857c597b2ca2334a3f1372fb82c7356361fb328c88c8",
+    "bytes": 563
+  },
+  {
+    "path": "docs/patterns/10-observability-operations.md",
+    "sha256": "6159c99a2a06dad1b6eeec31d3b9ff23a0089d941acb5ef75951ca2d3a961074",
+    "bytes": 550
+  },
+  {
+    "path": "docs/patterns/README.md",
+    "sha256": "13a023f5ced734557e31e3152b462094e68e2571b42746389839c418f632d8fd",
+    "bytes": 1551
+  },
+  {
+    "path": "docs/prompts/00-index.md",
+    "sha256": "65bc0f16a5f7a4cf30234b05b6c5edecc25e4f93a6c61dc14b774d2e5351906b",
+    "bytes": 2267
+  },
+  {
+    "path": "docs/prompts/01-project-charter-and-scope.md",
+    "sha256": "63de206c8707aceb3e20ea856dfc9b49bf9175e250dcfa39b520659632afc40b",
+    "bytes": 2327
+  },
+  {
+    "path": "docs/prompts/02-compliance-and-platform-policy-registry.md",
+    "sha256": "e676fc0f7ccd58126ee0b10b765e0ebac08497ec81b27f48f04457cdf23e8a3a",
+    "bytes": 2497
+  },
+  {
+    "path": "docs/prompts/03-positioning-profile-and-success-metrics.md",
+    "sha256": "304b37a133c033012dc3e02b88afdf1872000bd5c30f7eb8d0236e2475aaa4f1",
+    "bytes": 2399
+  },
+  {
+    "path": "docs/prompts/04-local-environment-and-repository-bootstrap.md",
+    "sha256": "31d103b662bf24adde742d60bdd7520ec80b1d275be8e107dc5bed21f8bab273",
+    "bytes": 2486
+  },
+  {
+    "path": "docs/prompts/05-architecture-boundaries-and-state-machines.md",
+    "sha256": "3e1ce4deac0bf40d5b2fffdbc575e62b0f20f03da896056a5efdacf9fe6ee9f9",
+    "bytes": 2698
+  },
+  {
+    "path": "docs/prompts/06-database-schema-and-migrations.md",
+    "sha256": "a62e486cf0ee4f18509180c751a9afbe438d085459704447b0a84ff5768b0f03",
+    "bytes": 2391
+  },
+  {
+    "path": "docs/prompts/07-source-adapter-framework.md",
+    "sha256": "a63e3de819463dd6e9bf9f2b2e3c167043db729116dec954e97503f2090dd09d",
+    "bytes": 2480
+  },
+  {
+    "path": "docs/prompts/08-initial-compliant-source-integrations.md",
+    "sha256": "0da4207ae8b27ae9a758195e03dc1b1522c8f1d5d0c4c8d1e78a609be36924de",
+    "bytes": 2567
+  },
+  {
+    "path": "docs/prompts/09-normalization-deduplication-and-rules.md",
+    "sha256": "6a8409e902170d603865e22dff3e047990db3597be310666e352081fadec4bfd",
+    "bytes": 2488
+  },
+  {
+    "path": "docs/prompts/10-llm-gateway-and-structured-scoring.md",
+    "sha256": "526066f9b85c10fdd470c5e059c842622745bdc0913c47d3a3081fc43e91bd24",
+    "bytes": 2517
+  },
+  {
+    "path": "docs/prompts/11-portfolio-knowledge-base-and-retrieval.md",
+    "sha256": "fab765d00043708b8615eca91f344af74eec6eb47bf4d120533800ff96d09be8",
+    "bytes": 2475
+  },
+  {
+    "path": "docs/prompts/12-proposal-generation-and-factuality-guardrails.md",
+    "sha256": "05fdf6a71d6d1b9120af05295f770378557ab936f7c5eec2de550d6611442853",
+    "bytes": 2521
+  },
+  {
+    "path": "docs/prompts/13-human-review-dashboard-and-notifications.md",
+    "sha256": "34dace0d41e3944f0d51af439e2e7bd39682d213ce3e141c7093ce28f3b8171e",
+    "bytes": 2449
+  },
+  {
+    "path": "docs/prompts/14-submission-assistance-and-permitted-connectors.md",
+    "sha256": "e596bafe220521150150821fd0b1a116faa2a307ed94ccd8a21640abe2c7ae43",
+    "bytes": 2517
+  },
+  {
+    "path": "docs/prompts/15-crm-follow-ups-and-feedback-capture.md",
+    "sha256": "e6149b96643c6c3df82238f3bc3cc104422db5520b3479ce12ba3fa36ea05a8b",
+    "bytes": 2489
+  },
+  {
+    "path": "docs/prompts/16-workers-scheduling-idempotency-and-reliability.md",
+    "sha256": "b9cbd5be4facc79127196578d64e493217b3f5a6719718254ca98bd4d57326d3",
+    "bytes": 2526
+  },
+  {
+    "path": "docs/prompts/17-security-secrets-privacy-and-retention.md",
+    "sha256": "c6e321e01368ed14e244661f7a88a72e3feab3380d0048c406cd7484b3a076a0",
+    "bytes": 2507
+  },
+  {
+    "path": "docs/prompts/18-testing-evaluations-and-quality-gates.md",
+    "sha256": "01a9a616674665cd686a4a0837f59220ed6b266a91de96e9a6831bd35a8db378",
+    "bytes": 2408
+  },
+  {
+    "path": "docs/prompts/19-observability-cost-controls-and-operations.md",
+    "sha256": "e21058cb4cc3c628b83989c2ce92d4514e6ebfc68f900d44c8c56d1df5276e80",
+    "bytes": 2406
+  },
+  {
+    "path": "docs/prompts/20-local-deployment-startup-backup-and-recovery.md",
+    "sha256": "921e99c64b2ae419bd0d69c7a96ad4e1760808eb841a0c43596918368ad982fa",
+    "bytes": 2476
+  },
+  {
+    "path": "docs/prompts/21-codex-implementation-workflow-and-release-discipline.md",
+    "sha256": "aaeaca31fc6babbc9fdeab0081f4ce5de7bc1633998ae1314fe3a49d7fceb8d1",
+    "bytes": 2392
+  },
+  {
+    "path": "docs/prompts/22-pilot-launch-tuning-and-production-readiness.md",
+    "sha256": "81c772764a1a87e63383f36d6eb75d72ff9822b7796f79a4f832fb6174a5f98f",
+    "bytes": 2470
+  },
+  {
+    "path": "docs/prompts/README.md",
+    "sha256": "d6d3718e6cf8ed44224cd8c877b21ed40499f04a4605025f40878d07a90b01d1",
+    "bytes": 5908
   },
   {
     "path": "reference/freelance_ai_agent_plan.pdf",

@@ -3,7 +3,7 @@
 ## Start a milestone
 
 ```text
-Read AGENTS.md, IMPLEMENTATION_STATUS.md, docs/00-(index).md, and docs/XX-(name).md. Read only the supporting documents linked by that milestone. Work only on Milestone XX. First show a concise plan, expected file changes, risks, and verification commands. Wait for my approval if the plan changes architecture or scope. Then implement, run all checks, and finish with: changed files, commands/results, acceptance checklist, unresolved issues, and next milestone readiness. Do not hide failures or weaken tests.
+Read AGENTS.md, IMPLEMENTATION_STATUS.md, docs/milestones/00-index.md, and docs/milestones/XX-name.md. Read only the supporting documents linked by that milestone. Work only on Milestone XX. First show a concise plan, expected file changes, risks, and verification commands. Wait for my approval if the plan changes architecture or scope. Then implement, run all checks, and finish with: changed files, commands/results, acceptance checklist, unresolved issues, and next milestone readiness. Do not hide failures or weaken tests.
 ```
 
 ## Ask for a self-review

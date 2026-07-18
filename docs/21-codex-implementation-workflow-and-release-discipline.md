@@ -34,7 +34,7 @@ A strong instruction contains:
 - expected final report;
 - instruction not to hide failures.
 
-Use the templates in `docs/92-(codex-prompt-library).md`.
+Use the templates in `docs/92-codex-prompt-library.md`.
 
 ## Context discipline
 

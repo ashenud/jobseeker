@@ -77,7 +77,7 @@ Create:
 ## Codex execution prompt
 
 ```text
-Implement Milestone 01 only. Read AGENTS.md and docs/01-(project-charter-and-scope).md. Create the charter and two ADRs, update README and CHANGELOG, and do not create application code yet. Highlight any scope ambiguity instead of silently deciding it. Finish with the milestone acceptance checklist.
+Implement Milestone 01 only. Read AGENTS.md and docs/milestones/01-project-charter-and-scope.md. Create the charter and two ADRs, update README and CHANGELOG, and do not create application code yet. Highlight any scope ambiguity instead of silently deciding it. Finish with the milestone acceptance checklist.
 ```
 
 ## Acceptance criteria
