@@ -156,10 +156,18 @@ def test_done_milestone_requires_accepted_adrs(contract_root: Path) -> None:
     status = contract_root / "IMPLEMENTATION_STATUS.md"
     updated, count = re.subn(
         r"(\| 01 \| Project charter and working-demo contract \| )"
-        r"(?:READY|PENDING|IN_PROGRESS|BLOCKED)( \|)",
+        r"(?:READY|PENDING|IN_PROGRESS|BLOCKED|DONE)( \|)",
         r"\1DONE\2",
         status.read_text(encoding="utf-8"),
     )
     assert count == 1
     status.write_text(updated, encoding="utf-8")
+    adr = contract_root / "docs/adr/0001-human-in-the-loop-boundary.md"
+    proposed, count = re.subn(
+        r"(## Status\s+)(?:Accepted|Proposed \(revalidation\))",
+        r"\1Proposed (revalidation)",
+        adr.read_text(encoding="utf-8"),
+    )
+    assert count == 1
+    adr.write_text(proposed, encoding="utf-8")
     _assert_error(contract_root, "status must be Accepted")

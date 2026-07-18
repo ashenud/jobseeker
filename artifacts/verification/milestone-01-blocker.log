@@ -85,3 +85,34 @@ Fresh focused Docker results:
 
 The replacement commit, complete main/clean matrices, receipt, and fresh reviews
 remain required.
+
+Milestone 01 post-transition gate date: 2026-07-19
+Result: BLOCKED
+
+Passed after the provisional DONE/ADR acceptance transition:
+- Documentation validation
+- Milestone receipt validation
+- Codex control validation
+- Ruff
+- mypy
+
+Failed:
+- `docker compose --profile dev run --rm --no-deps api pytest -q`
+  - Exit 1: 1 failed, 100 passed
+- pre-commit
+  - Exit 1 because its pytest hook reproduced the same failure
+
+`test_done_milestone_requires_accepted_adrs` attempted to replace only an active
+M01 state with DONE. Once the real ledger was already DONE, fixture setup matched
+zero rows. The test must normalize any M01 state to DONE and force a proposed ADR
+before asserting the validator rejects it. The acceptance transition and prior
+receipt are superseded until the complete evidence chain reruns.
+
+Milestone 01 lifecycle recovery resumed: 2026-07-19
+Result: IN_PROGRESS
+
+- The fixture normalizes any M01 state to DONE.
+- It forces an ADR back to Proposed before asserting DONE requires Accepted.
+- Focused Docker results: Ruff PASS, docs PASS, 13 charter tests passed.
+
+The replacement implementation commit and complete evidence/review chain remain.
