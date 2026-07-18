@@ -1,5 +1,13 @@
 # Milestone 20 - Local Deployment, Startup, Backup, and Recovery
 
+## Recovery gate
+
+Provide one-command Docker-only build/start/status/stop/update flows from a clean
+checkout. Backups must include a PostgreSQL logical dump, selected private inputs,
+configuration/version/migration metadata, encryption, checksums, and retention;
+Redis is not authoritative. Restore into fresh volumes, verify counts/checksums,
+run migrations, restart workers, and pass the full smoke test without duplicates.
+
 ## Goal
 
 Operate the full agent on the owner’s Windows PC with one-command startup, restart resilience, encrypted backups, and a tested restore path.
@@ -76,11 +84,6 @@ Do not back up Redis as authoritative state. Encrypt archives and store at least
 - disaster-recovery runbook;
 - clean-machine installation test.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 20 only. Package the application for local Windows/WSL Docker Compose operation with one-command startup, startup-at-login guidance, encrypted PostgreSQL/private-data backups, restore verification, update/rollback scripts, and a clean-install smoke test. Bind locally and do not expose database or Redis ports.
-```
 
 ## Acceptance criteria
 

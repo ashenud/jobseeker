@@ -1,81 +1,83 @@
-# AGENTS.md - Instructions for Codex
+# AGENTS.md - Jobseeker repository rules
 
-## Mission
+## Mission and boundary
 
-Build a reliable local application that helps the owner find suitable freelance design work, rank it, generate truthful tailored proposals, review drafts, and track outcomes. The application is not a mass-bidding bot.
+Build a reliable local application that discovers permitted freelance design
+work, ranks it, drafts evidence-grounded proposals, supports human review and
+manual-safe submission, and tracks outcomes. It is not a mass-bidding bot.
 
-## Mandatory workflow
+Never implement CAPTCHA solving, fingerprint spoofing, stealth/evasion, credential
+or cookie capture, forbidden scraping, rate-limit evasion, or unattended bulk
+messaging/submission. `manual_only`, `disabled`, unknown, and stale policies are
+hard blocks. Real API writes require documented permission, an owner feature flag,
+and a single-use per-action confirmation token.
 
-1. Read `IMPLEMENTATION_STATUS.md` and `docs/milestones/00-index.md` before every substantial task.
-2. Run the workflow as an autonomous, sequential milestone pipeline when asked to implement prompts/milestones `00`-`22`; no separate user input or review is required between milestones.
-3. Complete each milestone in order: read the complete prompt, milestone document, and required pattern/supporting files; create a brief implementation plan; list expected files; implement the smallest complete vertical slice; run that milestone's checks plus the repository-wide fast suite; update records; commit the milestone; then advance to the next milestone.
-4. Dispatch relevant sub-agents for reading, planning, implementation, review, test-analysis, record-update preparation, and milestone handoff work when their scopes are explicit. Sub-agents may work independently within assigned scope; the coordinating agent is accountable for integration, conflict resolution, compliance, final verification, commits, PR metadata, and the final decision that gates passed.
-5. Do not skip a dependency or reorder milestones unless the user explicitly authorizes the dependency fix or scope change.
-6. Show failures honestly. Do not mark a milestone complete with failing checks. If a milestone is blocked, record the exact blocker and stop the full-workflow run instead of jumping ahead.
-7. Update `IMPLEMENTATION_STATUS.md`, the changelog, and architectural decision records only after acceptance criteria pass.
+## Required routing
 
-## Compliance guardrails
+Before every substantial task, read:
 
-- Never implement CAPTCHA solving, fingerprint spoofing, stealth plugins, proxy rotation intended to evade controls, hidden browser automation, or rate-limit evasion.
-- Never store platform passwords, browser cookies, session tokens, payment details, or full inbox exports.
-- Do not scrape or automate a platform unless `config/platform_policy.yaml` explicitly permits the exact action and documents the source of permission.
-- Treat `manual_only`, `disabled`, and unknown policies as hard blocks.
-- Proposal submission defaults to human action. API submission requires a second explicit feature flag and a per-action confirmation token.
-- Direct outreach must be targeted, relevant, rate-limited, auditable, and approved before sending.
+1. `IMPLEMENTATION_STATUS.md`
+2. `docs/milestones/00-index.md`
+3. `docs/DEMO_ACCEPTANCE.md`
 
-## Product principles
+For a numbered milestone, invoke `$jobseeker-milestone` and read its complete
+milestone, matching prompt, required patterns, supporting references, and relevant
+ADRs. `IMPLEMENTATION_STATUS.md` is the only progress ledger.
 
-- Deterministic rules before LLM calls.
-- Structured model output validated with Pydantic/JSON Schema.
-- Every proposal claim must map to an evidence record.
-- Idempotent ingestion and jobs.
-- Provider-neutral interfaces for LLMs, embeddings, notifications, and sources.
-- Local-first and private-by-default.
-- No hardcoded model names, URLs, secrets, thresholds, or platform behavior.
-- Fail closed on policy uncertainty and submission uncertainty.
+## Docker-only application workflow
+
+All application builds, dependency resolution, Python commands, migrations,
+tests, linters, type checks, evaluations, servers, workers, and release checks run
+inside Docker Compose. Host commands may only operate Git, Docker/Compose, files,
+Codex control-plane tooling/hooks, or thin wrappers that invoke Docker.
+
+Tests never call live paid services by default. Required live source/AI smokes use
+an explicit profile, bounded requests, timeouts, cost/rate limits, scrubbed output,
+and supplied secrets. Missing required credentials block the milestone; never
+silently fall back to a fake and claim success.
+
+## Milestone pipeline
+
+Run milestones 00-22 sequentially without user review between them when asked to
+run the full prompt set. A persistent Codex Goal may track the long run, but never
+replaces repository status/evidence.
+
+For each milestone:
+
+1. Verify dependencies are `DONE`; move the sole `READY` item to `IN_PROGRESS`.
+2. Plan the smallest operational vertical slice and list expected files/gates.
+3. Dispatch named subagents for bounded planning, exploration, disjoint
+   implementation, test analysis, compliance review, and release review.
+4. Implement real behavior. Stubs, empty adapters, static success responses,
+   non-callable shells, and unconditional pass commands do not count.
+5. Run the milestone Docker gates plus the repository fast suite.
+6. Create the implementation commit and reproduce from that commit/clean checkout.
+7. Generate `artifacts/verification/milestone-NN.json` from real results.
+8. Obtain an independent read-only `GO`; resolve every blocker and rerun gates.
+9. Update status/changelog/ADRs only after acceptance, commit the evidence, make
+   the next milestone `READY`, and advance.
+
+At any nonzero command, missing evidence, policy uncertainty, required credential
+gap, placeholder, or reviewer `NO-GO`, record the exact blocker, set `BLOCKED`, and
+stop the full run. Documenting failure never converts it to a pass.
+
+Only the coordinating agent integrates work, changes policies/status/evidence,
+commits, prepares PR/release metadata, and decides final acceptance. Assign one
+writer at a time unless subagent file ownership is explicitly non-overlapping.
 
 ## Technical baseline
 
-- Python 3.12 baseline unless a milestone changes it with an ADR.
-- FastAPI for the local API and server-rendered dashboard.
-- SQLAlchemy 2 + Alembic.
-- PostgreSQL + pgvector.
-- Redis + Celery for background work and schedules.
-- Pydantic settings and schemas.
-- pytest, Ruff, mypy, and pre-commit.
-- Docker Compose for local services.
-- Jinja templates and HTMX/local JavaScript for the MVP; do not introduce React without an ADR.
+- Python 3.12; FastAPI with Jinja/HTMX/local JavaScript.
+- SQLAlchemy 2, Alembic, PostgreSQL, pgvector.
+- Redis and Celery worker/beat.
+- Pydantic settings/schemas and provider-neutral source/AI/embedding/notification
+  interfaces.
+- Ruff, mypy, pytest, pre-commit, migration, integration, E2E, evaluation,
+  security, and recovery gates.
+- UTC internally, UUID internal IDs, stable source fingerprints, database
+  constraints, idempotent jobs, bounded external I/O, and secret-free logs.
+- No hardcoded provider model, endpoint, secret, threshold, or platform behavior.
+- Every proposal claim maps to an eligible evidence record.
 
-## Code quality
-
-- Use typed public functions and small modules.
-- Use UTC internally and render local time at the UI boundary.
-- Use UUIDs for internal entities and stable source fingerprints for deduplication.
-- Add database constraints for invariants; do not rely only on application checks.
-- All external I/O must have timeouts, retries with jitter, and bounded concurrency.
-- Log IDs and outcomes, not secrets or full confidential texts.
-- Tests must not call live paid APIs by default.
-- Recorded fixtures must be scrubbed of personal data and credentials.
-
-## Required project records
-
-Maintain these as the project develops:
-
-- `IMPLEMENTATION_STATUS.md`
-- `CHANGELOG.md`
-- `docs/adr/` for architectural decisions
-- `.env.example`
-- `config/*.example.yaml`
-- database migrations
-- test fixtures and evaluation datasets
-
-## Definition of complete for any milestone
-
-A milestone is complete only when:
-
-- its deliverables exist;
-- listed tests pass;
-- documentation matches actual behavior;
-- security and policy checks pass;
-- no unresolved blocker is hidden;
-- the user can reproduce the result from a clean checkout.
+Preserve `.env.example`, `config/*.example.yaml`, migrations, scrubbed fixtures,
+evaluation datasets, `CHANGELOG.md`, and ADRs as the implementation evolves.

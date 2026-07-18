@@ -1,26 +1,52 @@
 # Milestone 21 - Codex Implementation Workflow and Release Discipline
 
+## Recovery gate
+
+Exercise—not merely document—the repo `AGENTS.md`, `$jobseeker-milestone` skill,
+named agents, hooks, command rules, documentation validator, evidence validator,
+and release handoff. Negative tests must prove skipped dependencies, direct host
+toolchain commands, dirty/missing evidence, stale policy, failed evaluation,
+broken migration, and failed restore cannot produce `DONE` or a release pass.
+
+The selected Codex surfaces follow the current official documentation for
+[customization and AGENTS.md](https://developers.openai.com/codex/concepts/customization),
+[custom agents](https://learn.chatgpt.com/docs/agent-configuration/subagents),
+[hooks](https://learn.chatgpt.com/docs/hooks), and
+[configuration](https://developers.openai.com/codex/config-reference). Project
+configuration must use only documented keys; repository rules and evidence
+validators provide the product-specific enforcement.
+
 ## Goal
 
 Make Codex a reliable implementation partner by controlling context, task size, review, tests, and repository state.
 
 ## Codex operating model
 
-Codex reads `AGENTS.md` and works inside the repository. Give it one milestone at a time, a clean Git state, explicit verification commands, and permission boundaries. Do not ask it to “build everything” in one turn.
+Use each current Codex surface for its documented scope:
+
+- `AGENTS.md` for concise durable repository rules;
+- `$jobseeker-milestone` under `.agents/skills/` for the reusable workflow;
+- `.codex/agents/*.toml` for bounded planner, explorer, worker, analyst, and
+  independent reviewer roles;
+- `.codex/config.toml` for documented project settings and agent limits;
+- `.codex/hooks.json` for lightweight lifecycle guardrails;
+- `.codex/rules/*.rules` for destructive-command escalation policy;
+- a persistent Codex Goal for continuity only when the user requests the full
+  multi-milestone run;
+- Docker validators and CI as the authoritative enforcement boundary.
 
 ## Task loop
 
-1. Create a branch `milestone/XX-short-name`.
-2. Update status to `IN PROGRESS`.
-3. Ask Codex to read the milestone and dependencies.
-4. Request a plan and risk list before edits.
-5. Approve or correct the plan.
-6. Let Codex implement in small commits or one reviewable change.
-7. Run milestone checks.
-8. Ask Codex for a self-review focused on security, data integrity, policy, and tests.
-9. Manually inspect diff and run the feature.
-10. Update docs/status/changelog.
-11. Tag milestone or merge.
+1. Select the only `READY` milestone and verify dependencies.
+2. Plan acceptance-to-test mappings with a read-only planner/explorer.
+3. Implement a bounded vertical slice with explicit file ownership.
+4. Create the implementation commit.
+5. Run Docker gates and clean-checkout reproduction against that commit.
+6. Generate a machine-readable evidence receipt.
+7. Obtain independent test and policy/release reviews.
+8. Resolve findings and rerun affected gates.
+9. Commit status/changelog/evidence only after `GO`.
+10. Advance automatically only when the next dependency is ready.
 
 ## Prompt shape
 
@@ -40,10 +66,12 @@ Use the templates in `docs/92-codex-prompt-library.md`.
 
 - Put permanent rules in `AGENTS.md`.
 - Keep current decisions in ADRs.
-- Keep milestone completion evidence in status/changelog.
+- Keep machine-readable milestone evidence under `artifacts/verification/` and
+  progress only in `IMPLEMENTATION_STATUS.md`.
 - Do not paste the whole documentation set into every prompt.
 - Ask Codex to cite repository files/lines in its plan.
-- Start a new Codex thread when the context becomes confused or scope drifts.
+- Use subagents to isolate noisy exploration/test output and compact/fresh context
+  when the coordinating thread becomes noisy.
 
 ## Review checklist
 
@@ -79,11 +107,6 @@ Before accepting Codex output:
 - milestone completion script/checklist;
 - release checklist.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 21 only. Review and strengthen the repository’s AGENTS.md, Codex prompt library, branch/commit/release workflow, self-review checklist, and milestone completion process. Add automation that checks status, tests, migrations, evaluation reports, and policy review dates before a release can be tagged.
-```
 
 ## Acceptance criteria
 
@@ -91,4 +114,5 @@ Implement Milestone 21 only. Review and strengthen the repository’s AGENTS.md,
 - [ ] Permanent instructions are concise and enforce boundaries.
 - [ ] Release checks include policy, migrations, security, evaluations, and backup restore.
 - [ ] The workflow prevents skipping milestones silently.
-- [ ] User can review each change before continuing.
+- [ ] Independent agents review each milestone before autonomous continuation.
+- [ ] Hooks and validators reject direct host toolchain commands and evidence-free `DONE` states.

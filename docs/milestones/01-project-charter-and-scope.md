@@ -1,5 +1,13 @@
 # Milestone 01 - Project Charter and Scope
 
+## Recovery gate
+
+The previous charter is reusable but not accepted until it incorporates
+`docs/DEMO_ACCEPTANCE.md`. Acceptance requires a testable user-visible demo flow,
+explicit assisted-submission boundary, named live-read and AI integration goals,
+Docker-only runtime scope, non-goals, and no unresolved owner decision. Record the
+review as `M01-AC01` through `M01-AC04` in the milestone evidence receipt.
+
 ## Goal
 
 Freeze a realistic MVP so Codex does not build an unsafe or unnecessarily complex “apply everywhere” bot. This milestone converts the broad idea into explicit product boundaries, user stories, non-goals, and success conditions.
@@ -74,11 +82,6 @@ Create:
 4. The owner’s portfolio and proposal style are private source data.
 5. The app prioritizes quality and account safety over maximum application volume.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 01 only. Read AGENTS.md and docs/milestones/01-project-charter-and-scope.md. Create the charter and two ADRs, update README and CHANGELOG, and do not create application code yet. Highlight any scope ambiguity instead of silently deciding it. Finish with the milestone acceptance checklist.
-```
 
 ## Acceptance criteria
 

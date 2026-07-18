@@ -1,5 +1,15 @@
 # Milestone 22 - Pilot Launch, Tuning, and Production Readiness
 
+## Recovery gate
+
+Run the complete scenario in `docs/DEMO_ACCEPTANCE.md` from fresh images and
+volumes using at least one real permitted source read and one bounded real AI
+request. Demonstrate browser review/edit/approval, manual submission assistance,
+CRM outcome, worker processing, restart idempotency, metrics, and encrypted
+backup/restore. Publish a secret-free evidence bundle and explicit `DEMO_READY`
+or `NO_GO` decision. The later multi-day pilot is scheduled here; it is not faked
+or declared complete during a single implementation run.
+
 ## Goal
 
 Run a controlled real-world pilot, measure quality and risk, tune from evidence, and decide whether the local agent is ready for daily use.
@@ -94,11 +104,6 @@ Never tune solely to maximize applications. Optimize qualified conversations and
 - final go/no-go report;
 - prioritized roadmap.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 22 only. Add pilot-mode configuration, shadow/assisted/stable phase controls, daily pilot reports, baseline and go/no-go templates, and a production-readiness command. Do not enable real marketplace submission APIs. Produce the final operational checklist and roadmap.
-```
 
 ## Acceptance criteria
 

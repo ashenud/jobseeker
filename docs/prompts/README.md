@@ -1,41 +1,43 @@
-# Sequential Codex Prompts
+# Sequential Codex prompts
 
-Use this folder to execute milestones as fresh-context Codex phases. Start at prompt `00`, then continue in numeric order through prompt `22`. The agent may update this ledger itself after each prompt passes verification and is committed; no separate user review or input is required between prompts.
+These files are thin entry points for the recovery pipeline. They do not maintain
+a second progress ledger. `IMPLEMENTATION_STATUS.md` is the only status source.
 
-## Completion ledger
+Start with Prompt 00 and invoke `$jobseeker-milestone`. Continue automatically in
+numeric order only after the current milestone has passing evidence, independent
+review, a completion commit, and the next milestone is marked `READY`.
 
-| Order | Prompt | Milestone document | Status |
-|---:|---|---|---|
-| 00 | [`00-index.md`](00-index.md) | [`00-index.md`](../milestones/00-index.md) | DONE |
-| 01 | [`01-project-charter-and-scope.md`](01-project-charter-and-scope.md) | [`01-project-charter-and-scope.md`](../milestones/01-project-charter-and-scope.md) | DONE |
-| 02 | [`02-compliance-and-platform-policy-registry.md`](02-compliance-and-platform-policy-registry.md) | [`02-compliance-and-platform-policy-registry.md`](../milestones/02-compliance-and-platform-policy-registry.md) | TODO |
-| 03 | [`03-positioning-profile-and-success-metrics.md`](03-positioning-profile-and-success-metrics.md) | [`03-positioning-profile-and-success-metrics.md`](../milestones/03-positioning-profile-and-success-metrics.md) | TODO |
-| 04 | [`04-local-environment-and-repository-bootstrap.md`](04-local-environment-and-repository-bootstrap.md) | [`04-local-environment-and-repository-bootstrap.md`](../milestones/04-local-environment-and-repository-bootstrap.md) | TODO |
-| 05 | [`05-architecture-boundaries-and-state-machines.md`](05-architecture-boundaries-and-state-machines.md) | [`05-architecture-boundaries-and-state-machines.md`](../milestones/05-architecture-boundaries-and-state-machines.md) | TODO |
-| 06 | [`06-database-schema-and-migrations.md`](06-database-schema-and-migrations.md) | [`06-database-schema-and-migrations.md`](../milestones/06-database-schema-and-migrations.md) | TODO |
-| 07 | [`07-source-adapter-framework.md`](07-source-adapter-framework.md) | [`07-source-adapter-framework.md`](../milestones/07-source-adapter-framework.md) | TODO |
-| 08 | [`08-initial-compliant-source-integrations.md`](08-initial-compliant-source-integrations.md) | [`08-initial-compliant-source-integrations.md`](../milestones/08-initial-compliant-source-integrations.md) | TODO |
-| 09 | [`09-normalization-deduplication-and-rules.md`](09-normalization-deduplication-and-rules.md) | [`09-normalization-deduplication-and-rules.md`](../milestones/09-normalization-deduplication-and-rules.md) | TODO |
-| 10 | [`10-llm-gateway-and-structured-scoring.md`](10-llm-gateway-and-structured-scoring.md) | [`10-llm-gateway-and-structured-scoring.md`](../milestones/10-llm-gateway-and-structured-scoring.md) | TODO |
-| 11 | [`11-portfolio-knowledge-base-and-retrieval.md`](11-portfolio-knowledge-base-and-retrieval.md) | [`11-portfolio-knowledge-base-and-retrieval.md`](../milestones/11-portfolio-knowledge-base-and-retrieval.md) | TODO |
-| 12 | [`12-proposal-generation-and-factuality-guardrails.md`](12-proposal-generation-and-factuality-guardrails.md) | [`12-proposal-generation-and-factuality-guardrails.md`](../milestones/12-proposal-generation-and-factuality-guardrails.md) | TODO |
-| 13 | [`13-human-review-dashboard-and-notifications.md`](13-human-review-dashboard-and-notifications.md) | [`13-human-review-dashboard-and-notifications.md`](../milestones/13-human-review-dashboard-and-notifications.md) | TODO |
-| 14 | [`14-submission-assistance-and-permitted-connectors.md`](14-submission-assistance-and-permitted-connectors.md) | [`14-submission-assistance-and-permitted-connectors.md`](../milestones/14-submission-assistance-and-permitted-connectors.md) | TODO |
-| 15 | [`15-crm-follow-ups-and-feedback-capture.md`](15-crm-follow-ups-and-feedback-capture.md) | [`15-crm-follow-ups-and-feedback-capture.md`](../milestones/15-crm-follow-ups-and-feedback-capture.md) | TODO |
-| 16 | [`16-workers-scheduling-idempotency-and-reliability.md`](16-workers-scheduling-idempotency-and-reliability.md) | [`16-workers-scheduling-idempotency-and-reliability.md`](../milestones/16-workers-scheduling-idempotency-and-reliability.md) | TODO |
-| 17 | [`17-security-secrets-privacy-and-retention.md`](17-security-secrets-privacy-and-retention.md) | [`17-security-secrets-privacy-and-retention.md`](../milestones/17-security-secrets-privacy-and-retention.md) | TODO |
-| 18 | [`18-testing-evaluations-and-quality-gates.md`](18-testing-evaluations-and-quality-gates.md) | [`18-testing-evaluations-and-quality-gates.md`](../milestones/18-testing-evaluations-and-quality-gates.md) | TODO |
-| 19 | [`19-observability-cost-controls-and-operations.md`](19-observability-cost-controls-and-operations.md) | [`19-observability-cost-controls-and-operations.md`](../milestones/19-observability-cost-controls-and-operations.md) | TODO |
-| 20 | [`20-local-deployment-startup-backup-and-recovery.md`](20-local-deployment-startup-backup-and-recovery.md) | [`20-local-deployment-startup-backup-and-recovery.md`](../milestones/20-local-deployment-startup-backup-and-recovery.md) | TODO |
-| 21 | [`21-codex-implementation-workflow-and-release-discipline.md`](21-codex-implementation-workflow-and-release-discipline.md) | [`21-codex-implementation-workflow-and-release-discipline.md`](../milestones/21-codex-implementation-workflow-and-release-discipline.md) | TODO |
-| 22 | [`22-pilot-launch-tuning-and-production-readiness.md`](22-pilot-launch-tuning-and-production-readiness.md) | [`22-pilot-launch-tuning-and-production-readiness.md`](../milestones/22-pilot-launch-tuning-and-production-readiness.md) | TODO |
+| Order | Prompt | Authoritative milestone |
+|---:|---|---|
+| 00 | [Recovery orchestration](00-index.md) | [Master index / recovery harness](../milestones/00-index.md) |
+| 01 | [Project charter](01-project-charter-and-scope.md) | [Milestone 01](../milestones/01-project-charter-and-scope.md) |
+| 02 | [Policy registry](02-compliance-and-platform-policy-registry.md) | [Milestone 02](../milestones/02-compliance-and-platform-policy-registry.md) |
+| 03 | [Profile and metrics](03-positioning-profile-and-success-metrics.md) | [Milestone 03](../milestones/03-positioning-profile-and-success-metrics.md) |
+| 04 | [Docker foundation](04-local-environment-and-repository-bootstrap.md) | [Milestone 04](../milestones/04-local-environment-and-repository-bootstrap.md) |
+| 05 | [Architecture](05-architecture-boundaries-and-state-machines.md) | [Milestone 05](../milestones/05-architecture-boundaries-and-state-machines.md) |
+| 06 | [Database](06-database-schema-and-migrations.md) | [Milestone 06](../milestones/06-database-schema-and-migrations.md) |
+| 07 | [Source framework](07-source-adapter-framework.md) | [Milestone 07](../milestones/07-source-adapter-framework.md) |
+| 08 | [Source integrations](08-initial-compliant-source-integrations.md) | [Milestone 08](../milestones/08-initial-compliant-source-integrations.md) |
+| 09 | [Normalization and rules](09-normalization-deduplication-and-rules.md) | [Milestone 09](../milestones/09-normalization-deduplication-and-rules.md) |
+| 10 | [AI scoring](10-llm-gateway-and-structured-scoring.md) | [Milestone 10](../milestones/10-llm-gateway-and-structured-scoring.md) |
+| 11 | [Evidence retrieval](11-portfolio-knowledge-base-and-retrieval.md) | [Milestone 11](../milestones/11-portfolio-knowledge-base-and-retrieval.md) |
+| 12 | [Proposal generation](12-proposal-generation-and-factuality-guardrails.md) | [Milestone 12](../milestones/12-proposal-generation-and-factuality-guardrails.md) |
+| 13 | [Review application](13-human-review-dashboard-and-notifications.md) | [Milestone 13](../milestones/13-human-review-dashboard-and-notifications.md) |
+| 14 | [Submission assistance](14-submission-assistance-and-permitted-connectors.md) | [Milestone 14](../milestones/14-submission-assistance-and-permitted-connectors.md) |
+| 15 | [CRM](15-crm-follow-ups-and-feedback-capture.md) | [Milestone 15](../milestones/15-crm-follow-ups-and-feedback-capture.md) |
+| 16 | [Workers](16-workers-scheduling-idempotency-and-reliability.md) | [Milestone 16](../milestones/16-workers-scheduling-idempotency-and-reliability.md) |
+| 17 | [Security and privacy](17-security-secrets-privacy-and-retention.md) | [Milestone 17](../milestones/17-security-secrets-privacy-and-retention.md) |
+| 18 | [Testing and evaluation](18-testing-evaluations-and-quality-gates.md) | [Milestone 18](../milestones/18-testing-evaluations-and-quality-gates.md) |
+| 19 | [Observability](19-observability-cost-controls-and-operations.md) | [Milestone 19](../milestones/19-observability-cost-controls-and-operations.md) |
+| 20 | [Deployment and recovery](20-local-deployment-startup-backup-and-recovery.md) | [Milestone 20](../milestones/20-local-deployment-startup-backup-and-recovery.md) |
+| 21 | [Codex/release discipline](21-codex-implementation-workflow-and-release-discipline.md) | [Milestone 21](../milestones/21-codex-implementation-workflow-and-release-discipline.md) |
+| 22 | [Working demo](22-pilot-launch-tuning-and-production-readiness.md) | [Milestone 22](../milestones/22-pilot-launch-tuning-and-production-readiness.md) |
 
-## Operating rules
+## Failure rule
 
-- Treat each numbered prompt as a fresh gated phase by re-reading that prompt, its milestone document, and required references before edits for that milestone.
-- Do not start prompt `NN+1` until prompt `NN` has passed verification, been committed, and this README row is updated by the agent.
-- Dispatch sub-agents where helpful for distinct phases such as instruction reading, codebase exploration, planning, disjoint implementation slices, review, record-update preparation, handoff preparation, or test-output analysis. Assign explicit ownership and avoid overlapping writes.
-- The prompt itself controls which patterns and supporting docs must be read for that milestone.
-- Prefer project-native rules, hooks, and checks over undocumented local state.
-- Keep the Docker Compose environment authoritative for database and Redis services.
-- Continue through prompt `22` without user review/input gates, but stop at the first unresolved blocker or failing required check; do not skip ahead to later prompts.
+Any failed command, missing required credential, policy uncertainty, missing
+evidence, placeholder production path, or reviewer `NO-GO` stops the entire run.
+Recording a failure is required for honesty but never converts it into a pass.
+
+See [TEMPLATE.md](TEMPLATE.md) for required prompt fields and
+[the demo contract](../DEMO_ACCEPTANCE.md) for the final observable outcome.

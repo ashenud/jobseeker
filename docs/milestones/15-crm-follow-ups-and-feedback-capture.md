@@ -1,5 +1,12 @@
 # Milestone 15 - CRM, Follow-ups, and Feedback Capture
 
+## Recovery gate
+
+Persist append-only application events, correction reasons, follow-up drafts and
+due dates, feedback labels, exports, and funnel/weekly metrics. Browser/API E2E
+must cover submitted, replied, interview, won, lost, withdrawn, and no-response
+paths. Scheduling may create reminders or drafts but must not send messages.
+
 ## Goal
 
 Track the application lifecycle and turn outcomes into better filtering and proposals without sending unauthorized follow-ups.
@@ -69,11 +76,6 @@ Avoid vanity metrics. A source with many jobs and no replies is not performing.
 - CSV/JSON export;
 - tests for state and due-date logic.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 15 only. Add append-only application events, CRM views, configurable follow-up tasks that create drafts/reminders but never send, outcome feedback, and a weekly funnel report. Add tests for business-day dates, state corrections, and metric formulas.
-```
 
 ## Acceptance criteria
 

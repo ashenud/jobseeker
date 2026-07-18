@@ -1,5 +1,13 @@
 # Milestone 18 - Testing, Evaluations, and Quality Gates
 
+## Recovery gate
+
+Replace print-only evaluation/release commands with executable unit, integration,
+E2E, migration, policy, security, and AI evaluation gates. Include deterministic
+fixtures and separately tagged bounded live smokes. Demonstrate that deliberately
+breaking an evaluation threshold or policy test makes the command nonzero. Zero
+unsupported claims and zero unauthorized actions are hard release requirements.
+
 ## Goal
 
 Prove deterministic code and probabilistic LLM behavior are trustworthy enough for a real job-search workflow.
@@ -94,11 +102,6 @@ Define thresholds in configuration and record evaluation versions.
 - CI configuration or local CI script;
 - release quality gate.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 18 only. Build the test/evaluation framework and populate a representative private-safe dataset across the owner’s service categories and adversarial cases. Add deterministic and mocked end-to-end tests, score/evidence/proposal metrics, and release thresholds. No live paid or marketplace actions in default tests.
-```
 
 ## Acceptance criteria
 

@@ -1,5 +1,13 @@
 # Milestone 06 - Database Schema and Migrations
 
+## Recovery gate
+
+Replace the minimal dataclasses and two-table migration with SQLAlchemy 2 models,
+repositories, constraints, and Alembic migrations for the complete discovery-to-
+CRM flow. PostgreSQL/pgvector is authoritative; SQLite is not an acceptance
+substitute. Prove empty-database upgrade, repository integration, uniqueness and
+immutability invariants, restart persistence, and supported downgrade/upgrade.
+
 ## Goal
 
 Create the durable PostgreSQL schema that supports ingestion, evidence-grounded drafting, review history, policy audits, and analytics without storing unnecessary personal data.
@@ -104,22 +112,6 @@ Do not create approximate vector indexes prematurely. Exact search is adequate f
 - seed command.
 - repository-level integration tests.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 06 only. Create the PostgreSQL schema, SQLAlchemy models, repositories, and Alembic migrations described here. Use append-only events and immutable proposal revisions. Add database constraints, seed data, and integration tests. Do not implement connectors or LLM calls.
-```
-
-## Verification
-
-```bash
-make db-reset
-make migrate
-make seed
-make test-integration
-alembic downgrade -1
-alembic upgrade head
-```
 
 ## Acceptance criteria
 

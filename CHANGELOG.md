@@ -1,6 +1,19 @@
 # Changelog
 
+## Unreleased - recovery reset
+
+- Reset false milestone 01-22 completion claims and recorded the current code as
+  an unverified scaffold.
+- Added a Docker-only working-demo contract, recovery gates for every milestone,
+  pass-only prompt rules, evidence receipts, and independent review requirements.
+- Removed duplicate root milestone documents and added a canonical documentation map.
+- Added a repo milestone skill, named subagent roles, lifecycle hooks, destructive-
+  command rules, and documentation/milestone validators.
+
+No application milestone is claimed complete by this documentation reset.
+
 ## 0.22.0 - 2026-07-18
 
-- Completed the milestone 02-22 integrated local MVP scaffold.
+- Added the milestone 02-22 integrated local MVP scaffold (later found not to
+  satisfy the milestone acceptance criteria; see the recovery reset above).
 - Added fail-closed platform policy registry, confirmation-token submission gates, local CLI, source adapter contracts, deterministic normalization/scoring/proposal flow, CRM/pilot/observability/security helpers, dashboard health shell, repository bootstrap, docs, and tests.

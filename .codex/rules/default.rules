@@ -1,0 +1,56 @@
+# Destructive actions require explicit review even when an escalation is requested.
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "forbidden",
+    justification = "Do not discard repository changes; inspect and repair them explicitly.",
+    match = ["git reset --hard HEAD"],
+    not_match = ["git reset --soft HEAD~1"],
+)
+
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "forbidden",
+    justification = "Do not delete untracked user files; identify scoped files and request direction.",
+    match = ["git clean -fd", "git clean -fdx"],
+    not_match = ["git status --short"],
+)
+
+prefix_rule(
+    pattern = ["git", "push", ["--force", "-f"]],
+    decision = "forbidden",
+    justification = "Force-push is outside the autonomous milestone workflow.",
+    match = ["git push --force", "git push -f origin feature"],
+    not_match = ["git push origin feature"],
+)
+
+prefix_rule(
+    pattern = ["docker", "compose", "down", "-v"],
+    decision = "prompt",
+    justification = "Removing Compose volumes destroys local database state; confirm a disposable test scope or verified backup.",
+    match = ["docker compose down -v"],
+    not_match = ["docker compose down"],
+)
+
+prefix_rule(
+    pattern = ["docker", "system", "prune"],
+    decision = "prompt",
+    justification = "System-wide Docker pruning can affect unrelated projects.",
+    match = ["docker system prune", "docker system prune -a"],
+    not_match = ["docker image ls"],
+)
+
+prefix_rule(
+    pattern = ["docker", "volume", "rm"],
+    decision = "prompt",
+    justification = "Volume deletion can destroy persistent application data.",
+    match = ["docker volume rm jobseeker_postgres_data"],
+    not_match = ["docker volume ls"],
+)
+
+prefix_rule(
+    pattern = ["docker", "compose", "--profile", "live"],
+    decision = "prompt",
+    justification = "Live source or AI smoke profiles may incur network, policy, or API cost; confirm the bounded test scope first.",
+    match = ["docker compose --profile live"],
+    not_match = ["docker compose --profile dev"],
+)

@@ -1,5 +1,13 @@
 # Milestone 08 - Initial Compliant Source Integrations
 
+## Recovery gate
+
+Implement manual capture plus at least two operational read integrations whose
+current policies explicitly permit their exact endpoints/actions. Mocked contract
+tests always run; a bounded opt-in live profile must perform the smallest allowed
+read, persist sanitized results, and write a secret-free receipt. Fixtures alone
+cannot complete this milestone, and no bid/message/write endpoint may be enabled.
+
 ## Goal
 
 Prove the adapter framework with diverse, low-risk sources: one manual source, two documented public feeds/APIs, and an optional official marketplace API only if credentials and policy approval exist.
@@ -63,11 +71,6 @@ Live calls are opt-in and tagged. A live test must:
 - be excluded from normal CI;
 - produce a run receipt.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 08 only. Add the manual source plus Jobicy and Remote OK adapters using their currently documented public endpoints after verifying the current official source pages. Add Freelancer read-only support behind a disabled feature flag and skip it if credentials are absent. Do not scrape Behance or Upwork. Add sanitized fixtures and mapping documentation.
-```
 
 ## Acceptance criteria
 

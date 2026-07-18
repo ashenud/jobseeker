@@ -5,7 +5,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: '3.12'}
-      - run: python -m pip install -e '.[dev]'
-      - run: make check
+      - name: Prepare non-secret environment
+        run: cp .env.example .env
+      - name: Validate Compose configuration
+        run: docker compose --profile dev config --quiet
+      - name: Build application images
+        run: docker compose --profile dev build
+      - name: Validate documentation
+        run: docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py
+      - name: Validate milestone ledger
+        run: docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all
+      - name: Validate Codex controls
+        run: docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py
+      - name: Run lint
+        run: docker compose --profile dev run --rm --no-deps api ruff check .
+      - name: Run type checks
+        run: docker compose --profile dev run --rm --no-deps api mypy src tests
+      - name: Run tests
+        run: docker compose --profile dev run --rm --no-deps api pytest -q
+      - name: Tear down
+        if: always()
+        run: docker compose --profile dev down --remove-orphans

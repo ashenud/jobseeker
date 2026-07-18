@@ -1,5 +1,13 @@
 # Milestone 17 - Security, Secrets, Privacy, and Retention
 
+## Recovery gate
+
+Implement local authentication when configured, secure sessions, CSRF protection,
+safe rendering, prompt-injection separation, secret/log redaction, least-privilege
+container settings, retention jobs, export, and deletion cascades. Container scans
+and malicious-input tests must pass; secrets, raw confidential job bodies, and
+private evidence must not appear in logs or verification artifacts.
+
 ## Goal
 
 Protect marketplace accounts, API keys, portfolio/client data, and the local host. The application has powerful access to job text and potentially external APIs, so security is a product feature.
@@ -81,11 +89,6 @@ The user can override, but deletion must cascade correctly.
 - dependency and container scanning scripts;
 - security tests.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 17 only. Apply the documented threat model: localhost binding, auth option, CSRF, safe HTML, secret redaction, retention/deletion, provider data minimization, secure confirmation tokens, and dependency/container checks. Add security tests including malicious job HTML and prompt injection. Do not expose services to the LAN by default.
-```
 
 ## Acceptance criteria
 
