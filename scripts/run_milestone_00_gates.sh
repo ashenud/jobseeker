@@ -91,6 +91,24 @@ run_gate() {
     fi
 }
 
+capture_clean_checkout() {
+    local status_log="$output_dir/checkout-status.log"
+    local status_exit
+    set +e
+    git status --porcelain >"$status_log"
+    status_exit=$?
+    set -e
+    if ((status_exit != 0)); then
+        echo "clean-checkout Git status failed with exit $status_exit" >&2
+        return "$status_exit"
+    fi
+    if [[ -s "$status_log" ]]; then
+        echo "clean checkout contains generated or modified files:" >&2
+        cat "$status_log" >&2
+        return 97
+    fi
+}
+
 main() {
     output_dir="${M00_OUTPUT_DIR:-artifacts/verification/milestone-00-main}"
     run_label="${M00_RUN_LABEL:-main}"
@@ -170,6 +188,18 @@ main() {
     run_gate 10-pre-commit no \
         docker compose --profile dev run --rm --no-deps api sh -c \
         'git config --global --add safe.directory /app && pre-commit run --all-files' || return $?
+
+    if [[ "$run_label" == "clean" ]]; then
+        local checkout_exit
+        set +e
+        capture_clean_checkout
+        checkout_exit=$?
+        set -e
+        if ((checkout_exit != 0)); then
+            write_metadata "FAIL"
+            return "$checkout_exit"
+        fi
+    fi
 
     write_metadata "PASS"
 }

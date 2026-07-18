@@ -49,3 +49,39 @@ Fresh focused Docker results:
 
 The complete main matrix, implementation commit, clean reproduction, receipt,
 independent reviews, and final receipt validation remain required.
+
+Milestone 01 independent-review date: 2026-07-19
+Result: BLOCKED
+
+Implementation commit `cb2e2e7cabb350c2cd911d5f5acb6bb437e3e94f` passed the
+main and true-clone matrices with 97 tests. The coordinator observed an empty
+`git status --porcelain` in the clone, but did not persist it as machine evidence.
+
+Reviewer verdict: NO-GO
+Evidence verdict: FAIL (`M01-AC03`, `M01-AC04`)
+Unresolved HIGH:
+- `artifacts/verification/milestone-01-clean/` has no checkout-status artifact.
+- `scripts/generate_milestone_01_receipt.py` currently accepts a `clean` run
+  label as clean-checkout PASS without requiring an empty Git-status capture.
+
+Required recovery:
+- The gate runner must machine-capture `git status --porcelain` for clean runs and
+  fail when it is nonempty.
+- The M01 generator must require the empty capture and include it in clean refs.
+- Negative regression tests, full captures, and both independent reviews rerun.
+
+Milestone 01 clean-evidence recovery resumed: 2026-07-19
+Result: IN_PROGRESS
+
+- Clean runs now write `checkout-status.log` after all gates.
+- A nonempty status exits 97 and marks run metadata FAIL.
+- The M01 generator requires the status artifact and requires exact empty content.
+- Missing/nonempty and clean/dirty regression cases are covered.
+
+Fresh focused Docker results:
+- Ruff: PASS
+- Documentation validation: PASS
+- Evidence and recovery harness tests: 69 passed
+
+The replacement commit, complete main/clean matrices, receipt, and fresh reviews
+remain required.

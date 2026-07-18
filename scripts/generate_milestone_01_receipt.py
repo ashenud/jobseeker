@@ -110,6 +110,16 @@ def placeholder_findings(root: Path) -> list[str]:
     return findings
 
 
+def read_clean_checkout(root: Path, manifest_value: str | Path) -> str:
+    """Require a machine-captured empty Git status beside the clean manifest."""
+    manifest, _ = repository_file(root, manifest_value, "clean manifest")
+    status_path = manifest.with_name("checkout-status.log")
+    status_path, status_ref = repository_file(root, status_path, "clean checkout status")
+    if status_path.read_text(encoding="utf-8") != "":
+        raise EvidenceError("clean checkout status is not empty")
+    return status_ref
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--main-manifest", required=True)
@@ -130,6 +140,8 @@ def main() -> int:
         clean_metadata, clean_commands, clean_refs = read_manifest(
             ROOT, args.clean_manifest, "clean"
         )
+        clean_status_ref = read_clean_checkout(ROOT, args.clean_manifest)
+        clean_refs = [*clean_refs, clean_status_ref]
         if main_metadata["tested_commit"] != clean_metadata["tested_commit"]:
             raise EvidenceError("main and clean runs tested different commits")
         review, evidence_refs, evidence_review_refs = read_reviews(

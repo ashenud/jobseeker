@@ -466,6 +466,40 @@ reference_for "$3" "07-ruff"
     assert result.stdout == "artifacts/verification/main/logs/07-ruff.log"
 
 
+def test_gate_runner_machine_captures_clean_checkout_status(tmp_path: Path) -> None:
+    runner = ROOT / "scripts" / "run_milestone_00_gates.sh"
+    checkout = tmp_path / "checkout"
+    output = tmp_path / "evidence"
+    checkout.mkdir()
+    subprocess.run(["git", "init", "--quiet"], cwd=checkout, check=True)
+    shell = """
+source "$1"
+output_dir="$2"
+mkdir -p "$output_dir"
+capture_clean_checkout
+"""
+    clean = subprocess.run(
+        ["bash", "-c", shell, "capture-test", str(runner), str(output)],
+        cwd=checkout,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert clean.returncode == 0
+    assert (output / "checkout-status.log").read_text(encoding="utf-8") == ""
+
+    (checkout / "dirty.txt").write_text("dirty\n", encoding="utf-8")
+    dirty = subprocess.run(
+        ["bash", "-c", shell, "capture-test", str(runner), str(output)],
+        cwd=checkout,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert dirty.returncode == 97
+    assert "?? dirty.txt" in (output / "checkout-status.log").read_text(encoding="utf-8")
+
+
 def test_codex_controls_are_structurally_valid() -> None:
     controls = load_module("scripts/validate_codex_controls.py", "codex_controls")
     validations = (

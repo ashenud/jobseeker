@@ -113,6 +113,31 @@ def test_m01_acceptance_set_is_stable() -> None:
     )
 
 
+@pytest.mark.parametrize("status", [None, " M dirty.py\n"])
+def test_m01_clean_checkout_requires_empty_machine_status(
+    tmp_path: Path, status: str | None
+) -> None:
+    capture = tmp_path / "artifacts/verification/milestone-01-clean"
+    capture.mkdir(parents=True)
+    manifest = capture / "manifest.tsv"
+    manifest.write_text("manifest\n", encoding="utf-8")
+    if status is not None:
+        (capture / "checkout-status.log").write_text(status, encoding="utf-8")
+    with pytest.raises(GENERATOR.EvidenceError):
+        GENERATOR.read_clean_checkout(tmp_path, manifest)
+
+
+def test_m01_clean_checkout_accepts_empty_machine_status(tmp_path: Path) -> None:
+    capture = tmp_path / "artifacts/verification/milestone-01-clean"
+    capture.mkdir(parents=True)
+    manifest = capture / "manifest.tsv"
+    manifest.write_text("manifest\n", encoding="utf-8")
+    (capture / "checkout-status.log").write_text("", encoding="utf-8")
+    assert GENERATOR.read_clean_checkout(tmp_path, manifest) == (
+        "artifacts/verification/milestone-01-clean/checkout-status.log"
+    )
+
+
 def test_m01_review_input_is_not_mutated(tmp_path: Path) -> None:
     policy_path, evidence_path = valid_reviews(tmp_path)
     before = deepcopy(json.loads(evidence_path.read_text(encoding="utf-8")))
