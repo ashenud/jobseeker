@@ -33,3 +33,15 @@ BLOCKED (authoritative main-capture invocation)
 - Output: /bin/bash: line 1: scripts/run_milestone_00_gates.sh: Permission denied
 - Cause: the tracked wrapper has no executable bit; no Docker gate had started.
 - Resolution: invoke the same repository-native wrapper explicitly through bash.
+
+BLOCKED (clean linked-worktree reproduction)
+- Command: Docker Compose pre-commit gate inside the detached Git worktree for
+  commit 073c9f687117b69913c39426f961d91417160832
+- Exit: 128
+- Output: fatal: not a git repository:
+  /home/kesh/projects/codex-workspace/jobseeker/.git/worktrees/tmp.x6okuVeIhB
+- Cause: the linked worktree .git file references control data outside the path
+  mounted into Docker. Gates 01-09 passed, including 128 tests, but the capture is
+  invalid because gate 10 failed.
+- Resolution: reproduce the identical commit from a self-contained local clone,
+  whose .git directory is inside the Docker-mounted checkout, and rerun all gates.

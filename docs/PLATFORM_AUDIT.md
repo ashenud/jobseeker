@@ -23,7 +23,7 @@ in the canonical registry.
 | Freelancer.com | 2026-07-19 | 2026-10-19 | disabled | disabled | [Developer portal](https://developers.freelancer.com/) and [API terms](https://www.freelancer.com/about/apiterms); no credential or owner approval is recorded. Retain no network payload. |
 | Remote OK | 2026-07-19 | 2026-10-19 | disabled candidate JSON/RSS read | disabled; external manual application only | [API endpoint](https://remoteok.com/api) and [current legal terms](https://remoteok.com/legal). Terms require a visible link back wherever API/site data is used. Candidate limit: at most one request per hour; candidate retention: 30 days. |
 | Jobicy | 2026-07-19 | 2026-10-19 | disabled candidate API/RSS read | disabled; external manual application only | [Official API/RSS guide](https://jobicy.com/jobs-rss-feed) permits feed integration, prohibits external job-platform redistribution, and says to poll no more than hourly. Candidate limit: one request per hour; candidate retention: 30 days. |
-| Manual/email paste | 2026-07-19 | 2027-07-19 | not applicable; owner-provided | manual owner action only | User authorization is record-specific. Retain captured records for 90 days. |
+| Manual/email paste | 2026-07-19 | 2026-10-19 | not applicable; owner-provided | manual owner action only | User authorization is record-specific. Retain captured records for 90 days. |
 | Direct outreach | 2026-07-19 | 2026-10-19 | disabled | disabled | No bulk list collection or sending. A future proposal needs separate scope, permission, approval, rate limits, confirmation, and audit evidence. |
 
 ## Review procedure
