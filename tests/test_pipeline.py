@@ -2,7 +2,13 @@ from datetime import UTC, datetime
 
 import pytest
 
-from job_agent.core.states import ApplicationState, JobState, can_transition, require_transition
+from job_agent.core.states import (
+    ApplicationState,
+    JobState,
+    ProposalState,
+    can_transition,
+    require_transition,
+)
 from job_agent.crm.service import ApplicationTimeline, schedule_follow_up
 from job_agent.evidence.service import EvidenceChunk, retrieve
 from job_agent.llm.scoring import BudgetGuard, score_job
@@ -17,6 +23,7 @@ from job_agent.web.app import create_app
 def sample_job(): return normalize(ManualAdapter().capture("https://EXAMPLE.com/job?utm_source=x","Packaging label design","Need packaging, label and dieline. Budget $500."))
 def test_state_transitions():
     assert can_transition(JobState.raw, JobState.normalized)
+    assert not can_transition(JobState.raw, ProposalState.draft)
     with pytest.raises(ValueError): require_transition(JobState.raw, JobState.scored)
 def test_normalize_score_retrieve_proposal_flow():
     job=sample_job(); assert job.budget and "packaging_label" in job.services

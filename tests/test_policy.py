@@ -1,4 +1,6 @@
 from datetime import date
+import json
+from pathlib import Path
 
 import pytest
 
@@ -28,3 +30,34 @@ def test_submission_needs_feature_flag_and_confirmation():
 def test_configuration_validation_rejects_contradictory_settings():
     data=svc().registry.to_dict(); data["platforms"][0]["actions"]["submit"]="official_api_write_with_confirmation"
     with pytest.raises(ValueError): PolicyRegistry.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        [],
+        {"version": "test", "platforms": ["not-an-object"]},
+        {
+            "version": "test",
+            "platforms": [{"platform_id": "broken", "actions": []}],
+        },
+        {
+            "version": "test",
+            "platforms": [
+                {"platform_id": "broken", "actions": {}, "limits": []}
+            ],
+        },
+    ],
+)
+def test_policy_yaml_rejects_malformed_shapes(tmp_path: Path, payload: object) -> None:
+    path = tmp_path / "policy.yaml"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError):
+        PolicyService.from_yaml(path)
+
+
+def test_unknown_action_string_is_denied_and_serialized() -> None:
+    decision = svc().decide("manual", "unknown_action", network=True)
+    assert not decision.allowed
+    assert decision.action == "unknown_action"
+    assert json.loads(decision.to_json())["action"] == "unknown_action"

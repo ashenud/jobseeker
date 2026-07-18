@@ -1,0 +1,172 @@
+Milestone: 00
+Audit date: 2026-07-18
+Command: docker version
+Exit code: 1
+Result: BLOCKED
+Output:
+The command 'docker' could not be found in this WSL 2 distro.
+We recommend to activate the WSL integration in Docker Desktop settings.
+
+No milestone acceptance gates were run. No success evidence was generated.
+
+Retry audit date: 2026-07-18
+Command: docker version
+Exit code: 1
+Result: BLOCKED
+Output:
+Client:
+ Version:           29.6.1
+ API version:       1.55
+ OS/Arch:           linux/amd64
+ Context:           default
+permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+
+Diagnostic context (secret-free):
+- Current user: uid=1000(kesh), primary gid=1000(kesh)
+- Current process does not have supplementary docker gid 1001
+- Docker socket observed as srw-rw---- nobody:nogroup
+- The docker group lists kesh as a member, indicating the current WSL/execution
+  session may need to be restarted before new group/session access takes effect.
+
+No milestone acceptance gates were run. No success evidence was generated.
+
+Root-cause audit date: 2026-07-18
+Commands:
+- /mnt/wsl/docker-desktop/cli-tools/usr/bin/docker version
+- DOCKER_HOST=unix:///mnt/wsl/docker-desktop-bind-mounts/Ubuntu-26.04/docker.sock
+  /mnt/wsl/docker-desktop/cli-tools/usr/bin/docker version
+Exit codes: 1, 1
+Result: BLOCKED
+Findings:
+- Docker Desktop's bundled Linux CLI exists and reports client version 29.6.1.
+- Docker Desktop's WSL bind socket exists at
+  /mnt/wsl/docker-desktop-bind-mounts/Ubuntu-26.04/docker.sock.
+- Both the default socket and explicit bind socket return permission denied.
+- The Windows Docker CLI also cannot create its WSL/vsock connection in this
+  execution context (`UtilBindVsockAnyPort: socket failed 1`).
+- This combination identifies the Codex execution sandbox's socket restriction,
+  not a repository configuration or Docker-group issue, as the active blocker.
+
+Required remediation: run Codex in a Docker-enabled execution profile/session
+that permits Docker Desktop Unix/vsock access, then verify `docker version`
+without sudo before resuming Milestone 00.
+
+No milestone acceptance gates were run. No success evidence was generated.
+
+Recovery retry date: 2026-07-18T17:02:35Z
+Command: docker version
+Exit code: 1
+Result: BLOCKED
+Output:
+Client:
+ Version:           29.6.1
+ API version:       1.55
+ Go version:        go1.26.4
+ Git commit:        8900f1d
+ Built:             Fri Jun 26 11:39:39 2026
+ OS/Arch:           linux/amd64
+ Context:           default
+permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+
+Required remediation remains unchanged: run Codex in a Docker-enabled execution
+profile/session that permits Docker Desktop Unix/vsock access, then verify
+`docker version` without sudo before resuming Milestone 00.
+
+No milestone acceptance gates were run. No success evidence was generated.
+
+Recovery retry date: 2026-07-18T17:14:13Z
+Command: docker version
+Exit code: 126
+Result: BLOCKED
+Output:
+/bin/bash: line 1: /usr/bin/docker: Input/output error
+
+Required remediation: restore a working Docker CLI/daemon boundary and run Codex
+in a Docker-enabled execution profile/session, then verify `docker version`
+without sudo before resuming Milestone 00.
+
+No milestone acceptance gates were run. No success evidence was generated.
+
+Recovery implementation retry date: 2026-07-18T20:02:09Z
+Result: BLOCKED
+
+Passed commands before the blocker:
+- docker compose --profile dev config --quiet
+- docker compose --profile dev build api
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py
+
+Failed command:
+- docker compose --profile dev run --rm --no-deps api ruff check .
+
+Exit code: 1
+Output:
+scripts/validate_docs.py:8:8: F401 [*] `sys` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+
+Per the repository stop-on-failure rule, no fix was applied and the remaining
+mypy, pytest, pre-commit, clean-checkout, evidence, and independent-review gates
+were not run. No milestone acceptance receipt was generated.
+
+Recovery type-check retry date: 2026-07-18T20:26:26Z
+Result: BLOCKED
+
+Passed commands before the blocker:
+- docker compose --profile dev config --quiet
+- docker compose --profile dev build api
+- docker image inspect jobseeker_m00_preflight-api --format {{.Id}}
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py
+- docker compose --profile dev run --rm --no-deps api ruff check .
+
+Failed command:
+- docker compose --profile dev run --rm --no-deps api mypy src
+
+Exit code: 1
+Output summary:
+- 15 errors in 4 files: `src/job_agent/core/states.py`,
+  `src/job_agent/policy/models.py`, `src/job_agent/policy/service.py`, and
+  `src/job_agent/cli.py`.
+
+Machine-captured details:
+- artifacts/verification/milestone-00-preflight/manifest.tsv
+- artifacts/verification/milestone-00-preflight/logs/08-mypy.log
+
+Per the stop-on-failure rule, pytest, pre-commit, clean-checkout, evidence, and
+independent-review gates were not run. No milestone acceptance receipt was generated.
+
+Recovery evidence-count retry date: 2026-07-18T20:35:59Z
+Result: BLOCKED
+
+The complete matrix passed Compose config, image build/digest, all validators,
+Ruff, and mypy. The required pytest command exited 0 and displayed 64 passing test
+dots, but `pyproject.toml` supplied `-q` through `addopts` while the required command
+also supplied `-q`. Effective `-qq` output omitted the numeric summary.
+
+Failed machine gate:
+- 09-pytest: docker compose --profile dev run --rm --no-deps api pytest -q
+- Underlying exit code: 0
+- Captured test_count: 0
+- Runner exit code: 96
+
+Machine-captured details:
+- artifacts/verification/milestone-00-preflight2/manifest.tsv
+- artifacts/verification/milestone-00-preflight2/logs/09-pytest.log
+
+Per the nonzero-test-count rule, the run is not acceptance evidence. Pre-commit,
+clean-checkout, receipt, and independent-review gates were not run.
+
+Implementation-index retry date: 2026-07-18T20:39:25Z
+Result: BLOCKED
+
+The complete preflight matrix passed through pre-commit with 64 tests. During
+implementation-commit preparation, transient raw preflight logs were staged.
+Docker progress lines in those machine logs contain trailing spaces, so:
+
+- git diff --cached --check
+
+exited 2. The diagnostic logs remain preserved locally, but they must not be part
+of the implementation source diff. No implementation commit was created.

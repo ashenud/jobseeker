@@ -1,10 +1,109 @@
 from enum import StrEnum
 
 
-class JobState(StrEnum): raw="raw"; normalized="normalized"; filtered="filtered"; scored="scored"; drafted="drafted"; reviewing="reviewing"; archived="archived"
-class ProposalState(StrEnum): draft="draft"; blocked="blocked"; in_review="in_review"; approved="approved"; packaged="packaged"; superseded="superseded"
-class ApplicationState(StrEnum): prepared="prepared"; submitted="submitted"; replied="replied"; interview="interview"; won="won"; lost="lost"; withdrawn="withdrawn"; no_response="no_response"; archived="archived"
-_TRANSITIONS={JobState:{JobState.raw:{JobState.normalized,JobState.archived},JobState.normalized:{JobState.filtered,JobState.scored,JobState.archived},JobState.filtered:{JobState.scored,JobState.archived},JobState.scored:{JobState.drafted,JobState.archived},JobState.drafted:{JobState.reviewing,JobState.archived},JobState.reviewing:{JobState.archived},JobState.archived:set()},ProposalState:{ProposalState.draft:{ProposalState.blocked,ProposalState.in_review,ProposalState.superseded},ProposalState.blocked:{ProposalState.draft,ProposalState.superseded},ProposalState.in_review:{ProposalState.approved,ProposalState.draft,ProposalState.superseded},ProposalState.approved:{ProposalState.packaged,ProposalState.superseded},ProposalState.packaged:{ProposalState.superseded},ProposalState.superseded:set()},ApplicationState:{ApplicationState.prepared:{ApplicationState.submitted,ApplicationState.withdrawn,ApplicationState.archived},ApplicationState.submitted:{ApplicationState.replied,ApplicationState.no_response,ApplicationState.won,ApplicationState.lost,ApplicationState.withdrawn},ApplicationState.replied:{ApplicationState.interview,ApplicationState.won,ApplicationState.lost,ApplicationState.withdrawn},ApplicationState.interview:{ApplicationState.won,ApplicationState.lost,ApplicationState.withdrawn},ApplicationState.no_response:{ApplicationState.replied,ApplicationState.archived},ApplicationState.won:{ApplicationState.archived},ApplicationState.lost:{ApplicationState.archived},ApplicationState.withdrawn:{ApplicationState.archived},ApplicationState.archived:set()}}
-def can_transition(current:StrEnum, target:StrEnum)->bool: return target in _TRANSITIONS[type(current)][current]
-def require_transition(current:StrEnum, target:StrEnum)->None:
-    if not can_transition(current,target): raise ValueError(f"Invalid transition {current}->{target}")
+class JobState(StrEnum):
+    raw = "raw"
+    normalized = "normalized"
+    filtered = "filtered"
+    scored = "scored"
+    drafted = "drafted"
+    reviewing = "reviewing"
+    archived = "archived"
+
+
+class ProposalState(StrEnum):
+    draft = "draft"
+    blocked = "blocked"
+    in_review = "in_review"
+    approved = "approved"
+    packaged = "packaged"
+    superseded = "superseded"
+
+
+class ApplicationState(StrEnum):
+    prepared = "prepared"
+    submitted = "submitted"
+    replied = "replied"
+    interview = "interview"
+    won = "won"
+    lost = "lost"
+    withdrawn = "withdrawn"
+    no_response = "no_response"
+    archived = "archived"
+
+
+_TRANSITIONS: dict[type[StrEnum], dict[StrEnum, set[StrEnum]]] = {
+    JobState: {
+        JobState.raw: {JobState.normalized, JobState.archived},
+        JobState.normalized: {JobState.filtered, JobState.scored, JobState.archived},
+        JobState.filtered: {JobState.scored, JobState.archived},
+        JobState.scored: {JobState.drafted, JobState.archived},
+        JobState.drafted: {JobState.reviewing, JobState.archived},
+        JobState.reviewing: {JobState.archived},
+        JobState.archived: set(),
+    },
+    ProposalState: {
+        ProposalState.draft: {
+            ProposalState.blocked,
+            ProposalState.in_review,
+            ProposalState.superseded,
+        },
+        ProposalState.blocked: {ProposalState.draft, ProposalState.superseded},
+        ProposalState.in_review: {
+            ProposalState.approved,
+            ProposalState.draft,
+            ProposalState.superseded,
+        },
+        ProposalState.approved: {ProposalState.packaged, ProposalState.superseded},
+        ProposalState.packaged: {ProposalState.superseded},
+        ProposalState.superseded: set(),
+    },
+    ApplicationState: {
+        ApplicationState.prepared: {
+            ApplicationState.submitted,
+            ApplicationState.withdrawn,
+            ApplicationState.archived,
+        },
+        ApplicationState.submitted: {
+            ApplicationState.replied,
+            ApplicationState.no_response,
+            ApplicationState.won,
+            ApplicationState.lost,
+            ApplicationState.withdrawn,
+        },
+        ApplicationState.replied: {
+            ApplicationState.interview,
+            ApplicationState.won,
+            ApplicationState.lost,
+            ApplicationState.withdrawn,
+        },
+        ApplicationState.interview: {
+            ApplicationState.won,
+            ApplicationState.lost,
+            ApplicationState.withdrawn,
+        },
+        ApplicationState.no_response: {
+            ApplicationState.replied,
+            ApplicationState.archived,
+        },
+        ApplicationState.won: {ApplicationState.archived},
+        ApplicationState.lost: {ApplicationState.archived},
+        ApplicationState.withdrawn: {ApplicationState.archived},
+        ApplicationState.archived: set(),
+    },
+}
+
+
+def can_transition(current: StrEnum, target: StrEnum) -> bool:
+    if type(current) is not type(target):
+        return False
+    transitions = _TRANSITIONS.get(type(current))
+    if transitions is None:
+        return False
+    targets = transitions.get(current)
+    return targets is not None and target in targets
+
+
+def require_transition(current: StrEnum, target: StrEnum) -> None:
+    if not can_transition(current, target):
+        raise ValueError(f"Invalid transition {current}->{target}")

@@ -5,12 +5,12 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 LINK = re.compile(r"\[[^]]*\]\(([^)]+)\)")
+M00_ACCEPTANCE = re.compile(r"\bM00-AC(\d{2})\b")
 
 
 def expected_files(folder: Path) -> tuple[dict[str, Path], list[str]]:
@@ -58,6 +58,16 @@ def main() -> int:
                 errors.append(f"{prompt.relative_to(ROOT)} does not invoke the repo skill")
             if f"artifacts/verification/milestone-{number}.json" not in text:
                 errors.append(f"{prompt.relative_to(ROOT)} has no milestone-specific receipt")
+
+    milestone_zero = milestone_files.get("00")
+    prompt_zero = prompt_files.get("00")
+    if milestone_zero:
+        ids = M00_ACCEPTANCE.findall(milestone_zero.read_text(encoding="utf-8"))
+        expected_ids = [f"{number:02d}" for number in range(1, 11)]
+        if sorted(set(ids)) != expected_ids or len(ids) != len(expected_ids):
+            errors.append("milestone 00 must define M00-AC01 through M00-AC10 exactly once")
+    if prompt_zero and M00_ACCEPTANCE.search(prompt_zero.read_text(encoding="utf-8")):
+        errors.append("Prompt 00 must remain execution-only; M00 acceptance belongs in the milestone")
 
     for number in range(23):
         duplicates = list(DOCS.glob(f"{number:02d}-*.md"))

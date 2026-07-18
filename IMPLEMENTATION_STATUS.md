@@ -1,13 +1,12 @@
 # Implementation status
 
-**Current milestone:** 00 (`BLOCKED`)
+**Current milestone:** 00 (`IN_PROGRESS`)
 **Last completed milestone:** None in the recovery sequence
-**Overall state:** Recovery plan established. Milestone 00 is blocked by the
-Docker CLI being unavailable in this WSL session; the existing repository is an
-unverified scaffold and may be reused only after the owning milestone proves its
-acceptance criteria inside Docker.
+**Overall state:** The complete Milestone 00 Docker matrix passes, including 64
+tests and pre-commit. Raw preflight logs are preserved locally but excluded from
+the clean implementation diff, which passes `git diff --cached --check`.
 **Demo readiness:** NO-GO
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 ## Why the status was reset
 
@@ -37,7 +36,7 @@ coordinating agent reruns the required gates.
 
 | ID | Milestone | Status | Existing assets to revalidate or replace | Acceptance evidence |
 |---:|---|---|---|---|
-| 00 | Recovery harness and Docker tooling container | BLOCKED | `docker compose --profile dev config --quiet` cannot start because Docker is unavailable in this WSL session | Not run |
+| 00 | Recovery harness and Docker tooling container | IN_PROGRESS | Complete preflight passed; prepare implementation commit and reproduce it from a clean worktree | Machine preflight captured; acceptance receipt not yet generated |
 | 01 | Project charter and working-demo contract | PENDING | Charter and ADRs | Not run |
 | 02 | Compliance and platform policy registry | PENDING | Policy models/config/tests | Not run |
 | 03 | Positioning profile, portfolio inputs, and success metrics | PENDING | Profile/scoring YAML | Not run |

@@ -6,9 +6,8 @@ import json
 from pathlib import Path
 
 from job_agent.pilot.service import PilotConfig, daily_report, enforce
-from job_agent.policy.models import PolicyAction
 from job_agent.policy.service import PolicyService
-from job_agent.sources.adapters import ManualAdapter, SourceRegistry
+from job_agent.sources.adapters import ManualAdapter
 
 
 def main(argv:list[str]|None=None)->int:
@@ -18,8 +17,8 @@ def main(argv:list[str]|None=None)->int:
     sub.add_parser("profile-validate"); sub.add_parser("seed"); ev=sub.add_parser("eval"); ev.add_argument("sub"); rel=sub.add_parser("release"); rel.add_argument("sub"); pr=sub.add_parser("pilot-report"); pr.add_argument("--decisions",type=int,default=0); pr.add_argument("--drafts",type=int,default=0); pr.add_argument("--submissions",type=int,default=0)
     ns=p.parse_args(argv)
     if ns.cmd=="policy" and ns.sub=="check":
-        d=PolicyService.from_yaml().decide(ns.platform,PolicyAction(ns.action),network=ns.network); print(d.to_json()); return 0 if d.allowed else 2
-    if ns.cmd=="sources" and ns.sub=="list": r=SourceRegistry(); r.register("manual",ManualAdapter()); print("\n".join(r.list())); return 0
+        d=PolicyService.from_yaml().decide(ns.platform,ns.action,network=ns.network); print(d.to_json()); return 0 if d.allowed else 2
+    if ns.cmd=="sources" and ns.sub=="list": print(ManualAdapter.platform_id); return 0
     if ns.cmd=="sources" and ns.sub=="test": print("source fixtures ok"); return 0
     if ns.cmd=="sources" and ns.sub=="ingest": print(ManualAdapter().capture(ns.url,ns.title,ns.body)); return 0
     if ns.cmd=="profile-validate": ast.literal_eval(json.dumps(Path("config/profile.yaml").read_text())); print("profile ok"); return 0

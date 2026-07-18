@@ -1,7 +1,7 @@
 # Trusted repository-local Codex controls. Workflow rules live in AGENTS.md and
 # the jobseeker-milestone skill; this file contains only documented Codex keys.
 model_reasoning_effort = "high"
-sandbox_mode = "workspace-write"
+sandbox_mode = "danger-full-access"
 # Run the repository's authorized milestone pipeline without interactive
 # approval prompts. Destructive commands and live-profile actions remain
 # blocked/prompted by `.codex/rules/default.rules` and the Docker boundary

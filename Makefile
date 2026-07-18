@@ -1,26 +1,30 @@
-.PHONY: bootstrap check test lint type up down migrate seed db-reset test-integration eval release-check
+.PHONY: bootstrap check test lint type pre-commit up down migrate seed db-reset test-integration eval release-check
 bootstrap:
-	python -m pip install -e .[dev]
+	docker compose --profile dev build api
 check: lint type test
 lint:
-	ruff check .
+	docker compose --profile dev run --rm --no-deps api ruff check .
 type:
-	mypy src
+	docker compose --profile dev run --rm --no-deps api mypy src
 test:
-	pytest
+	docker compose --profile dev run --rm --no-deps api pytest -q
+pre-commit:
+	docker compose --profile dev run --rm --no-deps api pre-commit run --all-files
 up:
-	docker compose --profile core --profile workers up -d --build
+	docker compose --profile dev up -d --build
 down:
-	docker compose --profile core --profile workers down
+	docker compose --profile dev down
 migrate:
-	alembic upgrade head
+	docker compose --profile dev run --rm api alembic upgrade head
 seed:
-	job-agent seed
+	docker compose --profile dev run --rm api job-agent seed
 db-reset:
-	@echo "Use docker compose down -v && docker compose up before migrate in local dev"
+	docker compose --profile dev down -v
+	docker compose --profile dev up -d --build
+	docker compose --profile dev run --rm api alembic upgrade head
 test-integration:
-	pytest tests -q
+	docker compose --profile dev run --rm api pytest tests -q
 eval:
-	job-agent eval run
+	docker compose --profile dev run --rm api job-agent eval run
 release-check:
-	job-agent release check
+	docker compose --profile dev run --rm api job-agent release check

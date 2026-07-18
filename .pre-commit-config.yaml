@@ -1,4 +1,28 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.0
-    hooks: [{id: ruff}]
+  - repo: local
+    hooks:
+      - id: validate-docs
+        name: validate canonical documentation
+        entry: python scripts/validate_docs.py
+        language: system
+        pass_filenames: false
+      - id: validate-codex-controls
+        name: validate repository Codex controls
+        entry: python scripts/validate_codex_controls.py
+        language: system
+        pass_filenames: false
+      - id: ruff
+        name: ruff
+        entry: ruff check .
+        language: system
+        pass_filenames: false
+      - id: mypy
+        name: mypy
+        entry: mypy src
+        language: system
+        pass_filenames: false
+      - id: pytest
+        name: pytest
+        entry: pytest -q
+        language: system
+        pass_filenames: false

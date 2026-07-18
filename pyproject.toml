@@ -9,7 +9,7 @@ dependencies = [
   "httpx>=0.27", "bleach>=6.1", "python-dateutil>=2.9"
 ]
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5", "mypy>=1.10"]
+dev = ["pytest>=8", "ruff>=0.5", "mypy>=1.10", "pre-commit>=3.7"]
 [project.scripts]
 job-agent = "job_agent.cli:main"
 [tool.ruff]
@@ -22,11 +22,9 @@ python_version = "3.12"
 strict = false
 mypy_path = "src"
 packages = ["job_agent"]
-ignore_errors = true
 [[tool.mypy.overrides]]
 module = ["yaml", "bleach"]
 ignore_missing_imports = true
 [tool.pytest.ini_options]
-addopts = "-q"
 testpaths = ["tests"]
 markers = ["live: opt-in live external tests"]

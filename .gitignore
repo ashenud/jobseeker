@@ -10,3 +10,4 @@ data/private/*
 !data/private/proposal_style_anchors/README.md
 backups/
 *.db
+artifacts/verification/milestone-*-preflight*/

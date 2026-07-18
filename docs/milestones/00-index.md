@@ -67,6 +67,55 @@ the current numbered milestone.
 | 20 | Clean checkout starts and restores from an encrypted backup |
 | 22 | Complete working application demo is reproducible |
 
+## Milestone 00 acceptance criteria
+
+These IDs are stable evidence keys. The matching prompt remains an execution
+entrypoint; acceptance definitions live here and must be recorded under the same
+keys in `artifacts/verification/milestone-00.json`.
+
+- **M00-AC01:** `scripts/validate_docs.py` proves there is exactly one canonical
+  milestone and prompt for each ID 00-22, no legacy root duplicates, and no broken
+  repository-local documentation links.
+- **M00-AC02:** `scripts/validate_codex_controls.py` structurally proves the
+  repository skill, all five named agent roles, both hooks, bounded Codex config,
+  destructive/live rules, and their required read/write boundaries exist.
+- **M00-AC03:** `docker compose --profile dev config --quiet` and the API image
+  build succeed in a clean checkout without `.env`; when present, `.env` remains
+  an optional runtime environment override for application services.
+- **M00-AC04:** The built API tooling image provides the documentation, milestone,
+  and Codex validators plus Ruff, mypy, pytest, and pre-commit without installing
+  Python dependencies on the host.
+- **M00-AC05:** Every Makefile recipe and `scripts/bootstrap.sh`,
+  `scripts/check.sh`, and `scripts/dev.sh` orchestrates application work only
+  through Docker Compose.
+- **M00-AC06:** Docker-boundary negative tests reject direct host toolchains,
+  environment/command/shell indirection, unapproved shell wrappers, command
+  substitution, direct `docker run`/`exec`/`build`, and unknown Make targets while
+  allowing Git, file inspection, approved Compose commands, and harmless text.
+- **M00-AC07:** Receipt validation rejects missing or incomplete evidence and
+  requires the milestone, full tested commit, UTC timestamp, sha256 image digest,
+  PASS result, real command results, nonzero pytest count, acceptance references,
+  independent GO, clean-checkout PASS, passing placeholder scan, and a known
+  limitations list.
+- **M00-AC08:** The completion hook rejects any `DONE` milestone whose receipt is
+  absent or fails the same complete receipt validation used by the Docker gate.
+- **M00-AC09:** Every Prompt 00 required verification command passes through
+  Docker Compose, and the pytest result reports a nonzero test count.
+- **M00-AC10:** The tested implementation commit reproduces from a clean checkout,
+  a separate evidence analyst validates every M00 acceptance mapping, and an
+  independent policy/release reviewer returns `GO` with no unresolved high or
+  critical finding.
+
+The receipt schema uses `tested_commit`, `timestamp_utc`, `image_digest`, and a
+nonempty `commands` list. Each command records `command`, zero `exit_code`,
+nonnegative `duration_seconds`, and nonempty `log_refs`; pytest commands also
+record a positive integer `test_count`. Each acceptance object records `result:
+PASS` and nonempty `references`. `review`, `clean_checkout`, and `placeholders`
+are structured objects with their verdict/result and references;
+`review.unresolved_high_critical` and `placeholders.matches` are empty lists.
+`known_limitations` is always present as a list, including when no limitation is
+known.
+
 ## Milestone execution protocol
 
 1. Select only the `READY` milestone from `IMPLEMENTATION_STATUS.md` and set it
