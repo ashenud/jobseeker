@@ -98,11 +98,29 @@ notes: "No confirmed public Jobs API; use user-provided content."
 
 ## Acceptance criteria
 
-- [ ] Policy is machine-readable and schema-validated.
-- [ ] Every future connector must call the policy service.
-- [ ] Unknown, expired, and prohibited actions fail closed.
-- [ ] Submission requires separate permission, feature flag, and confirmation.
-- [ ] Platform terms and review dates are documented.
+- **M02-AC01:** The canonical and example registries use the same versioned,
+  machine-readable schema. Validation rejects unknown fields, duplicate platform
+  IDs, incomplete action maps, invalid review dates or limits, and contradictory
+  action/mode settings.
+- **M02-AC02:** Unknown platforms/actions, disabled modes, stale reviews,
+  `manual_only` network attempts, and attempts to reuse read permission for writes
+  fail closed before any mocked HTTP or connector call.
+- **M02-AC03:** A synthetic write permission still requires owner approval, the
+  action-specific runtime feature flag, and a short-lived single-use token bound
+  to platform, action, destination, and payload checksum. Missing, mismatched,
+  expired, or replayed tokens fail.
+- **M02-AC04:** The canonical registry enables neither live network reads nor
+  marketplace writes. Candidate read sources record current authoritative
+  references, limits, retention, and review dates but remain disabled until the
+  owner approval and Milestone 08 live-integration gates pass.
+- **M02-AC05:** `job-agent policy check <platform> <action>` returns structured
+  JSON and a meaningful exit status, and policy decisions emit secret-free audit
+  records containing the decision ID, UTC timestamp, policy version, action,
+  result, reason, and review date.
+
+Each acceptance entry in `artifacts/verification/milestone-02.json` must use the
+same stable ID and reference real Docker logs, tests, documentation, and review
+artifacts.
 
 ## Unspoken risk
 

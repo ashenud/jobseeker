@@ -1,63 +1,321 @@
-from datetime import date
+from __future__ import annotations
+
+from datetime import UTC, date, datetime, timedelta
 import json
 from pathlib import Path
+from typing import Any
 
+from pydantic import ValidationError
 import pytest
 
-from job_agent.policy.exceptions import PolicyDeniedError
+from job_agent.policy.exceptions import PolicyConfigurationError, PolicyDeniedError
 from job_agent.policy.models import PolicyAction, PolicyRegistry
 from job_agent.policy.service import ConfirmationTokenService, PolicyService, RuntimeFlags
+from job_agent.sources.adapters import FixtureFeedAdapter
 from job_agent.submission.service import FakeWriteConnector, build_package
 
 
-def svc(**kw): return PolicyService.from_yaml(today=date(2026,7,18), **kw)
-def test_unknown_platform_and_action_denied():
-    assert not svc().decide("missing", "discover").allowed
-    assert not svc().decide("remote_ok", "submit", network=True).allowed
-def test_manual_only_prevents_network_before_connector_call():
-    with pytest.raises(PolicyDeniedError): svc().require("behance", PolicyAction.discover, network=True)
-def test_expired_review_denies_network():
-    assert not PolicyService.from_yaml(today=date(2027,1,1)).decide("remote_ok","discover",network=True).allowed
-def test_submission_needs_feature_flag_and_confirmation():
-    tokens=ConfirmationTokenService(); flags=RuntimeFlags(api_write_enabled=True); service=svc(flags=flags,tokens=tokens)
-    data=service.registry.to_dict(); data["platforms"][0]["owner_approved"]=True; data["platforms"][0]["actions"]["submit"]="official_api_write_with_confirmation"
-    service=PolicyService(PolicyRegistry.from_dict(data),today=date(2026,7,18),flags=flags,tokens=tokens)
-    package=build_package("behance","https://example.test/job","hello")
-    with pytest.raises(PolicyDeniedError): FakeWriteConnector(service).submit(package,None)
-    token=tokens.issue("behance",PolicyAction.submit,package.destination_url,package.checksum)
-    assert FakeWriteConnector(service).submit(package,token)=="dry-run-receipt"
-    with pytest.raises(PolicyDeniedError): FakeWriteConnector(service).submit(package,token)
-def test_configuration_validation_rejects_contradictory_settings():
-    data=svc().registry.to_dict(); data["platforms"][0]["actions"]["submit"]="official_api_write_with_confirmation"
-    with pytest.raises(ValueError): PolicyRegistry.from_dict(data)
+ALL_ACTIONS = {action.value: "disabled" for action in PolicyAction}
+
+
+def registry_data(
+    *,
+    actions: dict[str, str] | None = None,
+    owner_approved: bool = False,
+    requests_per_minute: int = 0,
+) -> dict[str, Any]:
+    return {
+        "version": "test-1",
+        "platforms": [
+            {
+                "platform_id": "synthetic",
+                "display_name": "Synthetic",
+                "reviewed_at": "2026-07-01",
+                "review_due_at": "2026-10-01",
+                "terms_url": "https://example.test/terms",
+                "help_or_api_url": "https://example.test/api",
+                "owner_approved": owner_approved,
+                "actions": {**ALL_ACTIONS, **(actions or {})},
+                "limits": {
+                    "requests_per_minute": requests_per_minute,
+                    "retention_days": 30,
+                },
+                "notes": "Synthetic registry for deterministic tests.",
+            }
+        ],
+    }
+
+
+def service(data: dict[str, Any] | None = None, **kwargs: Any) -> PolicyService:
+    return PolicyService(
+        PolicyRegistry.model_validate(data or registry_data()),
+        today=date(2026, 7, 19),
+        **kwargs,
+    )
 
 
 @pytest.mark.parametrize(
-    "payload",
-    [
-        [],
-        {"version": "test", "platforms": ["not-an-object"]},
-        {
-            "version": "test",
-            "platforms": [{"platform_id": "broken", "actions": []}],
-        },
-        {
-            "version": "test",
-            "platforms": [
-                {"platform_id": "broken", "actions": {}, "limits": []}
-            ],
-        },
-    ],
+    "path", ["config/platform_policy.yaml", "config/platform_policy.example.yaml"]
 )
-def test_policy_yaml_rejects_malformed_shapes(tmp_path: Path, payload: object) -> None:
+def test_canonical_and_example_registries_are_strictly_valid(path: str) -> None:
+    loaded = PolicyService.from_yaml(path, today=date(2026, 7, 19))
+    assert loaded.registry.version
+    assert all(set(platform.actions) == set(PolicyAction) for platform in loaded.registry.platforms)
+
+
+def test_canonical_registry_grants_no_live_or_automated_write_authority() -> None:
+    registry = PolicyService.from_yaml(today=date(2026, 7, 19)).registry
+    forbidden = {
+        "public_feed",
+        "official_api_read",
+        "official_api_write_with_confirmation",
+        "internal_test_fixture",
+    }
+    assert not {
+        mode.value
+        for platform in registry.platforms
+        for mode in platform.actions.values()
+    } & forbidden
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        lambda data: data.update(extra="forbidden"),
+        lambda data: data["platforms"][0].update(extra="forbidden"),
+        lambda data: data["platforms"][0]["limits"].update(extra=1),
+        lambda data: data["platforms"][0]["actions"].pop("notify"),
+        lambda data: data["platforms"][0]["limits"].update(requests_per_minute=-1),
+        lambda data: data["platforms"][0]["limits"].update(retention_days=0),
+        lambda data: data["platforms"][0].update(review_due_at="2026-06-01"),
+    ),
+)
+def test_schema_rejects_extra_missing_date_and_limit_errors(mutation: Any) -> None:
+    data = registry_data()
+    mutation(data)
+    with pytest.raises(ValidationError):
+        PolicyRegistry.model_validate(data)
+
+
+def test_schema_rejects_duplicate_platform_ids() -> None:
+    data = registry_data()
+    data["platforms"].append(dict(data["platforms"][0]))
+    with pytest.raises(ValidationError, match="duplicate platform_id"):
+        PolicyRegistry.model_validate(data)
+
+
+@pytest.mark.parametrize(
+    "data",
+    (
+        registry_data(actions={"discover": "public_feed"}, requests_per_minute=2),
+        registry_data(
+            actions={"submit": "official_api_write_with_confirmation"},
+            requests_per_minute=2,
+        ),
+        registry_data(
+            actions={"submit": "official_api_read"},
+            owner_approved=True,
+            requests_per_minute=2,
+        ),
+        registry_data(
+            actions={"discover": "official_api_write_with_confirmation"},
+            owner_approved=True,
+            requests_per_minute=2,
+        ),
+        registry_data(
+            actions={"store": "public_feed"},
+            owner_approved=True,
+            requests_per_minute=2,
+        ),
+        registry_data(actions={"submit": "internal_test_fixture"}),
+    ),
+)
+def test_schema_rejects_authority_contradictions(data: dict[str, Any]) -> None:
+    with pytest.raises(ValidationError):
+        PolicyRegistry.model_validate(data)
+
+
+def test_yaml_loader_rejects_duplicate_keys(tmp_path: Path) -> None:
     path = tmp_path / "policy.yaml"
-    path.write_text(json.dumps(payload), encoding="utf-8")
-    with pytest.raises(ValueError):
+    path.write_text("version: one\nversion: two\nplatforms: []\n", encoding="utf-8")
+    with pytest.raises(PolicyConfigurationError, match="duplicate policy mapping key"):
         PolicyService.from_yaml(path)
 
 
-def test_unknown_action_string_is_denied_and_serialized() -> None:
-    decision = svc().decide("manual", "unknown_action", network=True)
-    assert not decision.allowed
-    assert decision.action == "unknown_action"
-    assert json.loads(decision.to_json())["action"] == "unknown_action"
+def test_unknown_expired_disabled_and_manual_network_fail_closed() -> None:
+    manual = service(registry_data(actions={"discover": "manual_only"}))
+    assert manual.decide("missing", "discover", network=True).reason_code == "unknown_platform"
+    assert manual.decide("synthetic", "missing", network=True).reason_code == "unknown_action"
+    assert manual.decide("synthetic", "submit", network=True).reason_code == "disabled"
+    assert (
+        manual.decide("synthetic", "discover", network=True).reason_code
+        == "manual_network_denied"
+    )
+    expired = PolicyService(manual.registry, today=date(2027, 1, 1))
+    assert expired.decide("synthetic", "discover", network=True).reason_code == "policy_expired"
+
+
+def test_denial_occurs_before_connector_io_and_synthetic_read_can_run() -> None:
+    calls = 0
+
+    def connector(policy: PolicyService) -> None:
+        nonlocal calls
+        policy.require("synthetic", "discover", network=True)
+        calls += 1
+
+    with pytest.raises(PolicyDeniedError):
+        connector(service(registry_data(actions={"discover": "manual_only"})))
+    assert calls == 0
+
+    allowed = registry_data(
+        actions={"discover": "public_feed"},
+        owner_approved=True,
+        requests_per_minute=2,
+    )
+    connector(service(allowed))
+    assert calls == 1
+
+
+def test_existing_connector_seams_remain_uncalled_after_policy_denial() -> None:
+    denied_policy = service(registry_data(actions={"discover": "manual_only"}))
+    source = FixtureFeedAdapter(
+        "synthetic",
+        denied_policy,
+        [{"id": "1", "url": "https://example.test/1", "title": "t", "body": "b"}],
+    )
+    with pytest.raises(PolicyDeniedError):
+        source.fetch()
+    assert source.network_called is False
+
+    package = build_package("synthetic", "https://example.test/1", "proposal")
+    writer = FakeWriteConnector(denied_policy)
+    with pytest.raises(PolicyDeniedError):
+        writer.submit(package, None)
+    assert writer.sent == []
+
+
+class MutableClock:
+    def __init__(self) -> None:
+        self.now = datetime(2026, 7, 19, 12, 0, tzinfo=UTC)
+
+    def __call__(self) -> datetime:
+        return self.now
+
+
+def test_confirmation_is_bound_single_use_and_expires() -> None:
+    clock = MutableClock()
+    tokens = ConfirmationTokenService(clock=clock)
+    flags = RuntimeFlags(api_write_enabled=True, confirmation_ttl_seconds=30)
+    data = registry_data(
+        actions={"submit": "official_api_write_with_confirmation"},
+        owner_approved=True,
+        requests_per_minute=2,
+    )
+    policy = service(data, flags=flags, tokens=tokens, clock=clock)
+    token = tokens.issue(
+        "synthetic",
+        PolicyAction.submit,
+        "https://example.test/jobs/1",
+        "checksum-1",
+        flags.confirmation_ttl_seconds,
+        action_id="action-1",
+    )
+    denied = policy.decide(
+        "synthetic",
+        "submit",
+        network=True,
+        confirmation_token=token,
+        destination="https://example.test/jobs/2",
+        checksum="checksum-1",
+        action_id="action-1",
+    )
+    assert denied.reason_code == "confirmation_invalid"
+    allowed = policy.require(
+        "synthetic",
+        "submit",
+        network=True,
+        confirmation_token=token,
+        destination="https://example.test/jobs/1",
+        checksum="checksum-1",
+        action_id="action-1",
+    )
+    assert allowed.allowed
+    assert (
+        policy.decide(
+            "synthetic",
+            "submit",
+            network=True,
+            confirmation_token=token,
+            destination="https://example.test/jobs/1",
+            checksum="checksum-1",
+            action_id="action-1",
+        ).reason_code
+        == "confirmation_invalid"
+    )
+
+    expiring = tokens.issue(
+        "synthetic",
+        PolicyAction.submit,
+        "https://example.test/jobs/1",
+        "checksum-2",
+        5,
+        action_id="action-2",
+    )
+    clock.now += timedelta(seconds=5)
+    assert not tokens.consume(
+        expiring,
+        "synthetic",
+        PolicyAction.submit,
+        "https://example.test/jobs/1",
+        "checksum-2",
+        action_id="action-2",
+    )
+
+
+def test_confirmation_ttl_is_strictly_bounded() -> None:
+    tokens = ConfirmationTokenService()
+    with pytest.raises(ValueError, match="TTL"):
+        tokens.issue(
+            "synthetic",
+            PolicyAction.submit,
+            "https://example.test/jobs/1",
+            "checksum",
+            301,
+        )
+    with pytest.raises(ValueError, match="between 1 and 300"):
+        RuntimeFlags(confirmation_ttl_seconds=301)
+
+
+def test_read_authority_cannot_be_reused_for_write() -> None:
+    read_only = service(
+        registry_data(
+            actions={"discover": "official_api_read"},
+            owner_approved=True,
+            requests_per_minute=2,
+        ),
+        flags=RuntimeFlags(api_write_enabled=True),
+    )
+    assert read_only.decide("synthetic", "discover", network=True).allowed
+    assert not read_only.decide("synthetic", "submit", network=True).allowed
+
+
+def test_audit_events_are_structured_and_secret_free() -> None:
+    policy = service(registry_data(actions={"discover": "manual_only"}))
+    secret = "never-log-this-token"
+    decision = policy.decide(
+        "synthetic",
+        "discover",
+        network=True,
+        confirmation_token=secret,
+        destination="https://private.example/secret",
+        checksum="private-checksum",
+        action_id="audit-1",
+    )
+    event = policy.audit_events[-1]
+    payload = event.to_json()
+    assert decision.reason_code == "manual_network_denied"
+    assert json.loads(payload)["action_id"] == "audit-1"
+    assert json.loads(payload)["policy_version"] == "test-1"
+    assert secret not in payload
+    assert "private.example" not in payload
+    assert "private-checksum" not in payload

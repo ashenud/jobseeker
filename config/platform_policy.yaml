@@ -1,130 +1,115 @@
-{
-  "version": "2026-07-18.1",
-  "platforms": [
-    {
-      "platform_id": "behance",
-      "display_name": "Behance",
-      "reviewed_at": "2026-07-18",
-      "review_due_at": "2026-10-18",
-      "terms_url": "https://www.behance.net/misc/terms",
-      "help_or_api_url": "https://www.behance.net/",
-      "owner_approved": false,
-      "actions": {
-        "discover": "manual_only",
-        "read_detail": "manual_only",
-        "store": "manual_only",
-        "notify": "manual_only",
-        "draft": "manual_only",
-        "open_link": "manual_only",
-        "submit": "manual_only",
-        "message": "manual_only",
-        "follow_up": "manual_only"
-      },
-      "limits": {
-        "requests_per_minute": 0,
-        "retention_days": 30
-      },
-      "notes": "No confirmed public Jobs API; use user-provided content."
-    },
-    {
-      "platform_id": "upwork",
-      "display_name": "Upwork",
-      "reviewed_at": "2026-07-18",
-      "review_due_at": "2026-10-18",
-      "terms_url": "https://www.upwork.com/legal",
-      "help_or_api_url": "https://www.upwork.com/developer",
-      "owner_approved": false,
-      "actions": {
-        "discover": "manual_only",
-        "read_detail": "manual_only",
-        "store": "manual_only",
-        "notify": "manual_only",
-        "draft": "manual_only",
-        "open_link": "manual_only",
-        "submit": "manual_only",
-        "message": "manual_only",
-        "follow_up": "manual_only"
-      },
-      "limits": {
-        "requests_per_minute": 0,
-        "retention_days": 30
-      },
-      "notes": "Manual import unless approved official API credentials and scope are configured."
-    },
-    {
-      "platform_id": "remote_ok",
-      "display_name": "Remote OK",
-      "reviewed_at": "2026-07-18",
-      "review_due_at": "2026-10-18",
-      "terms_url": "https://remoteok.com/",
-      "help_or_api_url": "https://remoteok.com/api",
-      "owner_approved": true,
-      "actions": {
-        "discover": "public_feed",
-        "read_detail": "public_feed",
-        "store": "public_feed",
-        "notify": "manual_only",
-        "draft": "manual_only",
-        "open_link": "manual_only",
-        "submit": "manual_only",
-        "message": "disabled",
-        "follow_up": "manual_only"
-      },
-      "limits": {
-        "requests_per_minute": 2,
-        "retention_days": 30
-      },
-      "notes": "Conservative public feed fixture adapter; live calls opt-in only."
-    },
-    {
-      "platform_id": "jobicy",
-      "display_name": "Jobicy",
-      "reviewed_at": "2026-07-18",
-      "review_due_at": "2026-10-18",
-      "terms_url": "https://jobicy.com/",
-      "help_or_api_url": "https://jobicy.com/api",
-      "owner_approved": true,
-      "actions": {
-        "discover": "public_feed",
-        "read_detail": "public_feed",
-        "store": "public_feed",
-        "notify": "manual_only",
-        "draft": "manual_only",
-        "open_link": "manual_only",
-        "submit": "manual_only",
-        "message": "disabled",
-        "follow_up": "manual_only"
-      },
-      "limits": {
-        "requests_per_minute": 2,
-        "retention_days": 30
-      },
-      "notes": "Conservative public feed fixture adapter; live calls opt-in only."
-    },
-    {
-      "platform_id": "manual",
-      "display_name": "Email/manual paste",
-      "reviewed_at": "2026-07-18",
-      "review_due_at": "2026-10-18",
-      "terms_url": "https://localhost/manual",
-      "help_or_api_url": "https://localhost/manual",
-      "owner_approved": true,
-      "actions": {
-        "discover": "manual_only",
-        "read_detail": "manual_only",
-        "store": "manual_only",
-        "notify": "manual_only",
-        "draft": "manual_only",
-        "open_link": "manual_only",
-        "submit": "manual_only",
-        "message": "manual_only",
-        "follow_up": "manual_only"
-      },
-      "limits": {
-        "requests_per_minute": 0,
-        "retention_days": 90
-      },
-      "notes": "User-authorized pasted/imported content."
-    }
-  ]
-}
+version: "2026-07-19.1"
+platforms:
+  - platform_id: behance
+    display_name: Behance
+    reviewed_at: "2026-07-19"
+    review_due_at: "2026-10-19"
+    terms_url: "https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Behance-Additional-Terms-en_US-20221001.pdf"
+    help_or_api_url: "https://help.behance.net/hc/en-us/articles/360034476413-Guide-Applying-For-Jobs-On-Behance"
+    owner_approved: false
+    actions: &manual_marketplace_actions
+      discover: manual_only
+      read_detail: manual_only
+      store: manual_only
+      notify: disabled
+      draft: manual_only
+      open_link: manual_only
+      submit: manual_only
+      message: disabled
+      follow_up: disabled
+    limits:
+      requests_per_minute: 0
+      retention_days: 30
+    notes: "Owner-provided capture only; the owner applies in the platform UI."
+
+  - platform_id: upwork
+    display_name: Upwork
+    reviewed_at: "2026-07-19"
+    review_due_at: "2026-10-19"
+    terms_url: "https://www.upwork.com/legal"
+    help_or_api_url: "https://www.upwork.com/developer"
+    owner_approved: false
+    actions: *manual_marketplace_actions
+    limits:
+      requests_per_minute: 0
+      retention_days: 30
+    notes: "No scraping or API use; credentials, scopes, and owner approval are absent."
+
+  - platform_id: freelancer
+    display_name: Freelancer.com
+    reviewed_at: "2026-07-19"
+    review_due_at: "2026-10-19"
+    terms_url: "https://www.freelancer.com/about/apiterms"
+    help_or_api_url: "https://developers.freelancer.com/"
+    owner_approved: false
+    actions:
+      discover: disabled
+      read_detail: disabled
+      store: manual_only
+      notify: disabled
+      draft: manual_only
+      open_link: manual_only
+      submit: disabled
+      message: disabled
+      follow_up: disabled
+    limits:
+      requests_per_minute: 0
+      retention_days: 30
+    notes: "Official API candidate remains disabled; no credential or approval is recorded."
+
+  - platform_id: remote_ok
+    display_name: Remote OK
+    reviewed_at: "2026-07-19"
+    review_due_at: "2026-10-19"
+    terms_url: "https://remoteok.com/legal"
+    help_or_api_url: "https://remoteok.com/api"
+    owner_approved: false
+    actions: &disabled_read_manual_package_actions
+      discover: disabled
+      read_detail: disabled
+      store: manual_only
+      notify: disabled
+      draft: manual_only
+      open_link: manual_only
+      submit: manual_only
+      message: disabled
+      follow_up: disabled
+    limits:
+      requests_per_minute: 0
+      retention_days: 30
+    notes: "Candidate feed is disabled pending owner approval and M08 attribution/live-read gates."
+
+  - platform_id: jobicy
+    display_name: Jobicy
+    reviewed_at: "2026-07-19"
+    review_due_at: "2026-10-19"
+    terms_url: "https://jobicy.com/jobs-rss-feed"
+    help_or_api_url: "https://jobicy.com/jobs-rss-feed"
+    owner_approved: false
+    actions: *disabled_read_manual_package_actions
+    limits:
+      requests_per_minute: 0
+      retention_days: 30
+    notes: "Candidate feed is disabled pending owner approval and an M08 hourly rate limit."
+
+  - platform_id: manual
+    display_name: Email/manual paste
+    reviewed_at: "2026-07-19"
+    review_due_at: "2026-10-19"
+    terms_url: "https://localhost/manual-input"
+    help_or_api_url: "https://localhost/manual-input"
+    owner_approved: false
+    actions:
+      discover: manual_only
+      read_detail: manual_only
+      store: manual_only
+      notify: manual_only
+      draft: manual_only
+      open_link: manual_only
+      submit: manual_only
+      message: manual_only
+      follow_up: manual_only
+    limits:
+      requests_per_minute: 0
+      retention_days: 90
+    notes: "Record-specific user-authorized input; no automated retrieval or transmission."

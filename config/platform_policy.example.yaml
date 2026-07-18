@@ -1,62 +1,23 @@
-schema_version: "1.0"
+version: "example-disabled-v1"
 platforms:
-  behance:
-    reviewed_at: "2026-07-18"
-    review_due_at: "2026-10-18"
-    terms_url: "https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Behance-Additional-Terms-en_US-20221001.pdf"
-    actions:
-      discover: manual_only
-      read_detail: manual_only
-      store: manual_only
-      draft: manual_only
-      open_link: manual_only
-      submit: manual_only
-  upwork:
-    reviewed_at: "2026-07-18"
-    review_due_at: "2026-10-18"
-    terms_url: "https://www.upwork.com/legal"
-    actions:
-      discover: manual_only
-      read_detail: manual_only
-      store: manual_only
-      draft: manual_only
-      submit: manual_only
-  freelancer:
-    reviewed_at: "2026-07-18"
-    review_due_at: "2026-10-18"
-    terms_url: "https://www.freelancer.com/about/apiterms"
+  - platform_id: example_source
+    display_name: Disabled example source
+    reviewed_at: "2026-07-19"
+    review_due_at: "2026-10-19"
+    terms_url: "https://example.invalid/terms"
+    help_or_api_url: "https://example.invalid/help"
+    owner_approved: false
     actions:
       discover: disabled
       read_detail: disabled
       store: disabled
-      draft: manual_only
+      notify: disabled
+      draft: disabled
+      open_link: disabled
       submit: disabled
-  remoteok:
-    reviewed_at: "2026-07-18"
-    review_due_at: "2026-10-18"
-    terms_url: "VERIFY_CURRENT_FEED_TERMS"
-    actions:
-      discover: disabled
-      store: disabled
-      draft: manual_only
-      submit: manual_only
-  jobicy:
-    reviewed_at: "2026-07-18"
-    review_due_at: "2026-10-18"
-    terms_url: "https://jobicy.com/jobs-rss-feed"
-    actions:
-      discover: disabled
-      store: disabled
-      draft: manual_only
-      submit: manual_only
-  manual:
-    reviewed_at: "2026-07-18"
-    review_due_at: "2027-07-18"
-    terms_url: "USER_AUTHORIZED_INPUT"
-    actions:
-      discover: manual_only
-      read_detail: manual_only
-      store: manual_only
-      draft: manual_only
-      open_link: manual_only
-      submit: manual_only
+      message: disabled
+      follow_up: disabled
+    limits:
+      requests_per_minute: 0
+      retention_days: 30
+    notes: "Copy a reviewed canonical record; disabled defaults grant no authority."

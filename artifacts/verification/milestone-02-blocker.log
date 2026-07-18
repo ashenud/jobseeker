@@ -1,0 +1,25 @@
+Milestone 02 blocker recovery record
+Date: 2026-07-19
+
+BLOCKED (worker focused gate)
+- Command: Docker Compose Ruff check for the owned policy/CLI/test slice
+- Exit: nonzero
+- Cause: one unused import in the new policy tests (F401)
+- Resolution: removed the unused import.
+
+BLOCKED (worker focused gate retry)
+- Command: Docker Compose mypy check for the owned policy source slice
+- Exit: nonzero
+- Cause: a direct yaml.resolver submodule reference had no type information.
+- Resolution: referenced the resolver through the already configured top-level yaml module.
+
+RECOVERED
+- Docker Compose Ruff rerun: PASS
+- Docker Compose mypy rerun: PASS
+- Docker Compose focused pytest rerun: 23 passed
+- Coordinator integration rerun after additional fail-closed constraints: Ruff PASS,
+  mypy PASS, and 37 focused tests passed.
+
+These failures were related to Milestone 02 implementation and were fixed in this
+milestone. Neither failure justified skipping the milestone or advancing its
+dependency chain.
