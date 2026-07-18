@@ -1,0 +1,65 @@
+{
+  "result": "PASS",
+  "acceptance": {
+    "M01-AC01": {
+      "result": "PASS",
+      "references": [
+        "docs/PROJECT_CHARTER.md",
+        "docs/DEMO_ACCEPTANCE.md",
+        "scripts/validate_docs.py",
+        "tests/test_charter_contract.py",
+        "artifacts/verification/milestone-01-main/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-01-main/logs/09-pytest.log"
+      ]
+    },
+    "M01-AC02": {
+      "result": "PASS",
+      "references": [
+        "docs/PROJECT_CHARTER.md",
+        "docs/adr/0001-human-in-the-loop-boundary.md",
+        "README.md",
+        "scripts/validate_docs.py",
+        "tests/test_charter_contract.py",
+        "artifacts/verification/milestone-01-main/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-01-main/logs/09-pytest.log"
+      ]
+    },
+    "M01-AC03": {
+      "result": "PASS",
+      "references": [
+        "docs/PROJECT_CHARTER.md",
+        "docs/adr/0002-local-first-mvp.md",
+        "README.md",
+        "scripts/run_milestone_00_gates.sh",
+        "scripts/generate_milestone_01_receipt.py",
+        "tests/test_recovery_harness.py",
+        "tests/test_milestone_01_evidence.py",
+        "artifacts/verification/milestone-01-clean/metadata.tsv",
+        "artifacts/verification/milestone-01-clean/manifest.tsv",
+        "artifacts/verification/milestone-01-clean/checkout-status.log",
+        "artifacts/verification/milestone-01-clean/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-01-clean/logs/09-pytest.log",
+        "artifacts/verification/milestone-01-clean/logs/10-pre-commit.log"
+      ]
+    },
+    "M01-AC04": {
+      "result": "PASS",
+      "references": [
+        "docs/milestones/01-project-charter-and-scope.md",
+        "docs/prompts/01-project-charter-and-scope.md",
+        "docs/PROJECT_CHARTER.md",
+        "scripts/validate_docs.py",
+        "scripts/generate_milestone_01_receipt.py",
+        "tests/test_charter_contract.py",
+        "tests/test_milestone_01_evidence.py",
+        "artifacts/verification/milestone-01-main/metadata.tsv",
+        "artifacts/verification/milestone-01-main/manifest.tsv",
+        "artifacts/verification/milestone-01-main/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-01-main/logs/09-pytest.log",
+        "artifacts/verification/milestone-01-clean/metadata.tsv",
+        "artifacts/verification/milestone-01-clean/manifest.tsv",
+        "artifacts/verification/milestone-01-clean/checkout-status.log"
+      ]
+    }
+  }
+}

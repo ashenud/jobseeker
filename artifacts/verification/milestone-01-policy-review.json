@@ -1,0 +1,39 @@
+{
+  "verdict": "GO",
+  "reviewer": "policy-release-reviewer",
+  "references": [
+    "docs/PROJECT_CHARTER.md",
+    "docs/adr/0001-human-in-the-loop-boundary.md",
+    "docs/adr/0002-local-first-mvp.md",
+    "README.md",
+    "docs/milestones/01-project-charter-and-scope.md",
+    "docs/prompts/01-project-charter-and-scope.md",
+    "scripts/validate_docs.py",
+    "tests/test_charter_contract.py",
+    "scripts/run_milestone_00_gates.sh",
+    "scripts/generate_milestone_01_receipt.py",
+    "tests/test_milestone_01_evidence.py",
+    "tests/test_recovery_harness.py",
+    "artifacts/verification/milestone-01-blocker.log",
+    "artifacts/verification/milestone-01-main/metadata.tsv",
+    "artifacts/verification/milestone-01-main/manifest.tsv",
+    "artifacts/verification/milestone-01-main/logs/04-validate-docs.log",
+    "artifacts/verification/milestone-01-main/logs/09-pytest.log",
+    "artifacts/verification/milestone-01-main/logs/10-pre-commit.log",
+    "artifacts/verification/milestone-01-clean/metadata.tsv",
+    "artifacts/verification/milestone-01-clean/manifest.tsv",
+    "artifacts/verification/milestone-01-clean/checkout-status.log",
+    "artifacts/verification/milestone-01-clean/logs/04-validate-docs.log",
+    "artifacts/verification/milestone-01-clean/logs/09-pytest.log",
+    "artifacts/verification/milestone-01-clean/logs/10-pre-commit.log"
+  ],
+  "unresolved_high_critical": [],
+  "lower_severity_observations": [
+    "All prior blockers are closed, including fail-closed clean-status evidence and DONE-state ADR lifecycle validation.",
+    "Main and clean captures each contain ten passing gates, report 101 tests, and identify commit 522cfbef9f169b4a3add5088e29a3f51941d1bd8.",
+    "Approval remains preparation only, manual owner submission is explicit, and no official write connector is authorized for the MVP demo.",
+    "Named integrations remain conditional goals owned by fail-closed later milestones.",
+    "No prohibited automation, private data, credentials, or secret exposure was found.",
+    "Main and clean image digests differ; each matches its own metadata and captured log."
+  ]
+}

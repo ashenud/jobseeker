@@ -1,0 +1,7 @@
+ Network jobseeker_m01_clean3_default Creating 
+ Network jobseeker_m01_clean3_default Created 
+ Volume jobseeker_m01_clean3_postgres_data Creating 
+ Volume jobseeker_m01_clean3_postgres_data Created 
+ Container jobseeker_m01_clean3-api-run-0be6b1d51408 Creating 
+ Container jobseeker_m01_clean3-api-run-0be6b1d51408 Created 
+documentation validation passed

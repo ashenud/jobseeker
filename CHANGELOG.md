@@ -12,6 +12,9 @@
 - Accepted recovery Milestone 00 with a Docker-only tooling image, enforceable
   host-toolchain boundary, destructive-command guards, portable machine evidence,
   76-test main and clean-checkout reproductions, and independent PASS/GO review.
+- Accepted Milestone 01 with a frozen working-demo charter, manual owner
+  submission boundary, Docker-only/local-first ADRs, conditional source and AI
+  goals, executable document semantics, and 101-test main/clean evidence.
 
 No application milestone beyond the recovery harness is claimed complete by this
 documentation reset.
