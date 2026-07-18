@@ -4,6 +4,11 @@ Jobseeker is a **local, platform-agnostic freelance job discovery, scoring, prop
 
 The central rule is deliberate: **automate discovery, normalization, scoring, drafting, notifications, and tracking; require human approval before any external submission unless a platform has an official, explicitly permitted API and the user has enabled it.**
 
+> **Recovery status (2026-07-18):** the previous repository was an unverified
+> scaffold, not a working MVP. All milestone completion claims have been reset.
+> Start with Milestone 00; do not use the current code as an application demo.
+> The required end state is defined in `docs/DEMO_ACCEPTANCE.md`.
+
 
 ## MVP charter summary
 
@@ -17,11 +22,15 @@ Success for the first production-readiness pilot means the owner can run the app
 
 - `AGENTS.md` - permanent project instructions for ChatGPT Codex.
 - `IMPLEMENTATION_STATUS.md` - the one source of truth for milestone progress.
-- `docs/milestones/00-index.md` - master index, sequence, dependencies, and six-week plan.
-- `docs/milestones/01-...22-...` - executable milestones in required order.
+- `docs/README.md` - canonical documentation map.
+- `docs/DEMO_ACCEPTANCE.md` - observable working-application demo contract.
+- `docs/milestones/00-index.md` - recovery sequence, dependencies, and universal gates.
+- `docs/milestones/01-...22-...` - authoritative requirements and acceptance.
 - `docs/90-...99-...` - supporting references, schemas, prompts, glossary, and research notes.
 - `docs/patterns/` - coding standards and implementation patterns that must be read by milestone prompts.
-- `docs/prompts/` - ordered fresh-context prompts for automating milestone execution.
+- `docs/prompts/` - ordered task entry prompts; progress is tracked only in `IMPLEMENTATION_STATUS.md`.
+- `.agents/skills/jobseeker-milestone/` - reusable gated milestone workflow.
+- `.codex/` - named subagents, Docker-boundary hooks, and destructive-command rules.
 - `config/*.example.yaml` - non-secret configuration examples.
 - `.env.example` - environment variable template.
 - `reference/freelance_ai_agent_plan.pdf` - the supplied guideline document.
@@ -30,19 +39,21 @@ Success for the first production-readiness pilot means the owner can run the app
 
 **Codex is the software-development agent used to build this repository.** The finished job agent needs its own runtime LLM provider, such as the OpenAI API or a local model. A ChatGPT subscription and API billing are separate products, so the runtime must support a no-LLM/manual mode and enforce a daily cost ceiling.
 
-## First-time setup
+## Recovery execution
 
-1. Extract this ZIP into a normal project folder.
-2. Open the folder in Git and create the first commit.
-3. Open Codex in this folder.
-4. Ask Codex to read `AGENTS.md`, `IMPLEMENTATION_STATUS.md`, and `docs/milestones/00-index.md`.
-5. Open `docs/prompts/README.md` and run the numbered prompts sequentially as fresh Codex contexts.
-6. Start only Milestone 01 after prompt `00` has been reviewed and marked complete.
+1. Install and enable Docker Desktop/Engine with Docker Compose and WSL integration.
+2. Open Codex in this trusted repository so project agents, skills, hooks, and rules load.
+3. Review/trust the project hooks with `/hooks` and confirm roles with `/subagents`.
+4. Read `AGENTS.md`, `IMPLEMENTATION_STATUS.md`, `docs/milestones/00-index.md`, and `docs/DEMO_ACCEPTANCE.md`.
+5. Start Prompt 00. It establishes the Docker tooling container and validators;
+   every later application/check command must execute in Docker.
+6. For a full run, continue sequentially and stop automatically at the first
+   failed gate, policy uncertainty, or required credential gap.
 
 Suggested first Codex instruction:
 
 ```text
-Read docs/prompts/01-project-charter-and-scope.md in a fresh Codex context and execute it exactly. Do not implement later milestones. Complete Milestone 01 exactly, create or update its required artifacts, run every listed verification step, and show me the acceptance checklist before marking the milestone complete.
+Use $jobseeker-milestone to execute docs/prompts/00-index.md. Continue through the numbered recovery prompts only after each milestone has passing Docker evidence and an independent GO. Stop at the first blocker and never mark a placeholder or failed gate DONE.
 ```
 
 ## Approved local architecture
@@ -61,7 +72,11 @@ Permitted APIs / RSS / JSON / manual capture / user-provided text
         -> CRM states, follow-ups, metrics, and weekly reports
 ```
 
-The runtime target is one Windows PC through WSL 2 and Docker Desktop. Later milestones will keep database, Redis, workers, and service dependencies behind Docker Compose while keeping the initial dashboard local-only. Runtime LLM, embedding, notification, and source integrations must be provider-neutral and support a no-paid-LLM development mode.
+The runtime target is one Windows PC through WSL 2 and Docker Desktop. The API,
+database, Redis, workers, scheduler, tests, migrations, and AI/source integration
+smokes run in Docker Compose. Runtime LLM, embedding, notification, and source
+integrations remain provider-neutral and include deterministic offline test modes,
+but the final demo requires bounded real permitted-source and real-AI evidence.
 
 ## Operating boundary
 

@@ -1,5 +1,12 @@
 # Milestone 09 - Normalization, Deduplication, and Deterministic Rules
 
+## Recovery gate
+
+Normalize into persistent records with parser/rule versions, exact fingerprints,
+probable-duplicate review links, correction history, and database constraints.
+Use a scrubbed corpus of at least 30 relevant, irrelevant, risky, incomplete, and
+duplicate jobs. A provider spy must prove deterministic rejects never call AI.
+
 ## Goal
 
 Turn heterogeneous postings into trustworthy canonical jobs, suppress duplicates, and reject obvious poor fits before paying for LLM inference.
@@ -90,11 +97,6 @@ Red flags are advisory unless explicitly configured as hard rejects.
 - duplicate review UI or CLI;
 - benchmark fixtures.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 09 only. Build canonical normalization, exact/probable deduplication, and an ordered deterministic rules engine based on the owner’s design/3D service taxonomy. Every decision must record rule IDs and reasons. Add tests for currencies, unknown budgets, dates, duplicate cross-posts, and red flags.
-```
 
 ## Acceptance criteria
 

@@ -1,5 +1,12 @@
 # Milestone 03 - Positioning Profile and Success Metrics
 
+## Recovery gate
+
+Validate the profile, scoring taxonomy, demo fixtures, and evidence references
+inside the Docker tooling container. Tests must reject missing required fields,
+dangling evidence IDs, unverifiable proposal claims, and contradictory rate or
+budget settings. Never invent portfolio facts to satisfy this gate.
+
 ## Goal
 
 Convert the owner’s experience, services, rates, constraints, portfolio links, preferred tone, and exclusions into structured source data. This becomes the factual base for filtering and proposal generation.
@@ -91,11 +98,6 @@ Set initial targets conservatively, then replace them with baseline data after t
 - Separate `verified` portfolio evidence from `draft`, `concept`, or `proposal-only` work.
 - Add a field that marks HABIT[SPEC]-type concepts as proposal/concept work so the generator cannot represent them as completed client work.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 03 only. Create validated profile, scoring, portfolio-manifest, and success-metrics structures. Seed them with the owner’s design and 3D capabilities and portfolio URL, while keeping personal contact values in private ignored files. Add tests for invalid evidence references, missing rate constraints, and proposal-only work being disallowed as completed work.
-```
 
 ## Acceptance criteria
 

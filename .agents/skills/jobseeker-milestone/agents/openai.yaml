@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jobseeker Milestone Runner"
+  short_description: "Run one gated Docker-only Jobseeker milestone"
+  default_prompt: "Use $jobseeker-milestone to execute the next READY milestone and stop at the first failed gate."

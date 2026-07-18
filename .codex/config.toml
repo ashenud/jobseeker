@@ -1,69 +1,24 @@
-# Repository-local Codex workflow configuration for Jobseeker.
-# This file documents safe defaults for milestone-by-milestone implementation.
-
-profile = "jobseeker-local"
+# Trusted repository-local Codex controls. Workflow rules live in AGENTS.md and
+# the jobseeker-milestone skill; this file contains only documented Codex keys.
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
-approval_policy = "on-request"
+# Run the repository's authorized milestone pipeline without interactive
+# approval prompts. Destructive commands and live-profile actions remain
+# blocked/prompted by `.codex/rules/default.rules` and the Docker boundary
+# hook; this setting only removes routine approval interruptions.
+approval_policy = "never"
 
-[workflow]
-current_source_of_truth = "IMPLEMENTATION_STATUS.md"
-execution_index = "docs/milestones/00-index.md"
-prompt_index = "docs/prompts/README.md"
-one_milestone_at_a_time = true
-require_plan_before_edits = true
-require_clean_git_before_start = true
-require_human_acceptance_before_next_milestone = true
+[features]
+hooks = true
+multi_agent = true
+goals = true
 
-[workflow.required_reads]
-every_task = [
-  "AGENTS.md",
-  "IMPLEMENTATION_STATUS.md",
-  "docs/milestones/00-index.md",
-]
-per_milestone = [
-  "docs/milestones/<NN>-<slug>.md",
-  "docs/prompts/<NN>-<slug>.md",
-]
+[agents]
+max_threads = 4
+max_depth = 1
+job_max_runtime_seconds = 1800
+interrupt_message = true
 
-[workflow.required_checks]
-# Run commands only when the underlying tool exists in the repository.
-fast_suite = [
-  "pytest",
-  "ruff check .",
-  "mypy .",
-  "pre-commit run --all-files",
-]
-release_readiness = [
-  "git status --short",
-  "python -m compileall .",
-]
-
-[guardrails]
-fail_closed_on_policy_uncertainty = true
-human_required_for_external_submission = true
-forbidden_automation = [
-  "captcha_solving",
-  "fingerprint_spoofing",
-  "stealth_plugins",
-  "proxy_rotation_to_evade_controls",
-  "hidden_browser_automation",
-  "rate_limit_evasion",
-]
-forbidden_storage = [
-  "platform_passwords",
-  "browser_cookies",
-  "session_tokens",
-  "payment_details",
-  "full_inbox_exports",
-]
-
-[sub_agents]
-# Sub-agents are advisory only. The main Codex agent must read instructions,
-# make final decisions, edit files, run checks, commit, and prepare PR metadata.
-enabled = true
-registry = [
-  ".codex/agents/milestone-planner.toml",
-  ".codex/agents/implementation-helper.toml",
-  ".codex/agents/quality-release-reviewer.toml",
-]
+# Database MCP access is optional and environment-provided. When a configured
+# database MCP server is available, milestone agents may use it for schema and
+# migration inspection; credentials must never be written to the repository.

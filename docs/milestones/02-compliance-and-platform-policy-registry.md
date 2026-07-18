@@ -1,5 +1,14 @@
 # Milestone 02 - Compliance and Platform Policy Registry
 
+## Recovery gate
+
+Replace informal or stale platform assumptions with schema-validated, versioned,
+action-specific policy records. Container tests must prove that unknown, expired,
+disabled, and manual-only network/write actions are denied before a mocked HTTP
+or connector call. Every allowed live-read record needs a current authoritative
+source, owner approval, rate limit, retention, and review date. No marketplace
+write mode is enabled by this milestone.
+
 ## Goal
 
 Create an enforceable policy layer that decides which operations are allowed for each source. The registry must block unknown or prohibited behavior at runtime.
@@ -86,11 +95,6 @@ notes: "No confirmed public Jobs API; use user-provided content."
 - read permission cannot be reused as write permission;
 - configuration validation rejects contradictory settings.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 02 only. Build the platform policy registry and fail-closed authorization service. Use the conservative initial table from the document. Add unit tests that prove prohibited and unknown actions cannot reach connector code. Do not implement any live connector yet.
-```
 
 ## Acceptance criteria
 

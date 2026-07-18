@@ -1,5 +1,13 @@
 # Milestone 05 - Architecture, Boundaries, and State Machines
 
+## Recovery gate
+
+Architecture documents must match importable code and a running OpenAPI surface.
+Define transaction ownership, repositories, provider interfaces, idempotency
+keys, audit events, error semantics, and every state transition. Container tests
+must cover allowed and forbidden transitions and prove external writes cannot be
+triggered by approval or a retryable background task.
+
 ## Goal
 
 Define the component boundaries and legal state transitions before database and connector code harden accidental assumptions.
@@ -102,11 +110,6 @@ class SubmissionConnector(Protocol):
 - protocol/interface modules with no concrete implementations
 - state enums and transition tests
 
-## Codex execution prompt
-
-```text
-Implement Milestone 05 only. Write the architecture and state-machine documents, define typed protocols and state enums, and add tests proving invalid transitions fail. Keep this a modular monolith. Do not create database tables or live adapters yet.
-```
 
 ## Acceptance criteria
 

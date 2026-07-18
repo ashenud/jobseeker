@@ -1,5 +1,14 @@
 # Milestone 12 - Proposal Generation and Factuality Guardrails
 
+## Recovery gate
+
+Generate structured drafts through the configured AI gateway and persist immutable
+revisions plus a claim-to-evidence ledger. Enforce platform length/link/contact
+rules, prompt-injection isolation, refusal/error handling, and an unsupported-
+claim block. Golden and adversarial evaluations must report zero unsupported
+claims, and the opt-in real-AI draft must map every factual claim to eligible
+evidence.
+
 ## Goal
 
 Generate concise, platform-appropriate proposals that sound human, answer the actual brief, use verified evidence, and never overstate experience.
@@ -74,11 +83,6 @@ Do not generate multiple drafts automatically for every job; it increases cost a
 - platform template configuration;
 - golden proposal evaluation set.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 12 only. Build evidence-grounded proposal generation with one default concise draft, a claim ledger, unsupported-claim blocker, prompt-injection handling, platform-specific length/link rules, and immutable revisions. Add golden tests using design, packaging, Amazon, 3D, and architecture job fixtures.
-```
 
 ## Acceptance criteria
 

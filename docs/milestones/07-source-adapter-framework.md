@@ -1,5 +1,13 @@
 # Milestone 07 - Source Adapter Framework
 
+## Recovery gate
+
+Adapters must persist raw payload metadata and cursors through repositories, run
+policy checks before I/O, and implement bounded timeouts, retries with jitter,
+rate limiting, concurrency limits, circuit state, and idempotency. Manual import
+must work through CLI/API into PostgreSQL. Fixture tests must prove pagination,
+cursor resume, duplicate delivery, denial-before-I/O, and scrubbed logging.
+
 ## Goal
 
 Build the plug-in framework for APIs, RSS/JSON feeds, email/manual imports, and future permitted connectors without mixing platform code into the pipeline.
@@ -93,11 +101,6 @@ Create a fake adapter and fixture-based tests for:
 - CLI commands `sources list`, `sources test`, and `sources ingest`;
 - adapter developer guide.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 07 only. Create the typed source adapter framework, source registry, cursor handling, rate limiter, error taxonomy, and universal manual import adapter. Add fixture-based tests and prove a policy denial occurs before any mocked network call. Do not add live public-feed adapters yet.
-```
 
 ## Acceptance criteria
 

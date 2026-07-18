@@ -1,5 +1,19 @@
 # Milestone 10 - LLM Gateway and Structured Job Scoring
 
+## Recovery gate
+
+Implement a provider-neutral gateway with a deterministic fake for tests and a
+real OpenAI Responses API provider using strict structured output parsed into
+Pydantic models. Provider and model come from validated configuration; secrets,
+URLs, and model names are not hardcoded in domain code. Persist prompt/schema/
+provider/model versions, usage, cost, latency, refusal, and retry outcomes.
+
+Offline malformed-output, refusal, timeout, retry, budget, and idempotency tests
+must pass. A bounded opt-in real-AI smoke must persist a schema-valid score. If
+the required credential is unavailable, this milestone is `BLOCKED`, not `DONE`.
+Use the current official Structured Outputs guidance:
+`https://developers.openai.com/api/docs/guides/structured-outputs`.
+
 ## Goal
 
 Add a provider-neutral LLM gateway that returns schema-valid, explainable job scores while enforcing cost, retry, privacy, and reproducibility controls.
@@ -84,11 +98,6 @@ Do not auto-discard permanently during the pilot; archive low-fit items so false
 - score explanation UI/CLI;
 - evaluation set.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 10 only. Build a provider-neutral LLM gateway with an OpenAI Responses API implementation using structured outputs, a fake provider, prompt/schema versioning, cost limits, and validated scoring. Do not hardcode a model. Add tests for malformed output, timeout, retry, budget exhaustion, missing data, and reproducibility metadata.
-```
 
 ## Acceptance criteria
 

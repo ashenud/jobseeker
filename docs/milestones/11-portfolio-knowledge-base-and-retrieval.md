@@ -1,5 +1,13 @@
 # Milestone 11 - Portfolio Knowledge Base and Retrieval
 
+## Recovery gate
+
+Create evidence CRUD/import, verification state, claim level, source/version
+tracking, chunking, deletion, full-text search, pgvector retrieval, and inspectable
+ranking reasons. Confidential/unverified/proposal-only evidence must be excluded
+as configured. Prove relevant retrieval on an evaluation set, removal after
+deletion, and no committed private portfolio content.
+
 ## Goal
 
 Build a private evidence library so proposals use only relevant, verified work rather than generic claims or hallucinated experience.
@@ -77,11 +85,6 @@ Return a small evidence pack, normally three to five items. More context often m
 - seeded portfolio manifest with the owner’s approved public portfolio URL;
 - tests for exclusion states and deletion.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 11 only. Build the verified evidence knowledge base, ingestion/verification flow, pgvector embeddings, and hybrid retrieval. Enforce that proposal-only, unverified, and confidential records cannot be returned for completed-work claims. Seed only safe example metadata; do not invent portfolio case studies.
-```
 
 ## Acceptance criteria
 

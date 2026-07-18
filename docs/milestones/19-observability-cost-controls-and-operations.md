@@ -1,5 +1,12 @@
 # Milestone 19 - Observability, Cost Controls, and Operations
 
+## Recovery gate
+
+Add structured secret-free logs, dependency-aware health, source/job/queue/worker/
+AI metrics, persistent budget ledgers, hard cost limits, stale-source detection,
+and actionable runbooks. Simulated source staleness, worker loss, exhausted AI
+budget, and backup failure must be visible and must fail closed where applicable.
+
 ## Goal
 
 Make the local agent understandable when it is healthy, slow, costly, stale, or wrong. Silent failure is worse than no automation.
@@ -85,11 +92,6 @@ Avoid alert spam. Group repeated failures and include an action/runbook link.
 - runbook links;
 - load/staleness tests.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 19 only. Add structured redacted logs, health/business/LLM metrics, hard cost ceilings, source staleness and worker alerts, and runbook-linked failure views. Demonstrate a budget stop and stale-source alert using tests or a local simulation.
-```
 
 ## Acceptance criteria
 

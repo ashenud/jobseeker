@@ -1,38 +1,74 @@
-# Implementation Status
+# Implementation status
 
-**Current milestone:** 22
-**Last completed milestone:** 22
-**Overall state:** Milestones 01-22 complete as an integrated local MVP scaffold; real marketplace write connectors remain disabled and require separate approval.
+**Current milestone:** 00 (`BLOCKED`)
+**Last completed milestone:** None in the recovery sequence
+**Overall state:** Recovery plan established. Milestone 00 is blocked by the
+Docker CLI being unavailable in this WSL session; the existing repository is an
+unverified scaffold and may be reused only after the owning milestone proves its
+acceptance criteria inside Docker.
+**Demo readiness:** NO-GO
 **Last updated:** 2026-07-18
 
-## Rules
+## Why the status was reset
 
-- Only one milestone may be `IN PROGRESS`.
-- A milestone becomes `DONE` only after its acceptance criteria and verification commands pass.
-- If a milestone is blocked, record the exact blocker and stop instead of jumping ahead.
-- In a full sequential workflow, the agent may advance from one milestone to the next without user input only after the current milestone is `DONE`, required checks pass, completion records are updated, and a milestone commit has been created. Stop instead of advancing if any check fails, a dependency is missing, acceptance criteria are ambiguous, or compliance/policy status is uncertain.
+The previous ledger marked milestones 01-22 `DONE`, but the application did not
+have an operational FastAPI/ASGI server, SQLAlchemy persistence, working Alembic
+migrations, a Celery application, live permitted source reads, a configured AI
+gateway, a review UI, or meaningful release and recovery gates. Several commands
+returned hard-coded success messages. Those records did not meet the repository's
+definition of complete.
 
-| ID | Milestone | Status | Evidence / commit |
-|---:|---|---|---|
-| 01 | Project charter and scope | DONE | docs/PROJECT_CHARTER.md; docs/adr/0001-human-in-the-loop-boundary.md; docs/adr/0002-local-first-mvp.md |
-| 02 | Compliance and platform policy registry | DONE | config/platform_policy.yaml; src/job_agent/policy/; tests/test_policy.py |
-| 03 | Positioning profile and success metrics | DONE | config/profile.yaml; config/scoring.yaml; docs/SUCCESS_METRICS.md |
-| 04 | Windows/WSL local environment and repository bootstrap | DONE | pyproject.toml; compose.yaml; Dockerfile; Makefile; scripts/; src/job_agent/; tests/ |
-| 05 | Architecture, boundaries, and state machines | DONE | docs/ARCHITECTURE.md; docs/STATE_MACHINES.md; src/job_agent/core/states.py |
-| 06 | Database schema and migrations | DONE | alembic/; src/job_agent/core/models.py; docs/DATA_MODEL.md |
-| 07 | Source adapter framework | DONE | src/job_agent/sources/; CLI sources commands |
-| 08 | Initial compliant source integrations | DONE | manual adapter and fixture-feed adapter gated by policy |
-| 09 | Normalization, deduplication, and deterministic filters | DONE | src/job_agent/normalization/service.py |
-| 10 | LLM gateway and structured job scoring | DONE | src/job_agent/llm/scoring.py fake offline scorer and budget guard |
-| 11 | Portfolio knowledge base and retrieval | DONE | src/job_agent/evidence/service.py; data/private/portfolio_manifest.yaml |
-| 12 | Proposal generation and factuality guardrails | DONE | src/job_agent/proposals/service.py |
-| 13 | Human review dashboard and notifications | DONE | src/job_agent/web/ local health/dashboard shell |
-| 14 | Submission assistance and permitted connectors | DONE | src/job_agent/submission/service.py confirmation-gated fake connector |
-| 15 | CRM, follow-ups, and feedback capture | DONE | src/job_agent/crm/service.py |
-| 16 | Workers, scheduling, idempotency, and reliability | DONE | src/job_agent/workers/app.py; compose worker/scheduler profiles |
-| 17 | Security, secrets, privacy, and retention | DONE | src/job_agent/security/service.py; docs/THREAT_MODEL.md; config/retention.example.yaml |
-| 18 | Testing, evaluations, and quality gates | DONE | tests/; Makefile check/eval/release-check commands |
-| 19 | Observability, cost controls, and operations | DONE | src/job_agent/observability/service.py; docs/OPERATIONS.md |
-| 20 | Local deployment, startup, backup, and recovery | DONE | compose.yaml; scripts/backup.sh; scripts/restore.sh; docs/OPERATIONS.md |
-| 21 | Codex implementation workflow and release discipline | DONE | AGENTS.md retained; .github/workflows/ci.yml; release gate command |
-| 22 | Pilot launch, tuning, and production readiness | DONE | src/job_agent/pilot/service.py; docs/PILOT_PLAN.md; docs/ROADMAP.md |
+Existing files are inputs to the recovery, not acceptance evidence. No milestone
+inherits `DONE` from the prior scaffold commit.
+
+## Status values
+
+- `READY`: dependencies are complete and the milestone may start.
+- `PENDING`: waiting for earlier dependencies.
+- `IN_PROGRESS`: the only milestone currently being implemented.
+- `BLOCKED`: a recorded failing gate prevents progress.
+- `DONE`: all deliverables and Docker-only gates passed and were committed.
+
+Only one milestone may be `IN_PROGRESS`. A milestone moves to `DONE` only after a
+read-only reviewer independently confirms the evidence artifact and the
+coordinating agent reruns the required gates.
+
+## Recovery ledger
+
+| ID | Milestone | Status | Existing assets to revalidate or replace | Acceptance evidence |
+|---:|---|---|---|---|
+| 00 | Recovery harness and Docker tooling container | BLOCKED | `docker compose --profile dev config --quiet` cannot start because Docker is unavailable in this WSL session | Not run |
+| 01 | Project charter and working-demo contract | PENDING | Charter and ADRs | Not run |
+| 02 | Compliance and platform policy registry | PENDING | Policy models/config/tests | Not run |
+| 03 | Positioning profile, portfolio inputs, and success metrics | PENDING | Profile/scoring YAML | Not run |
+| 04 | Docker-only development and runtime foundation | PENDING | Dockerfile, Compose, scripts, packaging | Not run |
+| 05 | Architecture, service contracts, and state machines | PENDING | Architecture/state docs and enums | Not run |
+| 06 | PostgreSQL/pgvector schema, repositories, and migrations | PENDING | Minimal dataclasses/migration must be replaced | Not run |
+| 07 | Source adapter framework and ingestion persistence | PENDING | In-memory adapter protocol | Not run |
+| 08 | Manual capture and permitted live read integrations | PENDING | Fixture adapters; no live HTTP connector | Not run |
+| 09 | Normalization, deduplication, and deterministic filters | PENDING | In-memory rules | Not run |
+| 10 | Provider-neutral AI gateway and structured scoring | PENDING | Fake rules scorer | Not run |
+| 11 | Portfolio evidence knowledge base and retrieval | PENDING | Minimal manifest/list filter | Not run |
+| 12 | Evidence-grounded AI proposal generation | PENDING | Fixed proposal template | Not run |
+| 13 | FastAPI/Jinja/HTMX human review application | PENDING | Static non-ASGI shell | Not run |
+| 14 | Policy-gated manual submission assistance | PENDING | In-memory package/fake connector | Not run |
+| 15 | Persistent CRM, outcomes, and follow-ups | PENDING | In-memory timeline | Not run |
+| 16 | Celery workers, schedules, idempotency, and recovery | PENDING | Missing Celery app | Not run |
+| 17 | Security, privacy, authentication, and retention | PENDING | Basic string helpers | Not run |
+| 18 | Tests, evaluations, and enforceable quality gates | PENDING | Small unit suite and fake release output | Not run |
+| 19 | Observability, cost controls, and operations | PENDING | In-memory metrics | Not run |
+| 20 | Docker deployment, backup, restore, and clean install | PENDING | Incomplete Compose/plain file archive | Not run |
+| 21 | Codex milestone automation and release discipline | PENDING | Recovery workflow created; must be exercised | Not run |
+| 22 | Working application demo and shadow-pilot go/no-go | PENDING | Pilot placeholder | Not run |
+
+## Record-update rules
+
+1. Set the next `READY` milestone to `IN_PROGRESS` before implementation edits.
+2. Store real verification output under `artifacts/verification/`; do not type a
+   success claim by hand.
+3. If any required command fails, set the milestone to `BLOCKED`, record the exact
+   command and failure, and stop the sequential run.
+4. Update this file, `CHANGELOG.md`, the prompt ledger, and any ADR only after all
+   gates pass.
+5. Commit one milestone at a time with `milestone-NN: <outcome>` before making the
+   next milestone `READY`.

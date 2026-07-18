@@ -1,5 +1,13 @@
 # Milestone 16 - Workers, Scheduling, Idempotency, and Reliability
 
+## Recovery gate
+
+Create an actual Celery application, queue routes, beat schedule, database-backed
+idempotency, atomic cursor commits, bounded retries/time limits, dead-letter
+records, circuit breakers, and reconciliation. Docker tests must prove worker
+startup, duplicate delivery, crash recovery, AI timeout recovery, restart safety,
+and the absence of scheduled external writes.
+
 ## Goal
 
 Run ingestion, normalization, scoring, embedding, drafting, follow-up checks, and reports continuously on the local PC without duplicate or runaway work.
@@ -68,11 +76,6 @@ Add jitter so all sources do not fire at the same second.
 - reconciliation command;
 - resilience tests.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 16 only. Connect the existing services through Celery queues and schedules with database idempotency, bounded retries, time limits, circuit breakers, and reconciliation. Add tests for duplicate delivery, worker crash, cursor commit, LLM timeout, and power-loss-style restart. Do not add any unattended external write task.
-```
 
 ## Acceptance criteria
 

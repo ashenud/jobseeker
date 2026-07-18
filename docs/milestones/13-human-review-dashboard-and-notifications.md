@@ -1,5 +1,13 @@
 # Milestone 13 - Human Review Dashboard and Notifications
 
+## Recovery gate
+
+Build a real FastAPI/Jinja/HTMX application backed by PostgreSQL. The browser flow
+must show job/source, filters, score, evidence, risks, draft, and revisions; support
+edit, approve, skip, need-info, copy, and open-source actions; and persist reasons.
+Approval creates a package only. HTTP/browser E2E must cover restart persistence,
+escaping, sanitized HTML, CSRF, revision history, and dependency-aware readiness.
+
 ## Goal
 
 Provide a fast local review queue where the owner can understand the job, score, evidence, proposal, risks, and next action without losing control.
@@ -62,11 +70,6 @@ Alternative no-cloud notification: Windows toast or email to self.
 - optional Telegram provider behind feature flag;
 - UI and service tests.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 13 only. Build the localhost review dashboard with safe rendering, score/evidence visibility, inline proposal revisions, approve/skip/need-info actions, and an optional notification interface. Approval must only create a submission package. Do not send or submit anything externally.
-```
 
 ## Acceptance criteria
 

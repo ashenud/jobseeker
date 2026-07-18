@@ -1,0 +1,30 @@
+{
+  "description": "Jobseeker Docker boundary and milestone completion guardrails.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/enforce_docker_boundary.py\"",
+            "timeout": 10,
+            "statusMessage": "Enforcing Docker-only application commands"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/validate_completion.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking milestone evidence consistency"
+          }
+        ]
+      }
+    ]
+  }
+}

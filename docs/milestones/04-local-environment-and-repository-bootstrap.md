@@ -1,5 +1,17 @@
 # Milestone 04 - Local Environment and Repository Bootstrap
 
+## Recovery gate
+
+The current container stack is not accepted. From clean images and volumes,
+`api`, `worker`, `scheduler`, PostgreSQL with pgvector, and Redis must start and
+be healthy. Uvicorn binds `0.0.0.0` inside the container while Compose publishes
+only `127.0.0.1`; database and Redis are not published. Dependency locking,
+Psycopg, ASGI startup, Alembic imports, Celery discovery, and readiness checks
+must be real. All `make`/script targets are thin Docker Compose wrappers.
+
+Required evidence includes Compose config, build, start, migrate, containerized
+Ruff/mypy/pytest, HTTP liveness/readiness/version, worker ping, and clean teardown.
+
 ## Goal
 
 Create a reproducible Windows development environment using WSL 2 and Docker Desktop, plus a repository skeleton Codex can safely extend.
@@ -119,11 +131,6 @@ make check
 curl http://127.0.0.1:8000/health/ready
 ```
 
-## Codex execution prompt
-
-```text
-Implement Milestone 04 only. Build a minimal typed Python repository with Docker Compose services for FastAPI, Celery worker/beat, PostgreSQL+pgvector, and Redis. Add health endpoints and local check scripts. Do not implement business features. Run the clean-start verification and report exact commands and results.
-```
 
 ## Acceptance criteria
 

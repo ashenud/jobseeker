@@ -1,24 +1,45 @@
-# 00 - Codex Execution Pattern
+# 00 - Codex execution pattern
 
-## Fresh-context milestone execution
+## Sources of authority
 
-- Treat each file in `docs/prompts/` as an independent fresh-context instruction.
-- Start by reading `AGENTS.md`, `IMPLEMENTATION_STATUS.md`, `docs/milestones/00-index.md`, the current milestone document, and every pattern file listed by the prompt.
-- Run one milestone at a time in sequence. For prompts/milestones `00`-`22`, continue through milestones sequentially, treating each milestone as a fresh phase with its own instruction-reading, plan, implementation, checks, record updates, and commit.
-- Before edits, write a concise implementation plan and list expected files to change.
-- Prefer small vertical slices that satisfy the milestone acceptance criteria without speculative framework work.
+1. `AGENTS.md` defines durable repository rules.
+2. `IMPLEMENTATION_STATUS.md` is the only progress ledger.
+3. `docs/milestones/00-index.md` defines dependency order and universal gates.
+4. The current milestone defines requirements and acceptance.
+5. The matching prompt defines task-local scope.
+6. `$jobseeker-milestone` defines the repeatable execution procedure.
 
-## Codex features to use
+If these disagree, stop and repair the records before implementation.
 
-- Use `AGENTS.md` for durable repository rules and nested `AGENTS.md` files only if a subtree needs stricter local rules.
-- Use project configuration/hooks only for mechanical checks that can be run locally and documented in the repository.
-- Dispatch sub-agents for parallel instruction reading, research, planning, review, test-analysis, record-update preparation, handoff preparation, or disjoint implementation slices for the current milestone. Assign explicit write ownership, avoid overlapping edits, and keep the coordinating agent responsible for integration, compliance decisions, final checks, commits, PR metadata, and milestone advancement. Sub-agents must not bypass policy gates or perform external submissions.
-- Use MCP/tools only for live external data or repository-specific automation when explicitly available in the current session.
-- If a requested Codex feature is not available in the current session, document the limitation and implement the closest repository-native control.
+## State machine
 
-## Completion rules
+```text
+READY -> IN_PROGRESS -> implementation commit -> Docker gates
+      -> independent review -> clean-checkout reproduction
+      -> evidence commit -> DONE -> next READY
+```
 
-- Run every milestone verification command plus the repository-wide fast test suite.
-- Show failures honestly and leave the milestone `TODO` or blocked if checks fail.
-- Update `IMPLEMENTATION_STATUS.md`, `CHANGELOG.md`, and ADRs only after acceptance criteria pass.
-- Commit with `milestone-XX: <result>` for implementation milestones or `docs: <result>` for documentation-only orchestration changes. Commit each milestone before advancing to the next one.
+Any failed command, missing required integration credential, stale/uncertain policy,
+placeholder in a required production path, missing evidence, or reviewer `NO-GO`
+sets `BLOCKED` and stops the pipeline.
+
+## Delegation
+
+- Planner/explorer agents are read-only.
+- At most one implementation agent edits at a time unless file ownership is
+  explicitly disjoint.
+- Test and release reviewers do not review their own implementation.
+- Only the coordinator updates status, policies, evidence, commits, or release
+  records and makes the final gate decision.
+- Subagents never submit, message, deploy, rotate secrets, or broaden platform
+  permissions.
+
+## Evidence integrity
+
+Generate `artifacts/verification/milestone-NN.json` from real command results. It
+must identify the tested commit/image, acceptance IDs, commands, exit codes, test
+counts, reviewer verdict, and any required live-smoke metadata. Do not store
+secrets, confidential text, full prompts, or raw third-party payloads.
+
+Do not update `DONE`, the changelog delivery section, ADR acceptance, tags, or the
+next milestone until the evidence validator passes.

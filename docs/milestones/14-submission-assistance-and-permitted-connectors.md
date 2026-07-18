@@ -1,5 +1,13 @@
 # Milestone 14 - Submission Assistance and Permitted Connectors
 
+## Recovery gate
+
+Implement locked/checksummed manual submission packages, safe copy/open behavior,
+attachment checks, explicit mark-submitted/cancel actions, duplicate warnings, and
+persistent receipts. Tests must prove approval alone never submits and unknown
+write outcomes are never automatically retried. Real marketplace write connectors
+remain out of scope unless separately authorized after the assisted pilot.
+
 ## Goal
 
 Bridge approved drafts to external platforms without turning the system into an unsafe auto-apply bot.
@@ -68,11 +76,6 @@ The agent may recommend portfolio projects but cannot attach unverified or clien
 - fake write connector for tests;
 - no live write connector enabled by default.
 
-## Codex execution prompt
-
-```text
-Implement Milestone 14 only. Build the default manual submission assistant and a generic confirmation-gated official API connector interface with a fake connector. Do not enable any real marketplace write action. Add idempotency, unknown-result handling, attachment checks, and tests proving approval alone cannot submit.
-```
 
 ## Acceptance criteria
 
