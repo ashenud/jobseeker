@@ -1,10 +1,11 @@
 # Implementation status
 
-**Current milestone:** 03 (`READY`)
+**Current milestone:** 03 (`BLOCKED`)
 **Last completed milestone:** 02
-**Overall state:** Milestone 02 is accepted with a strict fail-closed registry,
-disabled canonical live/write authority, 128-test main and clean reproduction,
-machine evidence, and independent PASS/GO review.
+**Overall state:** Milestone 03 is blocked on owner confirmation of identity,
+language/availability, financial/workload constraints, and portfolio claim-level
+provenance. Existing scaffold values and a portfolio index cannot safely supply
+those facts.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-19
 
@@ -39,7 +40,7 @@ coordinating agent reruns the required gates.
 | 00 | Recovery harness and Docker tooling container | DONE | Docker-only harness, fail-closed controls, portable machine evidence, clean reproduction, and independent review accepted | `artifacts/verification/milestone-00.json` (tested commit `b5b45af0e2bcd143cda9e05ef5d36a91351f0b45`) |
 | 01 | Project charter and working-demo contract | DONE | Frozen charter, accepted ADRs, executable semantics, fail-closed clean evidence, and independent review | `artifacts/verification/milestone-01.json` (tested commit `522cfbef9f169b4a3add5088e29a3f51941d1bd8`) |
 | 02 | Compliance and platform policy registry | DONE | Strict versioned policy schema, pre-I/O denial, bounded confirmation, audit events, CLI, and independent review | `artifacts/verification/milestone-02.json` (tested commit `d410a82e783629297f58c0dd046f459951c35a2d`) |
-| 03 | Positioning profile, portfolio inputs, and success metrics | READY | Profile/scoring YAML | Not run |
+| 03 | Positioning profile, portfolio inputs, and success metrics | BLOCKED | Profile/scoring YAML | `artifacts/verification/milestone-03-blocker.log` (owner inputs required; no acceptance receipt) |
 | 04 | Docker-only development and runtime foundation | PENDING | Dockerfile, Compose, scripts, packaging | Not run |
 | 05 | Architecture, service contracts, and state machines | PENDING | Architecture/state docs and enums | Not run |
 | 06 | PostgreSQL/pgvector schema, repositories, and migrations | PENDING | Minimal dataclasses/migration must be replaced | Not run |
