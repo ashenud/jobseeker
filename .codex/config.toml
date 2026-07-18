@@ -1,7 +1,6 @@
 # Repository-local Codex workflow configuration for Jobseeker.
 # This file documents safe defaults for milestone-by-milestone implementation.
 
-profile = "jobseeker-local"
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 approval_policy = "on-request"
