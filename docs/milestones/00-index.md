@@ -78,13 +78,14 @@ Keep these values in configuration, never hardcoded in proposal code.
 ## How to execute each milestone with Codex
 
 1. Set the milestone to `IN PROGRESS` in `IMPLEMENTATION_STATUS.md`.
-2. Give Codex only the current milestone plus directly referenced supporting documents.
+2. Load the current prompt, milestone document, and directly referenced supporting documents before edits for that milestone.
 3. Require a plan before edits.
-4. Let Codex implement and run checks.
-5. Review the diff and application behavior.
-6. Complete the acceptance checklist.
-7. Commit with `milestone-XX: <result>`.
-8. Mark it `DONE`, set the next milestone to `IN PROGRESS`, and continue.
+4. Dispatch relevant sub-agents for non-overlapping reading, planning, implementation, review, record-update preparation, handoff preparation, or test-analysis phases when doing so materially helps the milestone.
+5. Implement and run checks.
+6. Record acceptance evidence directly; no separate human review is required between milestones.
+7. Complete the acceptance checklist.
+8. Update records and commit with `milestone-XX: <result>`.
+9. Mark it `DONE`, set the next milestone to `IN PROGRESS`, and continue through milestone 22. Stop at the first unresolved blocker or failing required check.
 
 ## Final MVP definition
 

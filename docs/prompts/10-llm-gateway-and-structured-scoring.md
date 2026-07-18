@@ -2,7 +2,7 @@
 
 ## Execution order
 
-Run this prompt as fresh context step **10**. Do not run a later prompt until this prompt is complete, committed, and the prompt index is marked done by a human reviewer.
+Run this prompt as fresh context step **10**. After this prompt is complete, committed, and the prompt index is marked done by the agent, continue to the next prompt sequentially.
 
 ## Required context to read first
 
@@ -37,12 +37,12 @@ Dependencies recorded in the master index: **03,09**.
 2. Read the full milestone document and every required pattern file yourself.
 3. Present a concise plan, expected files to change, risks, and verification commands before edits.
 4. Keep Docker as the local runtime boundary when adding runnable services; database and Redis services belong in Docker Compose.
-5. Use sub-agents only for optional read-only review or test-output analysis if available in the current Codex session; do not delegate instruction-reading or final decisions.
+5. Dispatch sub-agents for instruction reading, planning support, review, test-output analysis, record-update preparation, handoff preparation, or disjoint implementation slices when useful; the coordinating agent integrates results and enforces final compliance/check decisions.
 6. Use hooks/project rules only when they are repository-native, documented, and do not depend on private local state.
 7. Implement the smallest complete vertical slice that satisfies the milestone acceptance criteria.
 8. Run the milestone checks and repository-wide fast checks.
 9. If checks fail, report blockers honestly and do not mark the milestone done.
-10. If checks pass, update required project records, commit with `milestone-10: <result>`, and stop before starting the next prompt.
+10. If checks pass, update required project records, commit with `milestone-10: <result>`, update the prompt index, and continue to the next prompt sequentially unless this is prompt 22.
 
 ## Verification checklist
 

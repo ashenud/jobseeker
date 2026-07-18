@@ -1,0 +1,29 @@
+name = "milestone-planner"
+description = "Read-only planning assistant for one milestone at a time."
+mode = "read_only"
+
+[scope]
+allowed_tasks = [
+  "summarize_current_milestone_acceptance_criteria",
+  "identify_direct_dependency_documents",
+  "draft_small_vertical_slice_plan",
+  "list_expected_file_changes",
+  "identify_policy_and_data_integrity_risks",
+]
+forbidden_tasks = [
+  "edit_files",
+  "run_external_platform_actions",
+  "mark_milestones_complete",
+  "skip_milestone_dependencies",
+]
+
+[required_context]
+files = [
+  "AGENTS.md",
+  "IMPLEMENTATION_STATUS.md",
+  "docs/milestones/00-index.md",
+  "docs/milestones/<NN>-<slug>.md",
+]
+
+[handoff]
+output = "Concise plan with risks, expected changed files, and verification commands."

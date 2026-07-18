@@ -1,8 +1,17 @@
-# Local Freelance Job Agent - Codex Implementation Blueprint
+# Jobseeker - Local Freelance Job Intelligence
 
-This package is a build-ready documentation set for a **local, platform-agnostic freelance job discovery, scoring, proposal-drafting, review, and tracking agent**.
+Jobseeker is a **local, platform-agnostic freelance job discovery, scoring, proposal-drafting, review, and tracking application** for a senior graphic designer / brand designer / 3D visualizer.
 
 The central rule is deliberate: **automate discovery, normalization, scoring, drafting, notifications, and tracking; require human approval before any external submission unless a platform has an official, explicitly permitted API and the user has enabled it.**
+
+
+## MVP charter summary
+
+The Milestone 01 charter freezes the MVP as a job intelligence and proposal preparation system with a mandatory human approval boundary. The application may ingest permitted opportunities, store raw and normalized records, deduplicate jobs, apply deterministic filters, score remaining jobs, retrieve portfolio evidence, draft truthful proposals, present a review queue, assist manual submission, and track outcomes.
+
+The MVP explicitly does **not** perform automatic marketplace login, CAPTCHA solving, stealth or anti-bot evasion, unattended bulk bidding, automated LinkedIn outreach, forbidden scraping, public SaaS operation, mobile apps, full CRM integrations, or unapproved cold email.
+
+Success for the first production-readiness pilot means the owner can run the app locally for seven consecutive days, ingest permitted jobs from at least three source types, suppress duplicates, reject poor fits deterministically, score and explain remaining jobs, produce evidence-grounded proposal drafts, require owner review before submission, and track outcomes within configured policy, privacy, and cost limits.
 
 ## What is included
 
@@ -36,22 +45,24 @@ Suggested first Codex instruction:
 Read docs/prompts/01-project-charter-and-scope.md in a fresh Codex context and execute it exactly. Do not implement later milestones. Complete Milestone 01 exactly, create or update its required artifacts, run every listed verification step, and show me the acceptance checklist before marking the milestone complete.
 ```
 
-## Default local architecture
+## Approved local architecture
 
 ```text
-Allowed feeds/APIs/manual capture
-        -> source adapters
-        -> raw job store
-        -> normalization + deduplication
-        -> deterministic filters
-        -> LLM scoring with structured output
-        -> portfolio evidence retrieval
-        -> proposal draft + factuality gate
-        -> local review queue / optional Telegram
-        -> user submits manually or enables a permitted official connector
-        -> CRM, follow-ups, metrics, and feedback loop
+Permitted APIs / RSS / JSON / manual capture / user-provided text
+        -> policy-checked source adapters
+        -> raw source payload store
+        -> normalized job records
+        -> deduplication and deterministic filters
+        -> provider-neutral LLM scoring with structured output
+        -> private portfolio evidence retrieval
+        -> proposal draft with factuality guardrails
+        -> local human review queue
+        -> manual submit assistance or disabled-by-default permitted API connector
+        -> CRM states, follow-ups, metrics, and weekly reports
 ```
+
+The runtime target is one Windows PC through WSL 2 and Docker Desktop. Later milestones will keep database, Redis, workers, and service dependencies behind Docker Compose while keeping the initial dashboard local-only. Runtime LLM, embedding, notification, and source integrations must be provider-neutral and support a no-paid-LLM development mode.
 
 ## Operating boundary
 
-This project must never include CAPTCHA bypass, stealth browsing, credential theft, cookie harvesting, anti-bot evasion, mass unsolicited messaging, or unapproved auto-bidding. Platform terms change; every connector is disabled until its policy record is reviewed and approved.
+This project must never include CAPTCHA bypass, stealth browsing, credential theft, cookie harvesting, anti-bot evasion, proxy rotation intended to evade controls, mass unsolicited messaging, or unapproved auto-bidding. Human approval is mandatory before external communication by default. Platform terms change; missing, unknown, stale, `manual_only`, and `disabled` policy states fail closed, and every connector is disabled until its policy record is reviewed and approved.

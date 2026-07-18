@@ -1,0 +1,15 @@
+identity:
+  display_name: "47pixels"
+  primary_title: "Senior Graphic Designer / 3D Visualizer"
+  portfolio_url: "https://www.behance.net/47pixels"
+  timezone: "Etc/UTC"
+services: [packaging_label, amazon_content, brand_identity, print_production, 3d_product_visualization, architectural_visualization]
+constraints:
+  minimum_project_budget_usd: 100
+  minimum_hourly_rate_usd: 25
+  excluded_work: [speculative_free_samples, bulk_bidding, captcha_or_stealth_automation]
+evidence_claims:
+  - evidence_id: behance-public-profile
+    claim: "Public Behance portfolio is available for review."
+    verification_state: verified_public
+    public_url: "https://www.behance.net/47pixels"

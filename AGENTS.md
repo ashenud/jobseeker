@@ -7,13 +7,12 @@ Build a reliable local application that helps the owner find suitable freelance 
 ## Mandatory workflow
 
 1. Read `IMPLEMENTATION_STATUS.md` and `docs/milestones/00-index.md` before every substantial task.
-2. Work on exactly one milestone at a time unless the user explicitly authorizes a dependency fix.
-3. Read the complete milestone document before editing code.
-4. Create a brief implementation plan and list the files you expect to change.
-5. Implement the smallest complete vertical slice required by that milestone.
-6. Run all milestone checks plus the repository-wide fast test suite.
-7. Show failures honestly. Do not mark a milestone complete with failing checks.
-8. Update `IMPLEMENTATION_STATUS.md`, the changelog, and architectural decision records only after acceptance criteria pass.
+2. Run the workflow as an autonomous, sequential milestone pipeline when asked to implement prompts/milestones `00`-`22`; no separate user input or review is required between milestones.
+3. Complete each milestone in order: read the complete prompt, milestone document, and required pattern/supporting files; create a brief implementation plan; list expected files; implement the smallest complete vertical slice; run that milestone's checks plus the repository-wide fast suite; update records; commit the milestone; then advance to the next milestone.
+4. Dispatch relevant sub-agents for reading, planning, implementation, review, test-analysis, record-update preparation, and milestone handoff work when their scopes are explicit. Sub-agents may work independently within assigned scope; the coordinating agent is accountable for integration, conflict resolution, compliance, final verification, commits, PR metadata, and the final decision that gates passed.
+5. Do not skip a dependency or reorder milestones unless the user explicitly authorizes the dependency fix or scope change.
+6. Show failures honestly. Do not mark a milestone complete with failing checks. If a milestone is blocked, record the exact blocker and stop the full-workflow run instead of jumping ahead.
+7. Update `IMPLEMENTATION_STATUS.md`, the changelog, and architectural decision records only after acceptance criteria pass.
 
 ## Compliance guardrails
 

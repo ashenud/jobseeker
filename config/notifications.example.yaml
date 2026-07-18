@@ -1,0 +1,1 @@
+notifications: {enabled: false, provider: local_log}

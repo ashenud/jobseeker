@@ -1,0 +1,1 @@
+pilot: {phase: shadow, daily_application_limit: 3, real_write_connectors_enabled: false}

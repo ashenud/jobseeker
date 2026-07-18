@@ -90,4 +90,4 @@ Implement Milestone 01 only. Read AGENTS.md and docs/milestones/01-project-chart
 
 ## Stop condition
 
-Do not start environment setup or code until the user approves the charter. Scope drift here multiplies every later cost.
+Do not start environment setup or code until the charter exists and passes acceptance checks. After that, an autonomous full-workflow run may continue into later milestones without separate user review. Scope drift here multiplies every later cost, so later work must still follow the approved charter and stop at the first unresolved blocker or failing required check.

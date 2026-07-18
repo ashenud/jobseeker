@@ -1,13 +1,13 @@
 # Sequential Codex Prompts
 
-Use this folder to execute milestones as fresh-context Codex sessions. Start at prompt `00`, then continue in numeric order. After each prompt completes and passes verification, a human reviewer should mark that row as done before starting the next prompt.
+Use this folder to execute milestones as fresh-context Codex phases. Start at prompt `00`, then continue in numeric order through prompt `22`. The agent may update this ledger itself after each prompt passes verification and is committed; no separate user review or input is required between prompts.
 
 ## Completion ledger
 
 | Order | Prompt | Milestone document | Status |
 |---:|---|---|---|
-| 00 | [`00-index.md`](00-index.md) | [`00-index.md`](../milestones/00-index.md) | TODO |
-| 01 | [`01-project-charter-and-scope.md`](01-project-charter-and-scope.md) | [`01-project-charter-and-scope.md`](../milestones/01-project-charter-and-scope.md) | TODO |
+| 00 | [`00-index.md`](00-index.md) | [`00-index.md`](../milestones/00-index.md) | DONE |
+| 01 | [`01-project-charter-and-scope.md`](01-project-charter-and-scope.md) | [`01-project-charter-and-scope.md`](../milestones/01-project-charter-and-scope.md) | DONE |
 | 02 | [`02-compliance-and-platform-policy-registry.md`](02-compliance-and-platform-policy-registry.md) | [`02-compliance-and-platform-policy-registry.md`](../milestones/02-compliance-and-platform-policy-registry.md) | TODO |
 | 03 | [`03-positioning-profile-and-success-metrics.md`](03-positioning-profile-and-success-metrics.md) | [`03-positioning-profile-and-success-metrics.md`](../milestones/03-positioning-profile-and-success-metrics.md) | TODO |
 | 04 | [`04-local-environment-and-repository-bootstrap.md`](04-local-environment-and-repository-bootstrap.md) | [`04-local-environment-and-repository-bootstrap.md`](../milestones/04-local-environment-and-repository-bootstrap.md) | TODO |
@@ -32,8 +32,10 @@ Use this folder to execute milestones as fresh-context Codex sessions. Start at 
 
 ## Operating rules
 
-- Open a fresh Codex context for each numbered prompt.
-- Do not start prompt `NN+1` until prompt `NN` has passed verification, been committed, and this README row is updated by a human reviewer.
+- Treat each numbered prompt as a fresh gated phase by re-reading that prompt, its milestone document, and required references before edits for that milestone.
+- Do not start prompt `NN+1` until prompt `NN` has passed verification, been committed, and this README row is updated by the agent.
+- Dispatch sub-agents where helpful for distinct phases such as instruction reading, codebase exploration, planning, disjoint implementation slices, review, record-update preparation, handoff preparation, or test-output analysis. Assign explicit ownership and avoid overlapping writes.
 - The prompt itself controls which patterns and supporting docs must be read for that milestone.
 - Prefer project-native rules, hooks, and checks over undocumented local state.
 - Keep the Docker Compose environment authoritative for database and Redis services.
+- Continue through prompt `22` without user review/input gates, but stop at the first unresolved blocker or failing required check; do not skip ahead to later prompts.

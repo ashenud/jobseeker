@@ -1,0 +1,28 @@
+services:
+  api:
+    build: .
+    profiles: ["core", "dev"]
+    env_file: .env
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on: [db, redis]
+  worker:
+    build: .
+    profiles: ["workers", "dev"]
+    env_file: .env
+    command: celery -A job_agent.workers.app:celery_app worker -Q ingestion,processing,llm,notifications,maintenance --loglevel=INFO
+    depends_on: [db, redis]
+  scheduler:
+    build: .
+    profiles: ["workers", "dev"]
+    env_file: .env
+    command: celery -A job_agent.workers.app:celery_app beat --loglevel=INFO
+    depends_on: [redis]
+  db:
+    image: pgvector/pgvector:pg16
+    profiles: ["core", "workers", "dev"]
+    environment: {POSTGRES_USER: job_agent, POSTGRES_PASSWORD: job_agent, POSTGRES_DB: job_agent}
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+  redis:
+    image: redis:7-alpine
+    profiles: ["core", "workers", "dev"]
+volumes: {postgres_data: {}}

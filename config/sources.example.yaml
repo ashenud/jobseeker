@@ -1,21 +1,4 @@
-schema_version: "1.0"
 sources:
-  manual:
-    enabled: true
-    adapter: manual
-  jobicy:
-    enabled: false
-    adapter: jobicy
-    poll_minutes: 60
-    jitter_seconds: 120
-    query:
-      industry: design
-  remoteok:
-    enabled: false
-    adapter: remoteok
-    poll_minutes: 60
-    jitter_seconds: 180
-  freelancer:
-    enabled: false
-    adapter: freelancer_official
-    poll_minutes: 30
+  manual: {enabled: true, platform_id: manual, schedule: null}
+  remote_ok: {enabled: false, platform_id: remote_ok, live: false}
+  jobicy: {enabled: false, platform_id: jobicy, live: false}
