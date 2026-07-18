@@ -1,0 +1,36 @@
+{
+  "verdict": "GO",
+  "reviewer": "policy-release-reviewer",
+  "references": [
+    "scripts/run_milestone_00_gates.sh",
+    "scripts/generate_milestone_00_receipt.py",
+    "scripts/validate_milestone.py",
+    ".codex/hooks/enforce_docker_boundary.py",
+    ".codex/rules/default.rules",
+    "scripts/validate_codex_controls.py",
+    "tests/test_recovery_harness.py",
+    "tests/test_policy.py",
+    "artifacts/verification/milestone-00-blocker.log",
+    "artifacts/verification/milestone-00-evidence-review.json",
+    "artifacts/verification/milestone-00-main/metadata.tsv",
+    "artifacts/verification/milestone-00-main/manifest.tsv",
+    "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+    "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+    "artifacts/verification/milestone-00-main/logs/10-pre-commit.log",
+    "artifacts/verification/milestone-00-clean/metadata.tsv",
+    "artifacts/verification/milestone-00-clean/manifest.tsv",
+    "artifacts/verification/milestone-00-clean/checkout-status.log",
+    "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log",
+    "artifacts/verification/milestone-00-clean/logs/09-pytest.log",
+    "artifacts/verification/milestone-00-clean/logs/10-pre-commit.log"
+  ],
+  "unresolved_high_critical": [],
+  "lower_severity_observations": [
+    "The prior destructive reset bypass remains closed: make db-reset is denied, the exact profiled volume-removal command is prompt-guarded, and regression validation passes.",
+    "Absolute paths, traversal segments, tabs, and newlines are rejected before Git access. Other C0 characters such as carriage return and vertical tab are not rejected by the runner; current manifests contain none, and downstream schema and regular-file checks fail closed. Rejecting all C0/DEL characters would improve defense in depth.",
+    "Main and clean captures each contain exactly ten passing gates, report 76 tests, identify commit b5b45af0e2bcd143cda9e05ef5d36a91351f0b45, use repository-relative regular-file references, and have an empty clean-checkout status.",
+    "No prohibited automation, credential material, or secret exposure was found in the implementation diff or replacement logs.",
+    "Main and clean image digests differ because dependency ranges and builds are not byte-reproducible; each digest matches its own metadata and captured digest log.",
+    "Later-milestone application behavior remains explicitly unverified and must not inherit acceptance from Milestone 00."
+  ]
+}

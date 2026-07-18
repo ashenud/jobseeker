@@ -1,0 +1,2 @@
+scope=M00 harness only; src/job_agent and later-milestone application paths excluded
+result=PASS

@@ -1,0 +1,420 @@
+{
+  "milestone": "00",
+  "tested_commit": "b5b45af0e2bcd143cda9e05ef5d36a91351f0b45",
+  "timestamp_utc": "2026-07-18T21:06:54Z",
+  "image_digest": "sha256:eb98036929438e24b4c129572ce429ea694c7d7f71b8277c31e17174591188c7",
+  "result": "PASS",
+  "commands": [
+    {
+      "run": "main",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker_m00_main4-api --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "04-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/04-validate-docs.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "05-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/05-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "06-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "07-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/07-ruff.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "08-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/08-mypy.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "09-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log"
+      ],
+      "test_count": 76
+    },
+    {
+      "run": "main",
+      "gate_id": "10-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api sh -c git\\ config\\ --global\\ --add\\ safe.directory\\ /app\\ \\&\\&\\ pre-commit\\ run\\ --all-files",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-main/logs/10-pre-commit.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker_m00_clean4-api --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "04-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/04-validate-docs.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "05-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/05-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "06-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "07-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/07-ruff.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "08-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/08-mypy.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "09-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/09-pytest.log"
+      ],
+      "test_count": 76
+    },
+    {
+      "run": "clean",
+      "gate_id": "10-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api sh -c git\\ config\\ --global\\ --add\\ safe.directory\\ /app\\ \\&\\&\\ pre-commit\\ run\\ --all-files",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-00-clean/logs/10-pre-commit.log"
+      ]
+    }
+  ],
+  "acceptance": {
+    "M00-AC01": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/04-validate-docs.log",
+        "scripts/validate_docs.py",
+        "artifacts/verification/milestone-00-clean/logs/04-validate-docs.log"
+      ]
+    },
+    "M00-AC02": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "scripts/validate_codex_controls.py",
+        ".codex/hooks/enforce_docker_boundary.py",
+        ".codex/rules/default.rules",
+        "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log"
+      ]
+    },
+    "M00-AC03": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/01-compose-config.log",
+        "artifacts/verification/milestone-00-main/logs/02-build-api.log",
+        "artifacts/verification/milestone-00-clean/logs/01-compose-config.log",
+        "artifacts/verification/milestone-00-clean/logs/02-build-api.log",
+        "compose.yaml",
+        "Dockerfile"
+      ]
+    },
+    "M00-AC04": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/02-build-api.log",
+        "artifacts/verification/milestone-00-main/logs/07-ruff.log",
+        "artifacts/verification/milestone-00-main/logs/08-mypy.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+        "artifacts/verification/milestone-00-main/logs/10-pre-commit.log",
+        "Dockerfile",
+        "pyproject.toml"
+      ]
+    },
+    "M00-AC05": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "Makefile",
+        "scripts/bootstrap.sh",
+        "scripts/check.sh",
+        "scripts/dev.sh",
+        "scripts/validate_codex_controls.py"
+      ]
+    },
+    "M00-AC06": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+        ".codex/hooks/enforce_docker_boundary.py",
+        ".codex/rules/default.rules",
+        "tests/test_recovery_harness.py",
+        "scripts/validate_codex_controls.py"
+      ]
+    },
+    "M00-AC07": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/05-validate-milestone.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+        "scripts/validate_milestone.py",
+        "scripts/generate_milestone_00_receipt.py",
+        "scripts/run_milestone_00_gates.sh",
+        "tests/test_recovery_harness.py"
+      ]
+    },
+    "M00-AC08": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+        ".codex/hooks/validate_completion.py",
+        "scripts/validate_milestone.py",
+        "tests/test_recovery_harness.py"
+      ]
+    },
+    "M00-AC09": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/manifest.tsv",
+        "artifacts/verification/milestone-00-main/metadata.tsv",
+        "artifacts/verification/milestone-00-main/logs/01-compose-config.log",
+        "artifacts/verification/milestone-00-main/logs/02-build-api.log",
+        "artifacts/verification/milestone-00-main/logs/03-image-digest.log",
+        "artifacts/verification/milestone-00-main/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-00-main/logs/05-validate-milestone.log",
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-main/logs/07-ruff.log",
+        "artifacts/verification/milestone-00-main/logs/08-mypy.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+        "artifacts/verification/milestone-00-main/logs/10-pre-commit.log"
+      ]
+    },
+    "M00-AC10": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-clean/manifest.tsv",
+        "artifacts/verification/milestone-00-clean/metadata.tsv",
+        "artifacts/verification/milestone-00-clean/logs/01-compose-config.log",
+        "artifacts/verification/milestone-00-clean/logs/02-build-api.log",
+        "artifacts/verification/milestone-00-clean/logs/03-image-digest.log",
+        "artifacts/verification/milestone-00-clean/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-00-clean/logs/05-validate-milestone.log",
+        "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-clean/logs/07-ruff.log",
+        "artifacts/verification/milestone-00-clean/logs/08-mypy.log",
+        "artifacts/verification/milestone-00-clean/logs/09-pytest.log",
+        "artifacts/verification/milestone-00-clean/logs/10-pre-commit.log",
+        "artifacts/verification/milestone-00-evidence-review.json",
+        ".codex/hooks/enforce_docker_boundary.py",
+        ".codex/rules/default.rules",
+        "artifacts/verification/milestone-00-blocker.log",
+        "artifacts/verification/milestone-00-clean/checkout-status.log",
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+        "artifacts/verification/milestone-00-main/logs/10-pre-commit.log",
+        "artifacts/verification/milestone-00-main/manifest.tsv",
+        "artifacts/verification/milestone-00-main/metadata.tsv",
+        "artifacts/verification/milestone-00-policy-review.json",
+        "scripts/generate_milestone_00_receipt.py",
+        "scripts/run_milestone_00_gates.sh",
+        "scripts/validate_codex_controls.py",
+        "scripts/validate_milestone.py",
+        "tests/test_policy.py",
+        "tests/test_recovery_harness.py"
+      ]
+    }
+  },
+  "review": {
+    "verdict": "GO",
+    "reviewer": "policy-release-reviewer",
+    "references": [
+      ".codex/hooks/enforce_docker_boundary.py",
+      ".codex/rules/default.rules",
+      "artifacts/verification/milestone-00-blocker.log",
+      "artifacts/verification/milestone-00-clean/checkout-status.log",
+      "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log",
+      "artifacts/verification/milestone-00-clean/logs/09-pytest.log",
+      "artifacts/verification/milestone-00-clean/logs/10-pre-commit.log",
+      "artifacts/verification/milestone-00-clean/manifest.tsv",
+      "artifacts/verification/milestone-00-clean/metadata.tsv",
+      "artifacts/verification/milestone-00-evidence-review.json",
+      "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+      "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+      "artifacts/verification/milestone-00-main/logs/10-pre-commit.log",
+      "artifacts/verification/milestone-00-main/manifest.tsv",
+      "artifacts/verification/milestone-00-main/metadata.tsv",
+      "artifacts/verification/milestone-00-policy-review.json",
+      "scripts/generate_milestone_00_receipt.py",
+      "scripts/run_milestone_00_gates.sh",
+      "scripts/validate_codex_controls.py",
+      "scripts/validate_milestone.py",
+      "tests/test_policy.py",
+      "tests/test_recovery_harness.py"
+    ],
+    "unresolved_high_critical": []
+  },
+  "clean_checkout": {
+    "result": "PASS",
+    "references": [
+      "artifacts/verification/milestone-00-clean/manifest.tsv",
+      "artifacts/verification/milestone-00-clean/metadata.tsv",
+      "artifacts/verification/milestone-00-clean/logs/01-compose-config.log",
+      "artifacts/verification/milestone-00-clean/logs/02-build-api.log",
+      "artifacts/verification/milestone-00-clean/logs/03-image-digest.log",
+      "artifacts/verification/milestone-00-clean/logs/04-validate-docs.log",
+      "artifacts/verification/milestone-00-clean/logs/05-validate-milestone.log",
+      "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log",
+      "artifacts/verification/milestone-00-clean/logs/07-ruff.log",
+      "artifacts/verification/milestone-00-clean/logs/08-mypy.log",
+      "artifacts/verification/milestone-00-clean/logs/09-pytest.log",
+      "artifacts/verification/milestone-00-clean/logs/10-pre-commit.log"
+    ]
+  },
+  "placeholders": {
+    "result": "PASS",
+    "matches": [],
+    "references": [
+      "artifacts/verification/milestone-00-placeholder-scan.log"
+    ],
+    "scope": [
+      "Dockerfile",
+      "compose.yaml",
+      "pyproject.toml",
+      ".pre-commit-config.yaml",
+      "Makefile",
+      "scripts/bootstrap.sh",
+      "scripts/check.sh",
+      "scripts/dev.sh",
+      "scripts/run_milestone_00_gates.sh",
+      "scripts/generate_milestone_00_receipt.py",
+      "scripts/validate_docs.py",
+      "scripts/validate_milestone.py",
+      "scripts/validate_codex_controls.py",
+      ".codex/hooks/enforce_docker_boundary.py",
+      ".codex/hooks/validate_completion.py"
+    ]
+  },
+  "known_limitations": [
+    "Application behavior owned by Milestones 01-22 remains an unverified legacy scaffold and is explicitly outside the Milestone 00 harness acceptance scope."
+  ]
+}

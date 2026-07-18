@@ -9,8 +9,12 @@
 - Removed duplicate root milestone documents and added a canonical documentation map.
 - Added a repo milestone skill, named subagent roles, lifecycle hooks, destructive-
   command rules, and documentation/milestone validators.
+- Accepted recovery Milestone 00 with a Docker-only tooling image, enforceable
+  host-toolchain boundary, destructive-command guards, portable machine evidence,
+  76-test main and clean-checkout reproductions, and independent PASS/GO review.
 
-No application milestone is claimed complete by this documentation reset.
+No application milestone beyond the recovery harness is claimed complete by this
+documentation reset.
 
 ## 0.22.0 - 2026-07-18
 

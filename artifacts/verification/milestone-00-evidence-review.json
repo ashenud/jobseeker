@@ -1,0 +1,120 @@
+{
+  "result": "PASS",
+  "acceptance": {
+    "M00-AC01": {
+      "result": "PASS",
+      "references": [
+        "scripts/validate_docs.py",
+        "artifacts/verification/milestone-00-main/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-00-clean/logs/04-validate-docs.log"
+      ]
+    },
+    "M00-AC02": {
+      "result": "PASS",
+      "references": [
+        "scripts/validate_codex_controls.py",
+        ".codex/hooks/enforce_docker_boundary.py",
+        ".codex/rules/default.rules",
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log"
+      ]
+    },
+    "M00-AC03": {
+      "result": "PASS",
+      "references": [
+        "compose.yaml",
+        "Dockerfile",
+        "artifacts/verification/milestone-00-main/logs/01-compose-config.log",
+        "artifacts/verification/milestone-00-main/logs/02-build-api.log",
+        "artifacts/verification/milestone-00-clean/logs/01-compose-config.log",
+        "artifacts/verification/milestone-00-clean/logs/02-build-api.log"
+      ]
+    },
+    "M00-AC04": {
+      "result": "PASS",
+      "references": [
+        "Dockerfile",
+        "pyproject.toml",
+        "artifacts/verification/milestone-00-main/logs/02-build-api.log",
+        "artifacts/verification/milestone-00-main/logs/07-ruff.log",
+        "artifacts/verification/milestone-00-main/logs/08-mypy.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log",
+        "artifacts/verification/milestone-00-main/logs/10-pre-commit.log"
+      ]
+    },
+    "M00-AC05": {
+      "result": "PASS",
+      "references": [
+        "Makefile",
+        "scripts/bootstrap.sh",
+        "scripts/check.sh",
+        "scripts/dev.sh",
+        "scripts/validate_codex_controls.py",
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log"
+      ]
+    },
+    "M00-AC06": {
+      "result": "PASS",
+      "references": [
+        ".codex/hooks/enforce_docker_boundary.py",
+        ".codex/rules/default.rules",
+        "tests/test_recovery_harness.py",
+        "scripts/validate_codex_controls.py",
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log"
+      ]
+    },
+    "M00-AC07": {
+      "result": "PASS",
+      "references": [
+        "scripts/validate_milestone.py",
+        "scripts/generate_milestone_00_receipt.py",
+        "scripts/run_milestone_00_gates.sh",
+        "tests/test_recovery_harness.py",
+        "artifacts/verification/milestone-00-main/logs/05-validate-milestone.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log"
+      ]
+    },
+    "M00-AC08": {
+      "result": "PASS",
+      "references": [
+        ".codex/hooks/validate_completion.py",
+        "scripts/validate_milestone.py",
+        "tests/test_recovery_harness.py",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log"
+      ]
+    },
+    "M00-AC09": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-00-main/manifest.tsv",
+        "artifacts/verification/milestone-00-main/metadata.tsv",
+        "artifacts/verification/milestone-00-main/logs/01-compose-config.log",
+        "artifacts/verification/milestone-00-main/logs/02-build-api.log",
+        "artifacts/verification/milestone-00-main/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-00-main/logs/05-validate-milestone.log",
+        "artifacts/verification/milestone-00-main/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-main/logs/07-ruff.log",
+        "artifacts/verification/milestone-00-main/logs/08-mypy.log",
+        "artifacts/verification/milestone-00-main/logs/09-pytest.log"
+      ]
+    },
+    "M00-AC10": {
+      "result": "PASS",
+      "references": [
+        "scripts/run_milestone_00_gates.sh",
+        "tests/test_recovery_harness.py",
+        "artifacts/verification/milestone-00-clean/manifest.tsv",
+        "artifacts/verification/milestone-00-clean/metadata.tsv",
+        "artifacts/verification/milestone-00-clean/checkout-status.log",
+        "artifacts/verification/milestone-00-clean/logs/04-validate-docs.log",
+        "artifacts/verification/milestone-00-clean/logs/05-validate-milestone.log",
+        "artifacts/verification/milestone-00-clean/logs/06-validate-codex-controls.log",
+        "artifacts/verification/milestone-00-clean/logs/07-ruff.log",
+        "artifacts/verification/milestone-00-clean/logs/08-mypy.log",
+        "artifacts/verification/milestone-00-clean/logs/09-pytest.log",
+        "artifacts/verification/milestone-00-clean/logs/10-pre-commit.log"
+      ]
+    }
+  }
+}
