@@ -91,6 +91,11 @@ class ClaimLevel(StrEnum):
     capability = "capability"
 
 
+class ClaimCategory(StrEnum):
+    work_scope = "work_scope"
+    performance = "performance"
+
+
 class UnknownBudgetAction(StrEnum):
     review = "review"
     reject = "reject"
@@ -258,6 +263,7 @@ class ProposalClaim(StrictProfileModel):
     claim_id: Identifier
     text: NonEmptyText
     claim_level: ClaimLevel
+    claim_category: ClaimCategory
     evidence_ids: tuple[Identifier, ...] = Field(min_length=1)
     allowed_in_proposals: StrictBool
 
@@ -546,6 +552,12 @@ class EvidenceRecord(StrictProfileModel):
             raise ValueError("supported service IDs must be unique")
         if _duplicates(self.safe_claims):
             raise ValueError("safe claims must be unique")
+        if _duplicates(self.claims_requiring_additional_evidence):
+            raise ValueError("claims requiring additional evidence must be unique")
+        if set(self.safe_claims) & set(self.claims_requiring_additional_evidence):
+            raise ValueError(
+                "safe claims must not overlap claims requiring additional evidence"
+            )
 
         expected_verification_status = {
             (True, False): VerificationStatus.owner_verified,
@@ -664,6 +676,11 @@ class ProfileBundle(StrictProfileModel):
                     raise ValueError("proposal claim uses ineligible evidence")
                 if claim.text not in claim_evidence.safe_claims:
                     raise ValueError("proposal claim is not approved by evidence")
+                if (
+                    claim.claim_category == ClaimCategory.performance
+                    and not claim_evidence.performance_claims_allowed
+                ):
+                    raise ValueError("performance claim uses restricted evidence")
                 if (
                     claim.claim_level == ClaimLevel.completed_client_work
                     and not claim_evidence.completed_work_claim_allowed

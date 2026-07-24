@@ -1,5 +1,6 @@
 from .exceptions import ProfileConfigurationError, ProfileError
 from .models import (
+    ClaimCategory,
     ConfidentialityLevel,
     EvidenceClassification,
     EvidenceProvenance,
@@ -11,6 +12,7 @@ from .models import (
 from .service import ProfileBundleService
 
 __all__ = [
+    "ClaimCategory",
     "ConfidentialityLevel",
     "EvidenceClassification",
     "EvidenceProvenance",

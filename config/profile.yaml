@@ -120,40 +120,48 @@ claims:
   - claim_id: "herbacorium_amazon_content"
     text: "Created Amazon listing images and A+ content for a cosmetics product range."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true
   - claim_id: "herbacorium_photorealistic_renders"
     text: "Produced photorealistic 3D product renders using 3ds Max and V-Ray."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true
   - claim_id: "herbacorium_ecommerce_image_system"
     text: "Combined 3D visualization, graphic design, retouching and compositing into a complete e-commerce image system."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true
   - claim_id: "herbacorium_amazon_graphics"
     text: "Designed product feature, benefit, comparison and lifestyle graphics for Amazon."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true
   - claim_id: "herbacorium_product_information"
     text: "Translated cosmetic product information into clear, premium and easy-to-understand visual content."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true
   - claim_id: "herbacorium_visual_workflow"
     text: "Handled the visual workflow from 3D product presentation through final Amazon layouts."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true
   - claim_id: "herbacorium_completed_client_work"
     text: "Has completed client work involving cosmetics, Amazon content and 3D product visualization."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true
   - claim_id: "herbacorium_visual_consistency"
     text: "Has experience maintaining visual consistency across listing images and A+ content."
     claim_level: "completed_client_work"
+    claim_category: "work_scope"
     evidence_ids: ["herbacorium_amazon_content"]
     allowed_in_proposals: true

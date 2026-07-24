@@ -50,6 +50,16 @@ Record each capability as an evidence ID rather than prose alone. Example:
   allowed_in_proposals: true
 ```
 
+Every proposal claim also has a typed `claim_category`. `work_scope` describes
+verified services or deliverables; `performance` covers results such as sales,
+clicks, conversion, rankings, or other outcome claims. A performance claim is
+valid only when every referenced evidence record explicitly sets
+`performance_claims_allowed: true`.
+
+Evidence records fail closed when the same text appears in both `safe_claims`
+and `claims_requiring_additional_evidence`. Restricted claim text cannot be
+promoted into the proposal-safe set by configuration order or duplicate fields.
+
 ### Constraints and exclusions
 
 - Minimum acceptable project budget by service.

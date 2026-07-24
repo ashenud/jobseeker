@@ -204,6 +204,52 @@ def test_dangling_and_unapproved_claims_fail_cross_file_resolution() -> None:
         ProfileBundle.model_validate(unsupported)
 
 
+def test_evidence_rejects_duplicate_or_overlapping_restricted_claims() -> None:
+    duplicate = _canonical_data()
+    duplicate_record = duplicate["manifest"]["records"][0]
+    duplicate_record["claims_requiring_additional_evidence"].append(
+        duplicate_record["claims_requiring_additional_evidence"][0]
+    )
+    with pytest.raises(
+        ValidationError, match="claims requiring additional evidence must be unique"
+    ):
+        PortfolioManifest.model_validate(duplicate["manifest"])
+
+    overlap = _canonical_data()
+    overlap_record = overlap["manifest"]["records"][0]
+    overlap_record["claims_requiring_additional_evidence"].append(
+        overlap_record["safe_claims"][0]
+    )
+    with pytest.raises(
+        ValidationError,
+        match="safe claims must not overlap claims requiring additional evidence",
+    ):
+        PortfolioManifest.model_validate(overlap["manifest"])
+
+
+def test_performance_claim_category_enforces_evidence_permission() -> None:
+    data = _canonical_data()
+    data["profile"]["claims"][0]["claim_category"] = "performance"
+    with pytest.raises(ValidationError, match="performance claim uses restricted evidence"):
+        ProfileBundle.model_validate(data)
+
+
+def test_restricted_performance_claim_cannot_be_promoted_into_safe_claims() -> None:
+    data = _canonical_data()
+    record = data["manifest"]["records"][0]
+    restricted_performance_claim = record["claims_requiring_additional_evidence"][0]
+    record["safe_claims"].append(restricted_performance_claim)
+    profile_claim = data["profile"]["claims"][0]
+    profile_claim["text"] = restricted_performance_claim
+    profile_claim["claim_category"] = "performance"
+
+    with pytest.raises(
+        ValidationError,
+        match="safe claims must not overlap claims requiring additional evidence",
+    ):
+        ProfileBundle.model_validate(data)
+
+
 @pytest.mark.parametrize("classification", ("concept", "speculative", "proposal_only"))
 def test_non_client_work_cannot_support_completed_work_claims(classification: str) -> None:
     data = _canonical_data()
