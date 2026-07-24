@@ -3,7 +3,7 @@
 ## Start a milestone
 
 ```text
-Use $jobseeker-milestone to execute the sole READY milestone. Run all application and verification commands inside Docker Compose. Produce acceptance-to-test mappings, real command evidence, independent review, and clean-checkout reproduction. Stop at the first failure or missing required credential; do not hide failures, weaken tests, or mark a placeholder DONE.
+Use $jobseeker-milestone to execute the sole READY milestone. Run all application and verification commands inside Docker Compose. Produce acceptance-to-test mappings, real command evidence, independent review, and clean-checkout reproduction. Diagnose, fix, and rerun ordinary failures until gates pass; stop only for required user input/authority or unresolved security, privacy, or compliance decisions. Do not hide failures, weaken tests, or mark a placeholder DONE.
 ```
 
 ## Ask for a self-review

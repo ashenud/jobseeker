@@ -57,15 +57,24 @@ For each milestone:
 9. Update status/changelog/ADRs only after acceptance, commit the evidence, make
    the next milestone `READY`, and advance.
 
-At any nonzero command, missing evidence, policy uncertainty, required credential
-gap, placeholder, or reviewer `NO-GO`, record the exact blocker, set `BLOCKED`, and
-stop the full run. Every blocker report must also give the probable root cause,
-policy-safe possible fixes, a preferred fix with its reason, the likely files
-involved, and the exact Docker commands that a later recovery run should use to
-verify it. These remediation suggestions are advisory: do not implement them,
-rerun the failed gate, weaken a gate, bypass policy, or imply a pass after the stop
-condition. If the cause is uncertain, state the missing evidence and suggest only
-read-only diagnostics. Documenting failure never converts it to a pass.
+Nonzero commands, missing evidence, placeholders, infrastructure faults, and
+reviewer `NO-GO` findings enter the repair loop. Keep the milestone
+`IN_PROGRESS`, preserve scrubbed diagnostics, identify the root cause, implement
+the smallest policy-safe fix, and rerun the affected gate plus every acceptance
+gate invalidated by the change. Repeat until the real gate passes. Never hide a
+failure, hand-write success evidence, weaken a gate, delete a regression, bypass
+policy, or imply a pass before the rerun succeeds.
+
+Set `BLOCKED` and stop only when progress requires user-owned input, a secret or
+credential, an owner choice, permission, external authority, or resolution of a
+security, privacy, or compliance uncertainty that cannot be decided safely from
+repository evidence. Persistent external state remains `IN_PROGRESS` while it can
+be retried or monitored safely; it becomes `BLOCKED` only when user action or a
+protected decision is required. Every terminal blocker report must give the
+probable root cause, policy-safe possible fixes, a preferred fix with its reason,
+the likely files involved, and exact Docker verification commands. When the cause
+is uncertain, gather read-only diagnostics; do not take a security-, privacy-, or
+data-destructive action without the required authority.
 
 Only the coordinating agent integrates work, changes policies/status/evidence,
 commits, prepares PR/release metadata, and decides final acceptance. Assign one

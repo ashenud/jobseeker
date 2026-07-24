@@ -3,12 +3,14 @@
 **Current milestone:** 03 (`IN_PROGRESS`)
 **Last completed milestone:** 02
 **Overall state:** Milestone 03's three policy-review HIGH findings are addressed
-in the working tree. Strict count KPIs preserve nonzero safety violations,
-evidence verification and confidentiality reconcile fail-closed, unsupported
-schema versions are rejected, and independent reviews must match the tested
-commit. The complete Docker preflight passes all eleven gates with 207 tests.
-A new implementation commit, authoritative main and standalone-clean captures,
-fresh independent reviews, and final acceptance evidence remain in progress.
+in implementation commit `7c38c91da549513e1f95b8f67a2e782bcb2f0d73`, and the
+complete Docker preflight passes all eleven gates with 207 tests. The
+first authoritative main capture passed gates 01-10 with 207 tests but stopped
+at gate 11 because its tracked historical log changed while pre-commit ran. A
+fresh standalone-clone recovery avoided that interaction, but stopped at gate 04
+when Docker reported that all predefined network address pools were exhausted.
+Under the repair-and-rerun policy this infrastructure fault remains
+`IN_PROGRESS`; it does not require user input or a protected policy decision.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-25
 
@@ -29,7 +31,8 @@ inherits `DONE` from the prior scaffold commit.
 - `READY`: dependencies are complete and the milestone may start.
 - `PENDING`: waiting for earlier dependencies.
 - `IN_PROGRESS`: the only milestone currently being implemented.
-- `BLOCKED`: a recorded failing gate prevents progress.
+- `BLOCKED`: progress requires user-owned input/credentials/authority or an
+  unresolved security, privacy, or compliance decision.
 - `DONE`: all deliverables and Docker-only gates passed and were committed.
 
 Only one milestone may be `IN_PROGRESS`. A milestone moves to `DONE` only after a
@@ -43,7 +46,7 @@ coordinating agent reruns the required gates.
 | 00 | Recovery harness and Docker tooling container | DONE | Docker-only harness, fail-closed controls, portable machine evidence, clean reproduction, and independent review accepted | `artifacts/verification/milestone-00.json` (tested commit `b5b45af0e2bcd143cda9e05ef5d36a91351f0b45`) |
 | 01 | Project charter and working-demo contract | DONE | Frozen charter, accepted ADRs, executable semantics, fail-closed clean evidence, and independent review | `artifacts/verification/milestone-01.json` (tested commit `522cfbef9f169b4a3add5088e29a3f51941d1bd8`) |
 | 02 | Compliance and platform policy registry | DONE | Strict versioned policy schema, pre-I/O denial, bounded confirmation, audit events, CLI, and independent review | `artifacts/verification/milestone-02.json` (tested commit `d410a82e783629297f58c0dd046f459951c35a2d`) |
-| 03 | Positioning profile, portfolio inputs, and success metrics | IN_PROGRESS | Profile/scoring YAML | Policy-safe recovery preflight PASS with 207 tests; implementation commit and fresh acceptance evidence pending |
+| 03 | Positioning profile, portfolio inputs, and success metrics | IN_PROGRESS | Profile/scoring YAML | Repairing Docker network-pool exhaustion, then rerunning authoritative main and clean evidence |
 | 04 | Docker-only development and runtime foundation | PENDING | Dockerfile, Compose, scripts, packaging | Not run |
 | 05 | Architecture, service contracts, and state machines | PENDING | Architecture/state docs and enums | Not run |
 | 06 | PostgreSQL/pgvector schema, repositories, and migrations | PENDING | Minimal dataclasses/migration must be replaced | Not run |
@@ -69,8 +72,9 @@ coordinating agent reruns the required gates.
 1. Set the next `READY` milestone to `IN_PROGRESS` before implementation edits.
 2. Store real verification output under `artifacts/verification/`; do not type a
    success claim by hand.
-3. If any required command fails, set the milestone to `BLOCKED`, record the exact
-   command and failure, and stop the sequential run.
+3. If a required command fails, record it, implement the smallest policy-safe
+   fix, rerun invalidated gates, and continue. Set `BLOCKED` only for the terminal
+   user-input/authority or protected-decision conditions above.
 4. Update this file, `CHANGELOG.md`, the prompt ledger, and any ADR only after all
    gates pass.
 5. Commit one milestone at a time with `milestone-NN: <outcome>` before making the

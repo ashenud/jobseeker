@@ -85,6 +85,11 @@ The final demo also requires:
 
 ## Automatic no-go conditions
 
+These conditions fail the current acceptance attempt and must be repaired and
+rerun. They are terminal `BLOCKED` conditions only when resolution requires
+user-owned input/authority or an unresolved security, privacy, or compliance
+decision.
+
 - Any required service is a placeholder, fake success printer, or non-callable
   shell when the milestone requires an operational implementation.
 - A readiness check reports healthy without checking its required dependencies.

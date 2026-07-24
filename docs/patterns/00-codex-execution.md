@@ -19,9 +19,11 @@ READY -> IN_PROGRESS -> implementation commit -> Docker gates
       -> evidence commit -> DONE -> next READY
 ```
 
-Any failed command, missing required integration credential, stale/uncertain policy,
-placeholder in a required production path, missing evidence, or reviewer `NO-GO`
-sets `BLOCKED` and stops the pipeline.
+Failed commands, missing evidence, placeholders, infrastructure faults, and
+reviewer `NO-GO` findings stay `IN_PROGRESS`: diagnose, implement the smallest
+policy-safe fix, rerun invalidated gates, and continue until acceptance passes.
+Use `BLOCKED` only for required user-owned input/credentials/authority or an
+unresolved security, privacy, or compliance decision.
 
 ## Delegation
 

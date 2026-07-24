@@ -15,7 +15,7 @@ Every numbered prompt must identify:
 8. named subagent assignments with non-overlapping ownership;
 9. placeholder and silent-fallback prohibitions;
 10. evidence receipt, independent review, clean-checkout reproduction, commits,
-    status transitions, and stop-on-failure behavior.
+    status transitions, repair-and-rerun behavior, and terminal blocker rules.
 
 Test doubles may exist only in test/fixture paths or explicitly selected offline
 configuration. A required real integration may never silently fall back to one.

@@ -33,11 +33,13 @@ review, a completion commit, and the next milestone is marked `READY`.
 | 21 | [Codex/release discipline](21-codex-implementation-workflow-and-release-discipline.md) | [Milestone 21](../milestones/21-codex-implementation-workflow-and-release-discipline.md) |
 | 22 | [Working demo](22-pilot-launch-tuning-and-production-readiness.md) | [Milestone 22](../milestones/22-pilot-launch-tuning-and-production-readiness.md) |
 
-## Failure rule
+## Repair and terminal-blocker rule
 
-Any failed command, missing required credential, policy uncertainty, missing
-evidence, placeholder production path, or reviewer `NO-GO` stops the entire run.
-Recording a failure is required for honesty but never converts it into a pass.
+Failed commands, missing evidence, placeholders, infrastructure faults, and
+reviewer `NO-GO` findings enter a policy-safe repair-and-rerun loop. They never
+become passes merely by being recorded. Stop and set `BLOCKED` only when progress
+requires user-owned input/credentials/authority or an unresolved security,
+privacy, or compliance decision.
 
 See [TEMPLATE.md](TEMPLATE.md) for required prompt fields and
 [the demo contract](../DEMO_ACCEPTANCE.md) for the final observable outcome.

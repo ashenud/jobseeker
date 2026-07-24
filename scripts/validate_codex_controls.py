@@ -56,14 +56,16 @@ def validate_skill() -> list[str]:
         "Plan with independent context",
         "Implement the vertical slice",
         "Prove acceptance",
-        "Complete or stop",
+        "Complete, repair, or block",
         "clean checkout",
         "independent",
         "probable root cause",
         "policy-safe possible fixes",
         "preferred fix",
         "exact Docker commands",
-        "remediation suggestion",
+        "repair-and-rerun loop",
+        "user-owned input",
+        "security, privacy, or compliance",
         "read-only diagnostics",
     ):
         if phrase.lower() not in text.lower():
@@ -74,6 +76,9 @@ def validate_skill() -> list[str]:
         "probable root cause",
         "policy-safe possible fixes",
         "preferred fix",
+        "repair loop",
+        "user-owned input",
+        "security, privacy, or compliance",
         "read-only diagnostics",
     ):
         if phrase.lower() not in agents_text.lower():
@@ -91,17 +96,37 @@ def validate_skill() -> list[str]:
         else:
             for phrase in (
                 "$jobseeker-milestone",
-                "stop",
-                "probable cause",
-                "possible safe fixes",
-                "preferred fix",
-                "verification commands",
+                "repair and rerun",
+                "user input",
+                "security",
+                "privacy",
+                "compliance",
             ):
                 if phrase.lower() not in default_prompt.lower():
                     errors.append(
                         "jobseeker-milestone default prompt lacks "
                         f"{phrase!r}"
                     )
+
+    prompt_paths = sorted((ROOT / "docs" / "prompts").glob("[0-2][0-9]-*.md"))
+    if len(prompt_paths) != 23:
+        errors.append("numbered prompt set must contain exactly 23 files")
+    for prompt_path in prompt_paths:
+        prompt_text = prompt_path.read_text(encoding="utf-8").lower()
+        for phrase in (
+            "repair-loop inputs",
+            "rerun invalidated gates",
+            "user-owned input",
+            "security, privacy, or compliance",
+        ):
+            if phrase not in prompt_text:
+                errors.append(
+                    f"{prompt_path.relative_to(ROOT)} lacks workflow rule {phrase!r}"
+                )
+        if "sets the milestone to `blocked` and stops the full pipeline" in prompt_text:
+            errors.append(
+                f"{prompt_path.relative_to(ROOT)} retains obsolete stop-on-failure policy"
+            )
     return errors
 
 

@@ -134,11 +134,13 @@ known.
    milestone `BLOCKED` rather than `DONE`.
 7. Generate `artifacts/verification/milestone-NN.json` from command results.
 8. Ask separate read-only quality and compliance agents to inspect the diff and
-   evidence. Resolve every high/critical finding.
+   evidence. Resolve every actionable finding, rerun affected gates, and repeat
+   review until no high/critical finding remains.
 9. Re-run the gates as coordinator. Update records only after they pass.
 10. Commit `milestone-NN: <outcome>`, mark the milestone `DONE`, make only the
-    next dependency-satisfied milestone `READY`, and continue. Stop at the first
-    blocker or failed gate.
+    next dependency-satisfied milestone `READY`, and continue. Repair and rerun
+    ordinary failures; stop only for required user input/authority or unresolved
+    security, privacy, or compliance decisions.
 
 ## Universal acceptance gate
 

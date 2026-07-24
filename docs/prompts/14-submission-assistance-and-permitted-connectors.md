@@ -6,7 +6,7 @@ Run this prompt as fresh context step **14**. After this prompt is complete, com
 
 ## Required repository skill
 
-Invoke `$jobseeker-milestone` and follow its state transitions, evidence schema, independent-review gate, and stop conditions. The numbered prompt supplies scope; the skill supplies the authoritative execution procedure.
+Invoke `$jobseeker-milestone` and follow its state transitions, evidence schema, independent-review gate, repair loops, and terminal blocker conditions. The numbered prompt supplies scope; the skill supplies the authoritative execution procedure.
 
 ## Required context to read first
 
@@ -45,7 +45,7 @@ Dependencies recorded in the master index: **02,13**.
 6. Use hooks/project rules only when they are repository-native, documented, and do not depend on private local state.
 7. Implement the smallest complete vertical slice that satisfies the milestone acceptance criteria.
 8. Run the milestone acceptance matrix, required Docker integration or live smoke, repository fast suite, and clean-checkout reproduction. Generate `artifacts/verification/milestone-14.json` from the real results.
-9. Any nonzero command, missing required credential, policy uncertainty, placeholder in a required path, missing evidence, or reviewer `NO-GO` sets the milestone to `BLOCKED` and stops the full pipeline.
+9. Treat nonzero commands, missing evidence, placeholders, infrastructure faults, and reviewer `NO-GO` findings as repair-loop inputs: diagnose, implement the policy-safe fix, rerun invalidated gates, and continue. Set `BLOCKED` only when progress requires user-owned input/credentials/authority or an unresolved security, privacy, or compliance decision.
 10. If checks pass, update required project records, commit with `milestone-14: <result>`, and continue to the next prompt sequentially unless this is prompt 22.
 
 ## Verification checklist

@@ -1,4 +1,4 @@
 interface:
   display_name: "Jobseeker Milestone Runner"
-  short_description: "Run one gated Docker-only Jobseeker milestone"
-  default_prompt: "Use $jobseeker-milestone to execute the active milestone; at the first blocker, stop and report probable cause, possible safe fixes, the preferred fix, and recovery verification commands."
+  short_description: "Run and repair one Docker-only milestone"
+  default_prompt: "Use $jobseeker-milestone to execute the active milestone, repair and rerun ordinary failures, and stop only for required user input or unresolved security, privacy, or compliance decisions."
