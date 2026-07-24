@@ -1,0 +1,93 @@
+{
+  "result": "PASS",
+  "acceptance": {
+    "M03-AC01": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "config/scoring.yaml",
+        "data/private/portfolio_manifest.yaml",
+        "docs/SUCCESS_METRICS.md",
+        "src/job_agent/profile/models.py",
+        "src/job_agent/profile/service.py",
+        "src/job_agent/cli.py",
+        "tests/test_profile.py",
+        "tests/test_cli.py",
+        "artifacts/verification/milestone-03-main/metadata.tsv",
+        "artifacts/verification/milestone-03-main/manifest.tsv",
+        "artifacts/verification/milestone-03-main/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-main/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC02": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-main/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC03": {
+      "result": "PASS",
+      "references": [
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC04": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "config/profile.example.yaml",
+        "config/scoring.yaml",
+        "config/scoring.example.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-main/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC05": {
+      "result": "PASS",
+      "references": [
+        "config/scoring.yaml",
+        "docs/SUCCESS_METRICS.md",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-main/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC06": {
+      "result": "PASS",
+      "references": [
+        ".gitignore",
+        "data/private/README.md",
+        "data/private/portfolio_manifest.yaml",
+        "data/private/proposal_style_anchors/README.md",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-blocker.log",
+        "artifacts/verification/milestone-03-main/metadata.tsv",
+        "artifacts/verification/milestone-03-main/manifest.tsv",
+        "artifacts/verification/milestone-03-main/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-main/logs/11-pre-commit.log",
+        "artifacts/verification/milestone-03-clean-standalone/metadata.tsv",
+        "artifacts/verification/milestone-03-clean-standalone/manifest.tsv",
+        "artifacts/verification/milestone-03-clean-standalone/checkout-status.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-standalone/logs/11-pre-commit.log"
+      ]
+    }
+  }
+}

@@ -148,3 +148,242 @@ Machine capture:
 - `artifacts/verification/milestone-03-preflight/metadata.tsv`
 - `artifacts/verification/milestone-03-preflight/logs/10-pytest.log`
 - `artifacts/verification/milestone-03-preflight/logs/11-pre-commit.log`
+
+Clean reproduction attempt: linked Git worktree
+Date: 2026-07-25
+Result: BLOCKED
+
+Passing conditions:
+- The implementation commit is
+  `41c2b25c77c577b36ad7d9c6ec758844aa90fb99`.
+- The authoritative main wrapper passed all eleven gates with 189 tests.
+- The clean wrapper passed Compose configuration, image build and digest,
+  profile validation, documentation/status/Codex validators, Ruff, and mypy.
+
+New blocking condition:
+- Command:
+  docker compose --profile dev run --rm --no-deps api pytest -q
+- Run: clean checkout
+- Exit code: 1
+- Result before failure: 188 passed, 1 failed
+- Failing test:
+  tests/test_profile.py::test_private_inputs_are_ignored_and_only_scrubbed_metadata_is_tracked
+- Error:
+  fatal: not a git repository:
+  /home/kesh/projects/codex-workspace/jobseeker/.git/worktrees/checkout
+
+Probable root cause:
+- A linked Git worktree represents `.git` as a file pointing to worktree metadata
+  under the primary repository's absolute `.git/worktrees/` path.
+- Compose mounts only the clean checkout at `/app`, so the pointed-to primary Git
+  metadata path does not exist inside the container.
+- The exact-path `safe.directory=/app` repair is working as intended; this failure
+  is repository discovery, not ownership trust.
+
+Policy-safe possible fixes:
+1. Preferred: reproduce from a standalone local clone at the tested commit so
+   `.git` is a self-contained directory inside the `/app` mount. Use `git clone
+   --no-local`, detach at the tested commit, verify a clean status, and rerun the
+   complete clean wrapper from gate 01 with the same external evidence output and
+   portable `--reference-dir`.
+2. Mount the primary repository's Git common/worktree metadata into the clean
+   container at the original absolute path. This is more invasive,
+   environment-specific, and exposes unrelated repository metadata, so it is not
+   preferred.
+3. Change the privacy assertion to parse ignore files without Git. This would
+   weaken AC06 because it would no longer prove the real Git index and ignore
+   engine, so it is rejected.
+
+Preferred recovery verification:
+- Host checkout preparation:
+  git clone --no-local /home/kesh/projects/codex-workspace/jobseeker <temporary-clone>
+  git -C <temporary-clone> checkout --detach 41c2b25c77c577b36ad7d9c6ec758844aa90fb99
+  git -C <temporary-clone> status --porcelain
+- Complete clean Docker wrapper from the standalone clone:
+  bash scripts/run_milestone_03_gates.sh
+  --output-dir /home/kesh/projects/codex-workspace/jobseeker/artifacts/verification/milestone-03-clean
+  --reference-dir artifacts/verification/milestone-03-clean
+  --project-name jobseeker_m03_clean
+  --run-label clean
+
+Stop decision:
+- The runner stopped before the clean pre-commit gate and clean-checkout status
+  capture.
+- No independent reviews, final receipt, DONE transition, acceptance-evidence
+  commit, or Milestone 04 work was produced.
+- The next recovery turn must use a standalone clone rather than a linked
+  worktree and rerun the complete clean wrapper from gate 01.
+
+Machine capture:
+- `artifacts/verification/milestone-03-main/manifest.tsv`
+- `artifacts/verification/milestone-03-main/metadata.tsv`
+- `artifacts/verification/milestone-03-clean/manifest.tsv`
+- `artifacts/verification/milestone-03-clean/metadata.tsv`
+- `artifacts/verification/milestone-03-clean/logs/10-pytest.log`
+
+Clean reproduction resolution: standalone clone
+Date: 2026-07-25
+Result: RESOLVED
+
+Resolution:
+- Created a fresh standalone clone with `git clone --no-local --no-checkout`.
+- Detached the clone at
+  `41c2b25c77c577b36ad7d9c6ec758844aa90fb99`.
+- Verified the clone had a self-contained `.git` directory and an empty status.
+- Used the clone only for read-only Docker validation. No commit or status/evidence
+  edit occurred in Docker or the clone.
+- Wrote machine output directly to the main WSL worktree under
+  `artifacts/verification/milestone-03-clean-standalone/`.
+
+Passing result:
+- All eleven clean wrapper gates passed.
+- Pytest reported 189 passed.
+- Clean metadata records the exact implementation commit and `result=PASS`.
+- `checkout-status.log` is empty after every gate.
+
+Machine capture:
+- `artifacts/verification/milestone-03-clean-standalone/manifest.tsv`
+- `artifacts/verification/milestone-03-clean-standalone/metadata.tsv`
+- `artifacts/verification/milestone-03-clean-standalone/checkout-status.log`
+- `artifacts/verification/milestone-03-clean-standalone/logs/10-pytest.log`
+- `artifacts/verification/milestone-03-clean-standalone/logs/11-pre-commit.log`
+
+Independent policy/release review
+Date: 2026-07-25
+Result: NO-GO
+Tested commit: 41c2b25c77c577b36ad7d9c6ec758844aa90fb99
+
+Blocking conditions:
+1. M03-PR-H01 / M03-AC05: `numerator_count` KPIs apply
+   zero-denominator handling before returning the numerator. A nonzero count of
+   unsupported claims or unauthorized actions can therefore be reported as zero.
+2. M03-PR-H02 / M03-AC02 and M03-AC03: evidence verification and
+   confidentiality metadata are not reconciled fail-closed. Contradictory
+   `verification_status`, `evidence_source.owner_verified`,
+   `confidentiality_level`, reference, and proposal-eligibility states can pass.
+3. M03-PR-H03 / M03-AC01: profile, scoring, and manifest models validate only
+   schema-version syntax and accept unsupported or mutually inconsistent versions.
+
+Probable root causes:
+- Shared denominator-zero logic precedes operation-specific count evaluation.
+- Related provenance, verification, confidentiality, and eligibility fields were
+  modeled independently without a cross-field state contract.
+- Schema versions are constrained by a numeric pattern rather than an explicit
+  supported-version contract.
+
+Policy-safe possible fixes:
+1. For M03-PR-H01, validate the numerator and return it for `numerator_count`
+   before denominator-zero handling. Require finite, nonnegative integral count
+   values and add regression tests proving `evaluate(8, 0) == 8`.
+2. For M03-PR-H02, introduce explicit confidentiality/provenance enums, reconcile
+   each verification status with its required source evidence, and reject
+   confidential, contradictory, or unknown states from proposal eligibility and
+   completed-client-work claims. Add negative cross-field tests.
+3. For M03-PR-H03, require supported version `1.0` in all three schemas (or use an
+   explicit version registry), validate cross-file compatibility, and add unknown
+   and mixed-version rejection tests.
+
+Required recovery:
+- Implement all three HIGH fixes and their negative regression tests.
+- Create a new implementation commit in the main WSL worktree only.
+- Rerun every authoritative main gate and a fresh standalone-clone clean
+  reproduction at that new commit.
+- Obtain updated evidence PASS and independent policy/release GO.
+- Only then generate and validate the final receipt, mark M03 DONE, and make M04
+  READY.
+
+Stop decision:
+- The independent evidence analyst returned PASS, but policy/release returned
+  NO-GO with three unresolved HIGH findings.
+- No PASS receipt, DONE transition, acceptance-evidence commit, or Milestone 04
+  work was produced.
+
+Machine review:
+- `artifacts/verification/milestone-03-policy-review.json`
+- `artifacts/verification/milestone-03-evidence-review.json`
+
+Recovery context-load attempt
+Date: 2026-07-25
+Result: BLOCKED
+
+Exact failed command:
+- A host read-only `cat` command attempted to load the required M03 context and
+  then referenced `docs/patterns/configuration.md`.
+- Exit code: 1
+- Error: `cat: docs/patterns/configuration.md: No such file or directory`
+
+Probable root cause:
+- The recovery command used guessed legacy pattern names after successfully
+  reading the skill, status ledger, master index, demo contract, milestone, and
+  prompt. Prompt 03 instead lists the exact current pattern paths.
+
+Policy-safe possible fixes:
+1. Preferred: on the next recovery run, read the exact Prompt 03 paths:
+   `docs/patterns/00-codex-execution.md`,
+   `docs/patterns/05-configuration-secrets.md`,
+   `docs/patterns/08-llm-and-retrieval.md`, and
+   `docs/patterns/09-testing-quality-gates.md`, plus
+   `docs/91-configuration-reference.md` and `docs/97-glossary.md`.
+2. Use `rg --files docs/patterns` as a read-only discovery check before loading
+   any additional referenced file when a prompt does not provide an exact path.
+
+Impact and stop decision:
+- No application, test, schema, policy, receipt, or acceptance file was modified
+  by the failed read command.
+- The three policy-review HIGH findings remain unresolved.
+- Per the milestone nonzero-command rule, no implementation or Docker gate was
+  attempted after this failure.
+
+Recovery blocker-record commit attempt
+Date: 2026-07-25
+Result: BLOCKED
+
+Exact failed command:
+- `git add IMPLEMENTATION_STATUS.md artifacts/verification/milestone-03-blocker.log
+  artifacts/verification/milestone-03-evidence-review.json
+  artifacts/verification/milestone-03-policy-review.json
+  artifacts/verification/milestone-03-main
+  artifacts/verification/milestone-03-clean
+  artifacts/verification/milestone-03-clean-standalone &&
+  git diff --cached --check &&
+  git commit -m "milestone-03: record policy review blocker" &&
+  git status --short --branch`
+- Exit code: 2
+- The first subcommand staged only the listed historical blocker records.
+- `git diff --cached --check` stopped the chain before `git commit`.
+- Reported findings were trailing whitespace emitted by Docker Compose progress
+  lines in raw historical logs, plus one final blank line in the failed linked
+  worktree pytest log.
+
+Probable root cause:
+- Docker Compose writes progress lines with a trailing space. The captured logs
+  intentionally preserve that machine output verbatim.
+- `git diff --check` applies source-style whitespace checks to those raw evidence
+  logs even though their whitespace has no executable or semantic effect.
+
+Policy-safe possible fixes:
+1. Preferred: keep the raw evidence byte-for-byte and commit the explicitly
+   scoped historical artifacts without using `git diff --check` on generated log
+   files. Run source whitespace checks only against implementation/documentation
+   paths, and inspect the staged file list before committing.
+2. Normalize copied logs and regenerate every manifest/reference checksum or
+   evidence assertion that depends on them. This changes historical machine
+   output and is not preferred.
+3. Exclude raw log files from the historical record while retaining manifests,
+   metadata, reviews, and the blocker log. This would break existing evidence
+   references and is rejected.
+
+Preferred recovery verification:
+- `git diff --cached --name-status`
+- `git diff --cached --check -- . ':(exclude)artifacts/verification/**/logs/**'`
+- `git commit -m "milestone-03: record policy review blocker"`
+- `git status --short --branch`
+- Then implement the three recorded HIGH fixes, create a new implementation
+  commit, and rerun the complete main and standalone-clean Docker gate sequences.
+
+Stop decision:
+- No runtime, schema, manifest, KPI, receipt-generator, or test fix was made.
+- The three policy-review HIGH findings remain unresolved.
+- The historical files remain staged and this new blocker entry is unstaged.
+- Per the milestone nonzero-command rule, the failed precheck was not rerun and
+  the recovery implementation did not begin.

@@ -1,0 +1,7 @@
+ Network jobseeker_m03_clean_standalone_default Creating 
+ Network jobseeker_m03_clean_standalone_default Created 
+ Volume jobseeker_m03_clean_standalone_postgres_data Creating 
+ Volume jobseeker_m03_clean_standalone_postgres_data Created 
+ Container jobseeker_m03_clean_standalone-api-run-c208f173257c Creating 
+ Container jobseeker_m03_clean_standalone-api-run-c208f173257c Created 
+{"contradictions": [], "counts": {"evidence_records": 1, "metrics": 18, "proposal_eligible_claims": 8, "services": 12}, "dangling_evidence_ids": [], "ineligible_evidence_ids": [], "result": "PASS", "schema_versions": {"portfolio_manifest": "1.0", "profile": "1.0", "scoring": "1.0"}, "valid": true}

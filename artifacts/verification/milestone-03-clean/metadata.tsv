@@ -1,0 +1,8 @@
+key	value
+schema_version	1
+run_label	clean
+tested_commit	41c2b25c77c577b36ad7d9c6ec758844aa90fb99
+timestamp_utc	2026-07-24T21:11:34Z
+compose_project_name	jobseeker_m03_clean
+image_digest	sha256:6f30a4c6b78afb8d0fc55a91ca8c0f3d5400faae6080165cf6e89c7f210a175f
+result	FAIL

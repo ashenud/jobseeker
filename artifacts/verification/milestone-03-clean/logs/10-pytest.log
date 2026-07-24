@@ -1,0 +1,36 @@
+ Container jobseeker_m03_clean-api-run-2575d0ab64b4 Creating 
+ Container jobseeker_m03_clean-api-run-2575d0ab64b4 Created 
+........................................................................ [ 38%]
+.........................................................F.............. [ 76%]
+.............................................                            [100%]
+=================================== FAILURES ===================================
+____ test_private_inputs_are_ignored_and_only_scrubbed_metadata_is_tracked _____
+
+    def test_private_inputs_are_ignored_and_only_scrubbed_metadata_is_tracked() -> None:
+        root = Path(__file__).resolve().parents[1]
+        git = ["git", "-c", f"safe.directory={root}"]
+        ignored = (
+            "data/private/private-profile.yaml",
+            "data/private/proposal_history.json",
+            "data/private/proposal_style_anchors/client-secret.md",
+            "data/private/source-files/herbacorium.psd",
+            "data/private/source-files/herbacorium.max",
+        )
+        for path in ignored:
+            result = subprocess.run(
+                [*git, "check-ignore", "--no-index", "--quiet", path],
+                check=False,
+                cwd=root,
+            )
+>           assert result.returncode == 0, path
+E           AssertionError: data/private/private-profile.yaml
+E           assert 128 == 0
+E            +  where 128 = CompletedProcess(args=['git', '-c', 'safe.directory=/app', 'check-ignore', '--no-index', '--quiet', 'data/private/private-profile.yaml'], returncode=128).returncode
+
+tests/test_profile.py:371: AssertionError
+----------------------------- Captured stderr call -----------------------------
+fatal: not a git repository: /home/kesh/projects/codex-workspace/jobseeker/.git/worktrees/checkout
+=========================== short test summary info ============================
+FAILED tests/test_profile.py::test_private_inputs_are_ignored_and_only_scrubbed_metadata_is_tracked
+1 failed, 188 passed in 1.55s
+

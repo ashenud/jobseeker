@@ -1,0 +1,11 @@
+gate_id	command	exit_code	duration_seconds	log_ref	test_count	result
+01-compose-config	docker compose --profile dev config --quiet	0	0	artifacts/verification/milestone-03-clean/logs/01-compose-config.log		PASS
+02-build-api	docker compose --profile dev build api	0	36	artifacts/verification/milestone-03-clean/logs/02-build-api.log		PASS
+03-image-digest	docker image inspect jobseeker_m03_clean-api --format \{\{.Id\}\}	0	0	artifacts/verification/milestone-03-clean/logs/03-image-digest.log		PASS
+04-profile-validate	docker compose --profile dev run --rm --no-deps api job-agent profile-validate	0	2	artifacts/verification/milestone-03-clean/logs/04-profile-validate.log		PASS
+05-validate-docs	docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py	0	1	artifacts/verification/milestone-03-clean/logs/05-validate-docs.log		PASS
+06-validate-milestone	docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all	0	1	artifacts/verification/milestone-03-clean/logs/06-validate-milestone.log		PASS
+07-validate-codex-controls	docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py	0	1	artifacts/verification/milestone-03-clean/logs/07-validate-codex-controls.log		PASS
+08-ruff	docker compose --profile dev run --rm --no-deps api ruff check .	0	1	artifacts/verification/milestone-03-clean/logs/08-ruff.log		PASS
+09-mypy	docker compose --profile dev run --rm --no-deps api mypy src	0	3	artifacts/verification/milestone-03-clean/logs/09-mypy.log		PASS
+10-pytest	docker compose --profile dev run --rm --no-deps api pytest -q	1	4	artifacts/verification/milestone-03-clean/logs/10-pytest.log	188	FAIL
