@@ -1,41 +1,53 @@
 schema_version: "1.0"
 identity:
-  display_name: "Dilshan Keshewa Edirisinghe"
-  primary_title: "Senior Graphic Designer / 3D Visualizer"
-  timezone: "Asia/Colombo"
-  portfolio_url: "https://www.behance.net/47pixels"
-  email: "SET_IN_PRIVATE_PROFILE"
-  phone: "SET_IN_PRIVATE_PROFILE"
+  display_name: "Example Portfolio Professional"
+  primary_title: "Example Creative Specialist"
+  timezone: "Etc/UTC"
+  portfolio_url: "https://portfolio.example.test"
+  languages:
+    - language: "Example Language"
+      proficiency: "fluent"
 services:
-  - id: packaging_label
-    priority: 10
-    names: ["Packaging Design", "Label Design", "Dielines", "Print Production"]
-  - id: amazon_ecommerce_creative
-    priority: 10
-    names: ["Amazon Listing Images", "A+ Content", "Product Storytelling"]
-  - id: brand_identity
-    priority: 9
-    names: ["Brand Identity", "Visual Systems", "Logo and Guidelines"]
-  - id: 3d_product_visualization
-    priority: 10
-    names: ["3D Product Modeling", "Photoreal Rendering", "Mockups"]
-  - id: architectural_visualization
-    priority: 8
-    names: ["Architectural Visualization", "Interior Visualization"]
-  - id: catalog_presentation_print
-    priority: 7
-    names: ["Catalogs", "Presentations", "Brochures", "Social Creatives"]
-proposal_style:
-  concise: true
-  target_words: [100, 180]
-  human_tone: true
-  include_portfolio_link: true
-  avoid_phrases:
-    - "I am thrilled to apply"
-    - "I am the perfect candidate"
+  - service_id: "example_service"
+    display_name: "Example Service"
+    priority: 5
+    minimum_project_budget_usd: 100
 constraints:
-  max_review_jobs_per_day: 20
-  max_submitted_applications_per_day: 5
-  unpaid_large_tests: reject
-  unknown_budget: review
+  currency: "USD"
+  minimum_hourly_rate_usd: 20
+  target_hourly_rate_usd: 25
+  global_minimum_project_budget_usd: 100
+  working_hours_overlap:
+    minimum_hours_per_working_day: 2
+    preferred_hours_per_working_day: 3
+    maximum_hours_outside_sri_lankan_working_day: 4
+    flexible_regions: ["Example Region"]
+  geography:
+    strict_geographic_exclusions: []
+    excluded_role_requirements: ["Example local-residency requirement"]
+  unpaid_tests:
+    custom_design_test: "reject"
+    portfolio_review_allowed: true
+    interview_allowed: true
+    maximum_unpaid_skill_assessment_minutes: 20
+    substantial_or_client_ready_work_must_be_paid: true
+    editable_source_files_must_be_paid: true
+  workload:
+    maximum_reviews_per_day: 20
+    targeted_applications_per_day: 3
+    maximum_applications_per_day: 5
+  preferred_duration:
+    preferred_engagements: ["Example recurring work"]
+    minimum_fixed_project_days: 7
+    require_clear_scope_budget_milestones_and_payment_terms: true
+  excluded_industries: []
+  excluded_deliverables: ["Example prohibited deliverable"]
+proposal_style:
+  minimum_words: 80
+  maximum_words: 150
+  tone: ["concise", "factual"]
+  avoid_phrases: ["Example generic opening"]
+  maximum_capabilities_to_mention: 2
+  ask_useful_qualification_question_when_helpful: true
+  include_portfolio_link_unless_platform_prohibits: true
 claims: []

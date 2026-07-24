@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import argparse
-import ast
 import json
 from pathlib import Path
 
 from job_agent.pilot.service import PilotConfig, daily_report, enforce
 from job_agent.policy.exceptions import PolicyConfigurationError
 from job_agent.policy.service import PolicyService
+from job_agent.profile.exceptions import ProfileConfigurationError
+from job_agent.profile.service import ProfileBundleService
 from job_agent.sources.adapters import ManualAdapter
 
 
@@ -32,7 +33,12 @@ def _parser() -> argparse.ArgumentParser:
     ingest.add_argument("title")
     ingest.add_argument("body")
 
-    commands.add_parser("profile-validate")
+    profile_validate = commands.add_parser("profile-validate")
+    profile_validate.add_argument("--profile", default="config/profile.yaml")
+    profile_validate.add_argument("--scoring", default="config/scoring.yaml")
+    profile_validate.add_argument(
+        "--manifest", default="data/private/portfolio_manifest.yaml"
+    )
     commands.add_parser("seed")
     evaluation = commands.add_parser("eval")
     evaluation.add_argument("sub")
@@ -86,8 +92,27 @@ def main(
         print(ManualAdapter().capture(args.url, args.title, args.body))
         return 0
     if args.cmd == "profile-validate":
-        ast.literal_eval(json.dumps(Path("config/profile.yaml").read_text()))
-        print("profile ok")
+        try:
+            profile = ProfileBundleService.from_yaml(
+                profile_path=args.profile,
+                scoring_path=args.scoring,
+                manifest_path=args.manifest,
+            )
+        except ProfileConfigurationError:
+            print(
+                json.dumps(
+                    {
+                        "valid": False,
+                        "error": {
+                            "code": "profile_configuration_invalid",
+                            "message": "Profile configuration validation failed",
+                        },
+                    },
+                    sort_keys=True,
+                )
+            )
+            return 3
+        print(json.dumps({"valid": True, **profile.validation_summary()}, sort_keys=True))
         return 0
     if args.cmd == "seed":
         print("seed data ready")

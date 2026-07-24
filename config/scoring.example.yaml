@@ -1,23 +1,32 @@
 schema_version: "1.0"
 thresholds:
-  low_fit_below: 5.5
-  priority_at_or_above: 7.5
+  low_fit_below: 5.0
+  review_at_or_above: 5.0
+  priority_at_or_above: 8.0
 rules:
   max_job_age_days: 14
-  unknown_budget_action: review
-  minimum_currency: USD
+  unknown_budget_action: "review"
+  currency: "USD"
   minimum_fixed_budget_usd: 100
-  minimum_hourly_rate_usd: 15
+  minimum_hourly_rate_usd: 20
   max_review_jobs_per_day: 20
-weights:
-  service_match: 0.24
-  portfolio_evidence: 0.18
-  budget_fit: 0.15
-  scope_clarity: 0.10
-  timeline_feasibility: 0.10
-  client_risk: 0.10
-  strategic_value: 0.08
-  geography_timezone: 0.05
+  max_applications_per_day: 5
+dimensions:
+  - dimension_id: "service_match"
+    weight: 0.5
+  - dimension_id: "portfolio_evidence"
+    weight: 0.5
+metrics:
+  - metric_id: "example_relevance_rate"
+    display_name: "Example relevance rate"
+    calculation: "percentage"
+    formula: "relevant records / reviewed records * 100"
+    numerator: "relevant_records"
+    denominator: "reviewed_records"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["example_reviews"]
+    cadence: "weekly"
+    initial_target: {operator: "at_least", value: 75.0, unit: "percent"}
 pilot:
   archive_low_scores: true
   auto_discard: false

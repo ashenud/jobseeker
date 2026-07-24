@@ -78,3 +78,41 @@ def test_policy_configuration_failure_is_safe_json(
 def test_sources_list_reports_manual_capture(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["sources", "list"]) == 0
     assert capsys.readouterr().out.splitlines() == ["manual"]
+
+
+def test_profile_validate_reports_structured_counts(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert main(["profile-validate"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["valid"] is True
+    assert payload["counts"]["services"] > 0
+    assert payload["counts"]["evidence_records"] > 0
+    assert payload["counts"]["proposal_eligible_claims"] > 0
+    assert payload["counts"]["metrics"] > 0
+
+
+def test_profile_validate_failure_is_safe_json(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    invalid = tmp_path / "invalid.yaml"
+    invalid.write_text("private_value: must-not-leak\n", encoding="utf-8")
+    assert (
+        main(
+            [
+                "profile-validate",
+                "--profile",
+                str(invalid),
+                "--scoring",
+                str(invalid),
+                "--manifest",
+                str(invalid),
+            ]
+        )
+        == 3
+    )
+    output = capsys.readouterr().out
+    payload = json.loads(output)
+    assert payload["valid"] is False
+    assert payload["error"]["code"] == "profile_configuration_invalid"
+    assert "must-not-leak" not in output

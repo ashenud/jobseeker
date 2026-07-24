@@ -81,4 +81,12 @@ uncertainty, placeholder production path, or reviewer `NO-GO`:
 2. Preserve logs with secrets scrubbed.
 3. Do not update delivery claims, mark `DONE`, commit acceptance, or begin the next
    milestone.
-4. Stop the full pipeline and report the blocker honestly.
+4. Report the probable root cause and policy-safe possible fixes. Identify the
+   preferred fix and why, likely files to change, and risks or tradeoffs. Give the
+   exact Docker commands a later recovery run should use to verify it.
+5. When the cause is uncertain, distinguish facts from hypotheses, name the
+   missing evidence, and suggest only read-only diagnostics.
+6. Keep every remediation suggestion advisory. Do not implement a suggested fix,
+   rerun the failed gate, weaken acceptance, bypass policy, or imply a pass after
+   the stop condition.
+7. Stop the full pipeline and report the blocker honestly.

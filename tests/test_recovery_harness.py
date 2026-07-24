@@ -236,6 +236,7 @@ def test_host_toolchain_and_wrapper_bypasses_are_denied(command: str, denied: st
         "rg 'pytest' docs",
         "echo 'python and pytest are harmless text here'",
         "bash scripts/check.sh",
+        "bash scripts/run_milestone_03_gates.sh --run-label clean",
         "make type",
     ],
 )

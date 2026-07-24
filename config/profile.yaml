@@ -1,15 +1,159 @@
+schema_version: "1.0"
 identity:
-  display_name: "47pixels"
+  display_name: "Dilshan Keshewa Edirisinghe — Senior Graphic Designer & 3D Visualizer"
   primary_title: "Senior Graphic Designer / 3D Visualizer"
+  timezone: "Asia/Colombo"
   portfolio_url: "https://www.behance.net/47pixels"
-  timezone: "Etc/UTC"
-services: [packaging_label, amazon_content, brand_identity, print_production, 3d_product_visualization, architectural_visualization]
+  languages:
+    - language: "Sinhala"
+      proficiency: "native"
+    - language: "English"
+      proficiency: "fluent"
+services:
+  - service_id: "small_graphic_design"
+    display_name: "Small Graphic Design Tasks"
+    priority: 6
+    minimum_project_budget_usd: 100
+  - service_id: "packaging_label_design"
+    display_name: "Packaging and Label Design"
+    priority: 10
+    minimum_project_budget_usd: 200
+  - service_id: "amazon_ecommerce_creative"
+    display_name: "Amazon Listing Images and A+ Content"
+    priority: 10
+    minimum_project_budget_usd: 250
+  - service_id: "brand_identity"
+    display_name: "Brand Identity and Visual Systems"
+    priority: 9
+    minimum_project_budget_usd: 500
+  - service_id: "3d_product_visualization"
+    display_name: "3D Product Visualization"
+    priority: 10
+    minimum_project_budget_usd: 200
+  - service_id: "architectural_visualization"
+    display_name: "Architectural and Interior Visualization"
+    priority: 8
+    minimum_project_budget_usd: 300
+  - service_id: "catalog_presentation_print"
+    display_name: "Catalogs, Presentations, Brochures and Advertising Assets"
+    priority: 7
+    minimum_project_budget_usd: 100
+  - service_id: "cosmetics_design"
+    display_name: "Cosmetics and Skincare Design"
+    priority: 9
+    minimum_project_budget_usd: 100
+  - service_id: "product_retouching"
+    display_name: "Product Retouching and Compositing"
+    priority: 9
+    minimum_project_budget_usd: 100
+  - service_id: "ecommerce_graphic_design"
+    display_name: "E-commerce Graphic Design"
+    priority: 9
+    minimum_project_budget_usd: 100
+  - service_id: "packaging_visualization"
+    display_name: "Packaging Visualization"
+    priority: 9
+    minimum_project_budget_usd: 200
+  - service_id: "monthly_retainer"
+    display_name: "Monthly Design Retainer"
+    priority: 10
+    minimum_project_budget_usd: 1500
 constraints:
-  minimum_project_budget_usd: 100
-  minimum_hourly_rate_usd: 25
-  excluded_work: [speculative_free_samples, bulk_bidding, captcha_or_stealth_automation]
-evidence_claims:
-  - evidence_id: behance-public-profile
-    claim: "Public Behance portfolio is available for review."
-    verification_state: verified_public
-    public_url: "https://www.behance.net/47pixels"
+  currency: "USD"
+  minimum_hourly_rate_usd: 15
+  target_hourly_rate_usd: 25
+  global_minimum_project_budget_usd: 100
+  working_hours_overlap:
+    minimum_hours_per_working_day: 3
+    preferred_hours_per_working_day: 4
+    maximum_hours_outside_sri_lankan_working_day: 6
+    flexible_regions:
+      - "United Kingdom"
+      - "Europe"
+      - "Australia"
+      - "Selected United States hours"
+  geography:
+    strict_geographic_exclusions: []
+    excluded_role_requirements:
+      - "Local residency outside Sri Lanka"
+      - "Unrestricted work authorization in another country"
+      - "Full overnight availability"
+      - "More than 5–6 hours of daily overlap outside Sri Lankan working hours"
+  unpaid_tests:
+    custom_design_test: "reject"
+    portfolio_review_allowed: true
+    interview_allowed: true
+    maximum_unpaid_skill_assessment_minutes: 30
+    substantial_or_client_ready_work_must_be_paid: true
+    editable_source_files_must_be_paid: true
+  workload:
+    maximum_reviews_per_day: 100
+    targeted_applications_per_day: 15
+    maximum_applications_per_day: 20
+  preferred_duration:
+    preferred_engagements:
+      - "Long-term contracts"
+      - "Recurring work"
+      - "Monthly retainers"
+    minimum_fixed_project_days: 7
+    require_clear_scope_budget_milestones_and_payment_terms: true
+  excluded_industries: []
+  excluded_deliverables:
+    - "Unpaid custom design tests"
+    - "Unattended bulk applications"
+    - "CAPTCHA, stealth, or platform-control evasion"
+proposal_style:
+  minimum_words: 100
+  maximum_words: 180
+  tone:
+    - "human"
+    - "concise"
+    - "direct"
+    - "confident without exaggeration"
+  avoid_phrases:
+    - "I am thrilled to apply"
+    - "I am the perfect candidate"
+  maximum_capabilities_to_mention: 2
+  ask_useful_qualification_question_when_helpful: true
+  include_portfolio_link_unless_platform_prohibits: true
+claims:
+  - claim_id: "herbacorium_amazon_content"
+    text: "Created Amazon listing images and A+ content for a cosmetics product range."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true
+  - claim_id: "herbacorium_photorealistic_renders"
+    text: "Produced photorealistic 3D product renders using 3ds Max and V-Ray."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true
+  - claim_id: "herbacorium_ecommerce_image_system"
+    text: "Combined 3D visualization, graphic design, retouching and compositing into a complete e-commerce image system."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true
+  - claim_id: "herbacorium_amazon_graphics"
+    text: "Designed product feature, benefit, comparison and lifestyle graphics for Amazon."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true
+  - claim_id: "herbacorium_product_information"
+    text: "Translated cosmetic product information into clear, premium and easy-to-understand visual content."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true
+  - claim_id: "herbacorium_visual_workflow"
+    text: "Handled the visual workflow from 3D product presentation through final Amazon layouts."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true
+  - claim_id: "herbacorium_completed_client_work"
+    text: "Has completed client work involving cosmetics, Amazon content and 3D product visualization."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true
+  - claim_id: "herbacorium_visual_consistency"
+    text: "Has experience maintaining visual consistency across listing images and A+ content."
+    claim_level: "completed_client_work"
+    evidence_ids: ["herbacorium_amazon_content"]
+    allowed_in_proposals: true

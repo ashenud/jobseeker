@@ -101,9 +101,19 @@ Set initial targets conservatively, then replace them with baseline data after t
 
 ## Acceptance criteria
 
-- [ ] Profile validates from one command.
-- [ ] Every proposal-eligible claim has at least one verified evidence ID.
-- [ ] Concepts/proposals cannot be described as completed client work.
-- [ ] Minimum rate, budget, location, and workload rules are explicit.
-- [ ] KPI definitions include formulas and data sources.
-- [ ] Private data is ignored by Git.
+- **M03-AC01:** The canonical profile, scoring configuration, portfolio
+  manifest, and KPI definitions validate together through one documented CLI
+  command with strict schemas and safe failure output.
+- **M03-AC02:** Every proposal-eligible claim resolves to at least one uniquely
+  identified, eligible, owner- or publicly verified evidence record.
+- **M03-AC03:** Concept, speculative, proposal-only, unverified, confidential,
+  or otherwise restricted evidence cannot support a completed-client-work
+  claim.
+- **M03-AC04:** Minimum rate, global and service budgets, geography and overlap
+  rules, unpaid-test policy, workload caps, and preferred duration are explicit;
+  contradictory values fail validation.
+- **M03-AC05:** KPI definitions include stable identifiers, formulas,
+  zero-denominator behavior, data sources, cadence, and initial targets.
+- **M03-AC06:** Git tracks only scrubbed public-safe portfolio metadata and
+  documentation; contact details, private records, source files, and proposal
+  history remain ignored.

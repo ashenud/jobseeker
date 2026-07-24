@@ -7,6 +7,7 @@ __pycache__/
 data/private/*
 !data/private/portfolio_manifest.yaml
 !data/private/proposal_style_anchors/
+data/private/proposal_style_anchors/*
 !data/private/proposal_style_anchors/README.md
 backups/
 *.db

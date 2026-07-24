@@ -59,7 +59,13 @@ For each milestone:
 
 At any nonzero command, missing evidence, policy uncertainty, required credential
 gap, placeholder, or reviewer `NO-GO`, record the exact blocker, set `BLOCKED`, and
-stop the full run. Documenting failure never converts it to a pass.
+stop the full run. Every blocker report must also give the probable root cause,
+policy-safe possible fixes, a preferred fix with its reason, the likely files
+involved, and the exact Docker commands that a later recovery run should use to
+verify it. These remediation suggestions are advisory: do not implement them,
+rerun the failed gate, weaken a gate, bypass policy, or imply a pass after the stop
+condition. If the cause is uncertain, state the missing evidence and suggest only
+read-only diagnostics. Documenting failure never converts it to a pass.
 
 Only the coordinating agent integrates work, changes policies/status/evidence,
 commits, prepares PR/release metadata, and decides final acceptance. Assign one

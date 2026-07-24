@@ -59,9 +59,49 @@ def validate_skill() -> list[str]:
         "Complete or stop",
         "clean checkout",
         "independent",
+        "probable root cause",
+        "policy-safe possible fixes",
+        "preferred fix",
+        "exact Docker commands",
+        "remediation suggestion",
+        "read-only diagnostics",
     ):
         if phrase.lower() not in text.lower():
             errors.append(f"jobseeker-milestone skill lacks {phrase!r}")
+
+    agents_text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    for phrase in (
+        "probable root cause",
+        "policy-safe possible fixes",
+        "preferred fix",
+        "read-only diagnostics",
+    ):
+        if phrase.lower() not in agents_text.lower():
+            errors.append(f"AGENTS.md lacks blocker guidance {phrase!r}")
+
+    interface_path = path.parent / "agents" / "openai.yaml"
+    try:
+        interface = _mapping(yaml.safe_load(interface_path.read_text(encoding="utf-8")))
+    except (OSError, yaml.YAMLError) as exc:
+        errors.append(f"invalid jobseeker-milestone agents/openai.yaml: {exc}")
+    else:
+        default_prompt = _mapping(interface.get("interface")).get("default_prompt")
+        if not isinstance(default_prompt, str):
+            errors.append("jobseeker-milestone interface lacks a default prompt")
+        else:
+            for phrase in (
+                "$jobseeker-milestone",
+                "stop",
+                "probable cause",
+                "possible safe fixes",
+                "preferred fix",
+                "verification commands",
+            ):
+                if phrase.lower() not in default_prompt.lower():
+                    errors.append(
+                        "jobseeker-milestone default prompt lacks "
+                        f"{phrase!r}"
+                    )
     return errors
 
 
@@ -286,6 +326,7 @@ def validate_boundary_cases() -> list[str]:
         "./scripts/check.sh",
         "bash scripts/bootstrap.sh",
         "bash scripts/run_milestone_00_gates.sh --run-label clean",
+        "bash scripts/run_milestone_03_gates.sh --run-label clean",
         "make lint",
     )
     for command in allowed:

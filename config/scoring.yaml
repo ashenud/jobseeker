@@ -1,3 +1,214 @@
-thresholds: {priority: 7.0, review: 5.0, reject: 0.0}
-weights: {service_match: 0.30, portfolio_evidence: 0.20, budget_fit: 0.15, scope_clarity: 0.10, timeline_feasibility: 0.10, client_risk: 0.10, strategic_value: 0.05}
-daily_caps: {llm_jobs: 20, priority_applications: 5}
+schema_version: "1.0"
+thresholds:
+  low_fit_below: 5.5
+  review_at_or_above: 5.5
+  priority_at_or_above: 7.5
+rules:
+  max_job_age_days: 14
+  unknown_budget_action: "review"
+  currency: "USD"
+  minimum_fixed_budget_usd: 100
+  minimum_hourly_rate_usd: 15
+  max_review_jobs_per_day: 100
+  max_applications_per_day: 20
+dimensions:
+  - dimension_id: "service_match"
+    weight: 0.24
+  - dimension_id: "portfolio_evidence"
+    weight: 0.18
+  - dimension_id: "budget_fit"
+    weight: 0.15
+  - dimension_id: "scope_clarity"
+    weight: 0.10
+  - dimension_id: "timeline_feasibility"
+    weight: 0.10
+  - dimension_id: "client_risk"
+    weight: 0.10
+  - dimension_id: "strategic_value"
+    weight: 0.08
+  - dimension_id: "geography_timezone"
+    weight: 0.05
+metrics:
+  - metric_id: "relevant_jobs_surfaced_per_day"
+    display_name: "Relevant jobs surfaced per day"
+    calculation: "ratio"
+    formula: "count of surfaced jobs that pass deterministic relevance rules"
+    numerator: "relevant_surfaced_jobs"
+    denominator: "calendar_days_with_discovery_runs"
+    zero_denominator_behavior: "zero"
+    data_sources: ["jobs", "rule_decisions"]
+    cadence: "daily"
+    initial_target: {operator: "at_least", value: 0.0, unit: "jobs"}
+  - metric_id: "surfaced_review_acceptance_rate"
+    display_name: "Surfaced jobs accepted for review"
+    calculation: "percentage"
+    formula: "jobs accepted for review / surfaced jobs * 100"
+    numerator: "jobs_accepted_for_review"
+    denominator: "surfaced_jobs"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["jobs", "review_decisions"]
+    cadence: "weekly"
+    initial_target: {operator: "at_least", value: 80.0, unit: "percent"}
+  - metric_id: "review_relevance_rate"
+    display_name: "Reviewed-job relevance rate"
+    calculation: "percentage"
+    formula: "relevant reviewed jobs / reviewed jobs * 100"
+    numerator: "relevant_reviewed_jobs"
+    denominator: "reviewed_jobs"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["review_decisions"]
+    cadence: "weekly"
+    initial_target: {operator: "at_least", value: 80.0, unit: "percent"}
+  - metric_id: "light_edit_draft_rate"
+    display_name: "Drafts accepted with only light edits"
+    calculation: "percentage"
+    formula: "light-edit accepted drafts / reviewed drafts * 100"
+    numerator: "light_edit_accepted_drafts"
+    denominator: "reviewed_drafts"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["proposal_revisions", "review_decisions"]
+    cadence: "weekly"
+    initial_target: {operator: "at_least", value: 60.0, unit: "percent"}
+  - metric_id: "unsupported_proposal_claim_count"
+    display_name: "Unsupported proposal claims"
+    calculation: "numerator_count"
+    formula: "count of proposal claims without eligible evidence"
+    numerator: "unsupported_proposal_claims"
+    denominator: "evaluated_proposal_claims"
+    zero_denominator_behavior: "zero"
+    data_sources: ["claim_ledgers"]
+    cadence: "per_proposal"
+    initial_target: {operator: "equals", value: 0.0, unit: "claims"}
+  - metric_id: "median_discovery_to_review_minutes"
+    display_name: "Median discovery-to-review time"
+    calculation: "median"
+    formula: "median(reviewed_at - discovered_at)"
+    numerator: "elapsed_discovery_to_review_minutes"
+    denominator: "reviewed_jobs"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["jobs", "review_decisions"]
+    cadence: "weekly"
+    initial_target: {operator: "at_most", value: 2.0, unit: "minutes"}
+  - metric_id: "unauthorized_external_action_count"
+    display_name: "Unauthorized external actions"
+    calculation: "numerator_count"
+    formula: "count of external actions without a current allow decision"
+    numerator: "unauthorized_external_actions"
+    denominator: "external_action_attempts"
+    zero_denominator_behavior: "zero"
+    data_sources: ["policy_audit_events"]
+    cadence: "daily"
+    initial_target: {operator: "equals", value: 0.0, unit: "actions"}
+  - metric_id: "applications_submitted_count"
+    display_name: "Applications submitted"
+    calculation: "ratio"
+    formula: "count of owner-recorded manual submissions"
+    numerator: "submitted_applications"
+    denominator: "calendar_days"
+    zero_denominator_behavior: "zero"
+    data_sources: ["applications"]
+    cadence: "daily"
+    initial_target: {operator: "at_most", value: 20.0, unit: "applications_per_day"}
+  - metric_id: "replies_count"
+    display_name: "Replies received"
+    calculation: "numerator_count"
+    formula: "count of applications with a recorded client reply"
+    numerator: "applications_with_replies"
+    denominator: "submitted_applications"
+    zero_denominator_behavior: "zero"
+    data_sources: ["applications", "crm_outcomes"]
+    cadence: "monthly"
+    initial_target: {operator: "at_least", value: 0.0, unit: "replies"}
+  - metric_id: "interviews_count"
+    display_name: "Interviews received"
+    calculation: "numerator_count"
+    formula: "count of applications with a recorded interview outcome"
+    numerator: "applications_with_interviews"
+    denominator: "submitted_applications"
+    zero_denominator_behavior: "zero"
+    data_sources: ["applications", "crm_outcomes"]
+    cadence: "monthly"
+    initial_target: {operator: "at_least", value: 0.0, unit: "interviews"}
+  - metric_id: "offers_count"
+    display_name: "Offers received"
+    calculation: "numerator_count"
+    formula: "count of applications with a recorded offer outcome"
+    numerator: "applications_with_offers"
+    denominator: "submitted_applications"
+    zero_denominator_behavior: "zero"
+    data_sources: ["applications", "crm_outcomes"]
+    cadence: "monthly"
+    initial_target: {operator: "at_least", value: 0.0, unit: "offers"}
+  - metric_id: "wins_count"
+    display_name: "Engagements won"
+    calculation: "numerator_count"
+    formula: "count of applications with a recorded won outcome"
+    numerator: "won_engagements"
+    denominator: "submitted_applications"
+    zero_denominator_behavior: "zero"
+    data_sources: ["applications", "crm_outcomes"]
+    cadence: "monthly"
+    initial_target: {operator: "at_least", value: 0.0, unit: "wins"}
+  - metric_id: "response_rate"
+    display_name: "Application response rate"
+    calculation: "percentage"
+    formula: "applications receiving replies / submitted applications * 100, grouped by platform and service"
+    numerator: "applications_with_replies"
+    denominator: "submitted_applications"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["applications", "crm_outcomes"]
+    cadence: "monthly"
+    initial_target: {operator: "at_least", value: 0.0, unit: "percent"}
+  - metric_id: "win_rate"
+    display_name: "Application win rate"
+    calculation: "percentage"
+    formula: "won engagements / submitted applications * 100, grouped by platform and service"
+    numerator: "won_engagements"
+    denominator: "submitted_applications"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["applications", "crm_outcomes"]
+    cadence: "monthly"
+    initial_target: {operator: "at_least", value: 0.0, unit: "percent"}
+  - metric_id: "llm_cost_per_reviewed_job"
+    display_name: "LLM cost per reviewed job"
+    calculation: "ratio"
+    formula: "LLM cost in USD / reviewed jobs"
+    numerator: "llm_cost_usd"
+    denominator: "reviewed_jobs"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["llm_runs", "review_decisions"]
+    cadence: "weekly"
+    initial_target: {operator: "at_most", value: 1.0, unit: "USD"}
+  - metric_id: "llm_cost_per_reply"
+    display_name: "LLM cost per reply"
+    calculation: "ratio"
+    formula: "LLM cost in USD / applications receiving replies"
+    numerator: "llm_cost_usd"
+    denominator: "applications_with_replies"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["llm_runs", "applications", "crm_outcomes"]
+    cadence: "monthly"
+    initial_target: {operator: "at_most", value: 10.0, unit: "USD"}
+  - metric_id: "false_positive_rate"
+    display_name: "False-positive surfaced-job rate"
+    calculation: "percentage"
+    formula: "surfaced jobs marked irrelevant / reviewed surfaced jobs * 100"
+    numerator: "irrelevant_reviewed_surfaced_jobs"
+    denominator: "reviewed_surfaced_jobs"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["jobs", "review_decisions"]
+    cadence: "weekly"
+    initial_target: {operator: "at_most", value: 20.0, unit: "percent"}
+  - metric_id: "proposal_factuality_trust_score"
+    display_name: "Owner trust in proposal factuality"
+    calculation: "ratio"
+    formula: "sum owner factuality scores / scored proposals"
+    numerator: "owner_factuality_score_total"
+    denominator: "owner_scored_proposals"
+    zero_denominator_behavior: "not_available"
+    data_sources: ["proposal_feedback"]
+    cadence: "weekly"
+    initial_target: {operator: "at_least", value: 4.0, unit: "score_out_of_5"}
+pilot:
+  archive_low_scores: true
+  auto_discard: false

@@ -1,32 +1,150 @@
-Milestone 03 owner-input blocker
-Date: 2026-07-19
+Milestone 03 strict-validation blocker
+Date: 2026-07-25
 Result: BLOCKED
 
-Required context and planning completed:
-- Milestone 03, matching prompt, required patterns, supporting references, and
-  relevant ADRs were read.
-- Named planner and repository explorer independently inspected the scaffold.
-- The public Behance profile URL was checked only to distinguish public facts
-  from unsupported client-work claims.
+Owner-input blocker changed:
+- Identity, languages, availability, rates, budgets, geography, unpaid-test,
+  workload, and duration constraints are owner-confirmed.
+- HERBACORIUM is owner-confirmed completed client work with approved claims,
+  restrictions, and supported service IDs.
 
 Blocking condition:
-- The repository does not contain confirmed owner provenance for the proposal
-  display name, languages/levels, working-hour overlap, minimum hourly rate,
-  per-service or global minimum project budget, geography constraints, preferred
-  duration, precise workload limits, or unpaid-test policy.
-- Existing canonical and example files contradict one another (including
-  timezone, rate, service IDs, schemas, and caps) and were previously classified
-  as unverified scaffold inputs.
-- A Behance index proves a public profile exists but does not establish which
-  projects are completed client work versus personal, concept, speculative, or
-  proposal-only work. No capability claim can safely be proposal-eligible yet.
+- Command:
+  docker compose --profile dev run --rm --no-deps api job-agent profile-validate
+- Exit code: 3
+- Safe output code: profile_configuration_invalid
+- Sanitized diagnostic locations:
+  profile.services.4.service_id -> string_pattern_mismatch
+  manifest.records.0.supported_service_ids.1 -> string_pattern_mismatch
+- Root cause: the shared identifier pattern requires the first character to be
+  a letter, but the required canonical service ID is
+  `3d_product_visualization`.
 
-Why this cannot be auto-fixed or skipped:
-- Choosing financial, availability, language, or client-work facts would invent
-  owner data, violating the M03 recovery gate.
-- Milestone 04 depends on Milestones 01-03, and Milestones 10-12 consume M03's
-  profile/evidence contract. Marking M03 DONE or advancing M04 would create false
-  evidence and break the sequential dependency ledger.
+Stop decision:
+- The milestone runner requires any nonzero gate to set BLOCKED and stop.
+- No implementation commit, clean-checkout reproduction, acceptance receipt,
+  reviewer GO, DONE transition, or Milestone 04 work was produced.
+- The next M03 recovery turn must make the identifier grammar compatible with
+  the already documented `3d_product_visualization` taxonomy, rerun all Docker
+  gates from the start, and preserve the same owner-approved evidence.
 
-No application implementation, acceptance receipt, or DONE claim was produced.
-Resume M03 after the owner supplies or explicitly approves the missing values.
+The diagnostic printed only field locations and error types; it did not print
+portfolio text, private values, or source-file contents.
+
+Recovery attempt: digit-leading service identifiers
+Date: 2026-07-25
+Result: BLOCKED
+
+Changed condition:
+- A service-only identifier grammar now accepts
+  `3d_product_visualization`.
+- General claim, evidence, scoring, and KPI identifiers remain letter-led.
+- Regression tests cover allowed and rejected service identifier forms.
+- The Docker-boundary hook recognizes only the exact Milestone 03 gate wrapper;
+  arbitrary shell wrappers remain denied.
+
+Passing gates before the stop:
+- docker compose --profile dev config --quiet
+- docker compose --profile dev build api
+- docker image inspect jobseeker_m03_preflight-api --format {{.Id}}
+- docker compose --profile dev run --rm --no-deps api job-agent profile-validate
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py
+- docker compose --profile dev run --rm --no-deps api ruff check .
+
+New blocking condition:
+- Command:
+  docker compose --profile dev run --rm --no-deps api mypy src
+- Exit code: 1
+- Error:
+  src/job_agent/profile/models.py:509: Incompatible types in assignment
+  (expression has type "EvidenceRecord | None", variable has type
+  "EvidenceRecord")
+- Root cause: `record` is first inferred as `EvidenceRecord` in the manifest
+  loop, then reused for `evidence_by_id.get(...)`, whose result is optional.
+
+Stop decision:
+- The runner stopped before pytest and pre-commit.
+- No implementation commit, main evidence capture, clean reproduction,
+  independent review, acceptance receipt, DONE transition, or Milestone 04 work
+  was produced.
+- The next recovery turn must use a distinct optional lookup variable, rerun the
+  complete Docker gate sequence from the start, and generate fresh evidence.
+
+Machine capture:
+- `artifacts/verification/milestone-03-preflight/manifest.tsv`
+- `artifacts/verification/milestone-03-preflight/metadata.tsv`
+- `artifacts/verification/milestone-03-preflight/logs/09-mypy.log`
+
+Recovery attempt: typed validator and executable KPI contracts
+Date: 2026-07-25
+Result: BLOCKED
+
+Changed conditions:
+- The optional evidence lookup now uses a distinct typed variable.
+- KPI definitions expose and execute strict count, ratio, percentage, and median
+  operations with bounded numeric and zero-denominator behavior.
+- Authoritative main and clean evidence runs reject a dirty source tree before
+  recording a commit or running Docker gates; only an explicit preflight label
+  permits the recovery tree.
+- The previously failing mypy gate now passes.
+
+Passing gates before the stop:
+- docker compose --profile dev config --quiet
+- docker compose --profile dev build api
+- docker image inspect jobseeker_m03_preflight-api --format {{.Id}}
+- docker compose --profile dev run --rm --no-deps api job-agent profile-validate
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all
+- docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py
+- docker compose --profile dev run --rm --no-deps api ruff check .
+- docker compose --profile dev run --rm --no-deps api mypy src
+
+New blocking condition:
+- Command:
+  docker compose --profile dev run --rm --no-deps api pytest -q
+- Exit code: 1
+- Result before failure: 188 passed, 1 failed
+- Failing test:
+  tests/test_profile.py::test_private_inputs_are_ignored_and_only_scrubbed_metadata_is_tracked
+- Root cause: the test invokes `git check-ignore` inside the API container, but
+  Git rejects the bind-mounted `/app` repository as dubious ownership because
+  this pytest gate does not configure `/app` as a safe directory.
+
+Stop decision:
+- The runner stopped before pre-commit.
+- No implementation commit, authoritative main capture, clean-checkout
+  reproduction, independent review, acceptance receipt, DONE transition, or
+  Milestone 04 work was produced.
+- The next recovery turn must make the Git-based privacy assertions safe and
+  deterministic inside the container, then rerun the complete gate sequence from
+  gate 01.
+
+Machine capture:
+- `artifacts/verification/milestone-03-preflight/manifest.tsv`
+- `artifacts/verification/milestone-03-preflight/metadata.tsv`
+- `artifacts/verification/milestone-03-preflight/logs/10-pytest.log`
+
+Recovery resolution: exact-path Git trust
+Date: 2026-07-25
+Result: RESOLVED
+
+Resolution:
+- Both Git-based privacy assertions now apply command-local `safe.directory`
+  trust to the exact resolved repository root and run with that root as `cwd`.
+- No wildcard trust or persistent/global Git configuration is used.
+- The complete Milestone 03 Docker preflight was rerun from gate 01.
+
+Passing result:
+- All eleven wrapper gates passed.
+- `docker compose --profile dev run --rm --no-deps api pytest -q` reported
+  189 passed.
+- The pre-commit gate passed documentation, Codex controls, Ruff, mypy, and
+  pytest.
+
+Machine capture:
+- `artifacts/verification/milestone-03-preflight/manifest.tsv`
+- `artifacts/verification/milestone-03-preflight/metadata.tsv`
+- `artifacts/verification/milestone-03-preflight/logs/10-pytest.log`
+- `artifacts/verification/milestone-03-preflight/logs/11-pre-commit.log`

@@ -1,7 +1,106 @@
+schema_version: "1.0"
 portfolio_url: "https://www.behance.net/47pixels"
 records:
-  - evidence_id: behance-public-profile
-    title: "Public Behance portfolio profile"
-    verification_state: verified_public
-    claim_level: completed_work
-    public_url: "https://www.behance.net/47pixels"
+  - evidence_id: "herbacorium_amazon_content"
+    project_title: "HERBACORIUM — Amazon A+ Content & Listing Images"
+    evidence_source:
+      source_type: "behance_and_owner_verified"
+      public_source: "Behance portfolio project"
+      public_reference_url: "https://www.behance.net/47pixels"
+      owner_verified: true
+      owner_verified_record_types:
+        - "Final Amazon listing artwork"
+        - "Amazon A+ content designs"
+        - "3D product renders"
+        - "Editable design and rendering source files"
+    verification_status: "owner_verified"
+    classification: "completed_client_work"
+    role:
+      title: "Senior Graphic Designer and 3D Product Visualizer"
+      responsibilities:
+        - "3D product modeling and visualization"
+        - "Photorealistic product rendering"
+        - "Amazon listing image design"
+        - "Amazon A+ content design"
+        - "Product retouching and image compositing"
+        - "Visual hierarchy and typography"
+        - "Product-feature and benefit visualization"
+        - "Final e-commerce artwork preparation"
+    deliverables_and_services:
+      - "Amazon listing image set"
+      - "Amazon A+ content modules"
+      - "Photorealistic cosmetic product renders"
+      - "Product hero images"
+      - "Product feature and benefit graphics"
+      - "Shade and product comparison visuals"
+      - "Lifestyle product compositions"
+      - "Image retouching and compositing"
+      - "E-commerce typography and layout design"
+      - "Marketplace-ready final artwork"
+    tools_and_workflow:
+      - "Adobe Photoshop"
+      - "Adobe Illustrator"
+      - "Autodesk 3ds Max"
+      - "V-Ray"
+    safe_claims:
+      - "Created Amazon listing images and A+ content for a cosmetics product range."
+      - "Produced photorealistic 3D product renders using 3ds Max and V-Ray."
+      - "Combined 3D visualization, graphic design, retouching and compositing into a complete e-commerce image system."
+      - "Designed product feature, benefit, comparison and lifestyle graphics for Amazon."
+      - "Translated cosmetic product information into clear, premium and easy-to-understand visual content."
+      - "Handled the visual workflow from 3D product presentation through final Amazon layouts."
+      - "Has completed client work involving cosmetics, Amazon content and 3D product visualization."
+      - "Has experience maintaining visual consistency across listing images and A+ content."
+    claims_requiring_additional_evidence:
+      - "Any specific increase in sales, clicks or conversion rate"
+      - "Any claim that the project became an Amazon bestseller"
+      - "Amazon advertising, keyword research or listing SEO"
+      - "Amazon account management or direct listing publication"
+      - "Product photography, unless the photographs were personally produced"
+      - "Ownership of the Herbacorium brand, formulas or product intellectual property"
+    proposal_reference:
+      allowed: true
+      evidence_strength: "strong"
+      suitable_for:
+        - "Amazon listing image design"
+        - "Amazon A+ content"
+        - "E-commerce graphic design"
+        - "Cosmetics and skincare design"
+        - "3D product rendering"
+        - "Product visualization"
+        - "Product retouching and compositing"
+        - "Marketplace product storytelling"
+        - "Packaging visualization"
+      approved_short_reference: >-
+        A relevant example is my HERBACORIUM project, where I created
+        photorealistic 3D product renders, Amazon listing images and A+ content
+        for a cosmetics product range.
+      approved_detailed_reference: >-
+        For HERBACORIUM, I combined 3D product visualization, Photoshop
+        compositing and e-commerce graphic design to produce Amazon listing
+        images, product comparisons, lifestyle compositions and A+ content.
+    confidentiality_and_attribution:
+      confidentiality_level: "public_portfolio_reference_with_restrictions"
+      public_reference_allowed: true
+      restrictions:
+        - "Use only visuals and information already approved for public portfolio display."
+        - "Do not share editable Photoshop, Illustrator or 3D source files."
+        - "Do not disclose the original client brief, private feedback or communications."
+        - "Do not reveal unreleased concepts, rejected variations or confidential product information."
+        - "Do not disclose sales data, marketplace analytics or commercial performance without verified permission."
+        - "Attribute the brand and product intellectual property to Herbacorium or the relevant client."
+        - "Do not imply ownership of the client’s brand, product formulas or trademarks."
+        - "Do not present supplied client assets or photography as work created personally."
+        - "Do not provide high-resolution production assets to third parties without approval."
+    proposal_eligible: true
+    completed_work_claim_allowed: true
+    public_visuals_allowed: true
+    source_files_allowed: false
+    performance_claims_allowed: false
+    supported_service_ids:
+      - "amazon_ecommerce_creative"
+      - "3d_product_visualization"
+      - "cosmetics_design"
+      - "product_retouching"
+      - "ecommerce_graphic_design"
+      - "packaging_visualization"
