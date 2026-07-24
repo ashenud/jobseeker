@@ -134,9 +134,43 @@ curl http://127.0.0.1:8000/health/ready
 
 ## Acceptance criteria
 
-- [ ] Clean setup works from documented commands.
-- [ ] API, worker, scheduler, database, and Redis start.
-- [ ] Liveness and readiness behave correctly.
-- [ ] Lint, type-check, and tests pass.
-- [ ] Secrets/private data are ignored.
-- [ ] Services bind locally by default.
+- **M04-AC01:** The Python 3.12 API/tooling image builds from a real frozen
+  dependency lock, contains every required runtime and development dependency,
+  and supports the documented repository skeleton without host Python.
+- **M04-AC02:** Compose defines operational `api`, `worker`, `scheduler`, `db`
+  with pgvector, and `redis` services with bounded local resources and named
+  persistence volumes. Uvicorn listens on `0.0.0.0` only inside its container,
+  the API publishes only on `127.0.0.1`, and PostgreSQL and Redis publish no host
+  ports.
+- **M04-AC03:** From fresh containers and volumes all five services become
+  healthy, dependency ordering is health-based rather than start-order based,
+  and the stack returns to healthy after a restart.
+- **M04-AC04:** The real FastAPI/ASGI application serves public HTTP
+  `/health/live`, `/health/ready`, and `/version` endpoints. Readiness performs
+  bounded PostgreSQL and Redis probes, returns `200` only when both succeed,
+  returns `503` with secret-free component status when either fails, and
+  liveness remains independent of those dependencies.
+- **M04-AC05:** Alembic imports real SQLAlchemy metadata and the configured
+  Psycopg PostgreSQL URL, enables pgvector, and completes a fresh
+  upgrade/downgrade/upgrade cycle with the expected revision recorded.
+- **M04-AC06:** A real Celery application loads through the production worker
+  entry point, the worker answers a broker-backed control ping, and the scheduler
+  remains healthy with Redis and PostgreSQL available. Full task routing,
+  idempotency, and recovery remain owned by Milestone 16.
+- **M04-AC07:** Pydantic settings keep source, AI, outreach, and write behavior
+  disabled by default; malformed values fail closed; `.env` stays optional; and
+  `.env`, private inputs, credentials, and caches are excluded from Git and the
+  image build context.
+- **M04-AC08:** `make bootstrap`, `up`, `down`, `logs`, `migrate`, `test`,
+  `lint`, `typecheck`, and `check`, plus the bootstrap/check/dev scripts, are
+  executable thin Docker Compose wrappers. They never resolve dependencies or
+  run application tools on the host.
+- **M04-AC09:** The containerized documentation/status/Codex validators, Ruff,
+  mypy, pre-commit, migration integration checks, and a nonzero full pytest suite
+  pass without live external calls while policy controls continue to fail
+  closed.
+- **M04-AC10:** The tested implementation commit reproduces with fresh images and
+  volumes in an isolated clean checkout, the receipt is generated from real
+  command results with an empty production-placeholder scan, a separate evidence
+  analyst validates every acceptance mapping, and an independent policy/release
+  reviewer returns `GO` with no unresolved high or critical finding.

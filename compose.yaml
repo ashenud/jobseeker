@@ -1,52 +1,180 @@
+x-app-environment: &app-environment
+  GIT_CONFIG_COUNT: "1"
+  GIT_CONFIG_KEY_0: safe.directory
+  GIT_CONFIG_VALUE_0: /app
+  JOB_AGENT_BIND_HOST: 127.0.0.1
+  JOB_AGENT_COMMIT_SHA: ${JOB_AGENT_COMMIT_SHA:-unknown}
+  JOB_AGENT_DATABASE_URL: ${JOB_AGENT_DATABASE_URL:-postgresql+psycopg://job_agent:job_agent@db:5432/job_agent}
+  JOB_AGENT_REDIS_URL: ${JOB_AGENT_REDIS_URL:-redis://redis:6379/0}
+  MYPY_CACHE_DIR: /tmp/jobseeker-cache/mypy
+  PRE_COMMIT_HOME: /tmp/jobseeker-cache/pre-commit
+  PYTHONPYCACHEPREFIX: /tmp/jobseeker-cache/pycache
+  RUFF_CACHE_DIR: /tmp/jobseeker-cache/ruff
+
+x-app-service: &app-service
+  build:
+    context: .
+  image: jobseeker-app:local
+  env_file:
+    - path: .env
+      required: false
+  environment: *app-environment
+  init: true
+  volumes:
+    - .:/app
+
+x-dependency-health: &dependency-health
+  condition: service_healthy
+
 services:
   api:
-    build: .
+    <<: *app-service
     profiles: ["core", "dev"]
-    env_file:
-      - path: .env
-        required: false
-    environment:
-      PYTHONPYCACHEPREFIX: /tmp/jobseeker-cache/pycache
-      RUFF_CACHE_DIR: /tmp/jobseeker-cache/ruff
-      MYPY_CACHE_DIR: /tmp/jobseeker-cache/mypy
-      PRE_COMMIT_HOME: /tmp/jobseeker-cache/pre-commit
-    volumes: [".:/app"]
-    ports: ["127.0.0.1:8000:8000"]
-    depends_on: [db, redis]
+    command:
+      - uvicorn
+      - job_agent.web.app:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+    ports:
+      - "127.0.0.1:${JOB_AGENT_API_PORT:-8000}:8000"
+    depends_on:
+      db: *dependency-health
+      redis: *dependency-health
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - --fail
+        - --silent
+        - --show-error
+        - --max-time
+        - "3"
+        - http://127.0.0.1:8000/health/ready
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+    cpus: "1.0"
+    mem_limit: 512m
+
   worker:
-    build: .
+    <<: *app-service
     profiles: ["workers", "dev"]
-    env_file:
-      - path: .env
-        required: false
-    environment:
-      PYTHONPYCACHEPREFIX: /tmp/jobseeker-cache/pycache
-      RUFF_CACHE_DIR: /tmp/jobseeker-cache/ruff
-      MYPY_CACHE_DIR: /tmp/jobseeker-cache/mypy
-      PRE_COMMIT_HOME: /tmp/jobseeker-cache/pre-commit
-    volumes: [".:/app"]
-    command: celery -A job_agent.workers.app:celery_app worker -Q ingestion,processing,llm,notifications,maintenance --loglevel=INFO
-    depends_on: [db, redis]
+    command:
+      - celery
+      - -A
+      - job_agent.workers.app:celery_app
+      - worker
+      - --hostname=worker@worker
+      - --loglevel=INFO
+      - --concurrency=1
+    depends_on:
+      db: *dependency-health
+      redis: *dependency-health
+    healthcheck:
+      test:
+        - CMD
+        - celery
+        - -A
+        - job_agent.workers.app:celery_app
+        - inspect
+        - ping
+        - --destination
+        - worker@worker
+        - --timeout
+        - "3"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    restart: unless-stopped
+    cpus: "1.0"
+    mem_limit: 512m
+
   scheduler:
-    build: .
+    <<: *app-service
     profiles: ["workers", "dev"]
-    env_file:
-      - path: .env
-        required: false
-    environment:
-      PYTHONPYCACHEPREFIX: /tmp/jobseeker-cache/pycache
-      RUFF_CACHE_DIR: /tmp/jobseeker-cache/ruff
-      MYPY_CACHE_DIR: /tmp/jobseeker-cache/mypy
-      PRE_COMMIT_HOME: /tmp/jobseeker-cache/pre-commit
-    volumes: [".:/app"]
-    command: celery -A job_agent.workers.app:celery_app beat --loglevel=INFO
-    depends_on: [redis]
+    command:
+      - celery
+      - -A
+      - job_agent.workers.app:celery_app
+      - beat
+      - --loglevel=INFO
+      - --pidfile=/tmp/job-agent-celerybeat.pid
+      - --schedule=/tmp/job-agent-celerybeat-schedule
+    depends_on:
+      db: *dependency-health
+      redis: *dependency-health
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -m
+        - job_agent.web.healthcheck
+        - --pidfile
+        - /tmp/job-agent-celerybeat.pid
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    restart: unless-stopped
+    cpus: "0.5"
+    mem_limit: 256m
+
   db:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg16@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb
     profiles: ["core", "workers", "dev"]
-    environment: {POSTGRES_USER: job_agent, POSTGRES_PASSWORD: job_agent, POSTGRES_DB: job_agent}
-    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    environment:
+      POSTGRES_DB: job_agent
+      POSTGRES_PASSWORD: job_agent
+      POSTGRES_USER: job_agent
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U job_agent -d job_agent"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    restart: unless-stopped
+    cpus: "1.0"
+    mem_limit: 768m
+
   redis:
-    image: redis:7-alpine
+    image: redis:7-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99
     profiles: ["core", "workers", "dev"]
-volumes: {postgres_data: {}}
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    restart: unless-stopped
+    cpus: "0.5"
+    mem_limit: 256m
+
+  lock:
+    image: ghcr.io/astral-sh/uv:0.8.14-python3.12-bookworm-slim@sha256:b748a09ec61c993083278020a84e16f0c81485c5349b30c64dd29d6a22da7462
+    profiles: ["lock"]
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    command: ["uv", "lock"]
+    cpus: "1.0"
+    mem_limit: 512m
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${JOB_AGENT_NETWORK_SUBNET:-10.254.240.0/24}
+
+volumes:
+  postgres_data:
+  redis_data:

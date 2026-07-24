@@ -103,6 +103,29 @@ checks, backups, and restores run inside Docker containers. The host is limited 
 Git, Docker/Compose orchestration, read-only file inspection, Codex controls, and
 thin wrappers that invoke Docker Compose.
 
+## Local runtime foundation
+
+With Docker Engine/Desktop and Docker Compose available, copy `.env.example` to
+`.env` only when overrides are needed. The example is safe to use unchanged for
+the local stack; source, AI, outreach, browser-fill, and API-write features remain
+disabled.
+
+```bash
+make bootstrap
+make up
+make migrate
+curl http://127.0.0.1:8000/health/live
+curl http://127.0.0.1:8000/health/ready
+curl http://127.0.0.1:8000/version
+make check
+make down
+```
+
+The API is the only published service and binds to `127.0.0.1`. PostgreSQL and
+Redis are reachable only on the Compose network. `make logs`, `make test`,
+`make lint`, and `make typecheck` are Docker Compose wrappers; no host Python
+environment is used.
+
 ## Operating boundary
 
 This project must never include CAPTCHA bypass, stealth browsing, credential

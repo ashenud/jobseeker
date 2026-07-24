@@ -1,6 +1,6 @@
 # Implementation status
 
-**Current milestone:** 04 (`READY`)
+**Current milestone:** 04 (`IN_PROGRESS`)
 **Last completed milestone:** 03
 **Overall state:** Milestone 03 is accepted at implementation commit
 `d40b66f7763fcfb333c77773fc6acb274b69b44c`. Authoritative main and independent
@@ -46,7 +46,7 @@ coordinating agent reruns the required gates.
 | 01 | Project charter and working-demo contract | DONE | Frozen charter, accepted ADRs, executable semantics, fail-closed clean evidence, and independent review | `artifacts/verification/milestone-01.json` (tested commit `522cfbef9f169b4a3add5088e29a3f51941d1bd8`) |
 | 02 | Compliance and platform policy registry | DONE | Strict versioned policy schema, pre-I/O denial, bounded confirmation, audit events, CLI, and independent review | `artifacts/verification/milestone-02.json` (tested commit `d410a82e783629297f58c0dd046f459951c35a2d`) |
 | 03 | Positioning profile, portfolio inputs, and success metrics | DONE | Strict profile/scoring schemas, scrubbed evidence provenance, typed claim restrictions, executable KPIs, safe CLI, and independent review | `artifacts/verification/milestone-03.json` (tested commit `d40b66f7763fcfb333c77773fc6acb274b69b44c`) |
-| 04 | Docker-only development and runtime foundation | READY | Dockerfile, Compose, scripts, packaging | Not run |
+| 04 | Docker-only development and runtime foundation | IN_PROGRESS | Dockerfile, Compose, scripts, packaging | Not run |
 | 05 | Architecture, service contracts, and state machines | PENDING | Architecture/state docs and enums | Not run |
 | 06 | PostgreSQL/pgvector schema, repositories, and migrations | PENDING | Minimal dataclasses/migration must be replaced | Not run |
 | 07 | Source adapter framework and ingestion persistence | PENDING | In-memory adapter protocol | Not run |

@@ -33,6 +33,7 @@ APPROVED_SHELL_WRAPPERS = {
     "scripts/dev.sh",
     "scripts/run_milestone_00_gates.sh",
     "scripts/run_milestone_03_gates.sh",
+    "scripts/run_milestone_04_gates.sh",
 }
 APPROVED_MAKE_TARGETS = {
     "bootstrap",
@@ -40,6 +41,7 @@ APPROVED_MAKE_TARGETS = {
     "down",
     "eval",
     "lint",
+    "logs",
     "migrate",
     "pre-commit",
     "release-check",
@@ -47,6 +49,7 @@ APPROVED_MAKE_TARGETS = {
     "test",
     "test-integration",
     "type",
+    "typecheck",
     "up",
 }
 CONTROL = {"&&", "||", ";", "|", "&", "(", ")"}

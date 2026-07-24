@@ -18,6 +18,8 @@ from job_agent.security.service import neutralize_prompt_injection, redact, sani
 from job_agent.sources.adapters import ManualAdapter
 from job_agent.submission.service import build_package, mark_manual_submitted
 from job_agent.web.app import create_app
+from job_agent.web.health import ComponentHealth
+from fastapi.testclient import TestClient
 
 
 def sample_job(): return normalize(ManualAdapter().capture("https://EXAMPLE.com/job?utm_source=x","Packaging label design","Need packaging, label and dieline. Budget $500."))
@@ -48,4 +50,8 @@ def test_budget_guard():
     b=BudgetGuard(.01); b.reserve(.005)
     with pytest.raises(RuntimeError): b.reserve(.006)
 def test_web_health():
-    app=create_app(); assert app.handle("/health/ready").json()["status"]=="ready"; assert "Human review" in app.handle("/").text
+    client = TestClient(
+        create_app(readiness_probe=lambda: ComponentHealth(database=True, redis=True))
+    )
+    assert client.get("/health/live").json()["status"] == "live"
+    assert client.get("/health/ready").json()["status"] == "ready"

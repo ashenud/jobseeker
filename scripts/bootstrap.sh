@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 set -euo pipefail
-docker compose --profile dev build api
+docker compose --profile dev build

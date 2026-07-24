@@ -237,7 +237,10 @@ def test_host_toolchain_and_wrapper_bypasses_are_denied(command: str, denied: st
         "echo 'python and pytest are harmless text here'",
         "bash scripts/check.sh",
         "bash scripts/run_milestone_03_gates.sh --run-label clean",
+        "bash scripts/run_milestone_04_gates.sh --run-label preflight",
+        "make logs",
         "make type",
+        "make typecheck",
     ],
 )
 def test_compose_git_files_and_approved_wrappers_are_allowed(command: str) -> None:
@@ -249,7 +252,7 @@ def test_destructive_make_target_cannot_reenter_approved_wrappers() -> None:
     boundary = load_module(".codex/hooks/enforce_docker_boundary.py", "docker_boundary_make")
     assert "db-reset" not in boundary.APPROVED_MAKE_TARGETS
     assert boundary.blocked_segment("make db-reset") == "make"
-    for target in ("lint", "type", "test"):
+    for target in ("lint", "logs", "type", "typecheck", "test"):
         assert boundary.blocked_segment(f"make {target}") is None
 
 

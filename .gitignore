@@ -1,9 +1,14 @@
 .env
+.env.*
+!.env.example
 .venv/
 __pycache__/
+*.py[cod]
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+.coverage
+htmlcov/
 data/private/*
 !data/private/portfolio_manifest.yaml
 !data/private/proposal_style_anchors/
@@ -11,4 +16,5 @@ data/private/proposal_style_anchors/*
 !data/private/proposal_style_anchors/README.md
 backups/
 *.db
+celerybeat-schedule*
 artifacts/verification/milestone-*-preflight*/
