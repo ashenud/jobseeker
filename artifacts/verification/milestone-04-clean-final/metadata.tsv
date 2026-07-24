@@ -1,0 +1,9 @@
+key	value
+schema_version	1
+run_label	clean
+tested_commit	094c2d9981b605ed9e06a2a1c8013dfb858352e6
+timestamp_utc	2026-07-24T23:10:12Z
+compose_project_name	jobseeker_m04_clean_final
+network_subnet	10.254.243.0/24
+image_digest	sha256:fa3d8f164f5410e354eb6ecfd8e5b83938e5b2253b084afb7eef95c9d1d4a567
+result	PASS

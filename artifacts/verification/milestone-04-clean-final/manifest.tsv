@@ -1,0 +1,30 @@
+gate_id	command	exit_code	duration_seconds	log_ref	test_count	result
+01-compose-config	docker compose --profile dev config --quiet	0	0	artifacts/verification/milestone-04-clean-final/logs/01-compose-config.log		PASS
+02-build-api	docker compose --profile dev build api	0	4	artifacts/verification/milestone-04-clean-final/logs/02-build-api.log		PASS
+03-image-digest	docker image inspect jobseeker-app:local --format \{\{.Id\}\}	0	1	artifacts/verification/milestone-04-clean-final/logs/03-image-digest.log		PASS
+04-start-stack	docker compose --profile dev up -d --wait	0	14	artifacts/verification/milestone-04-clean-final/logs/04-start-stack.log		PASS
+05-stack-state	docker compose --profile dev ps	0	0	artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log		PASS
+06-migrate-up	docker compose --profile dev run --rm api alembic upgrade head	0	3	artifacts/verification/milestone-04-clean-final/logs/06-migrate-up.log		PASS
+07-pgvector-revision	docker compose --profile dev exec -T db psql --username job_agent --dbname job_agent --tuples-only --no-align --set ON_ERROR_STOP=1 --command SELECT\ extname\ \|\|\ \':\'\ \|\|\ \(SELECT\ version_num\ FROM\ alembic_version\)\ FROM\ pg_extension\ WHERE\ extname\ =\ \'vector\'\;	0	0	artifacts/verification/milestone-04-clean-final/logs/07-pgvector-revision.log		PASS
+08-migrate-down	docker compose --profile dev run --rm api alembic downgrade base	0	4	artifacts/verification/milestone-04-clean-final/logs/08-migrate-down.log		PASS
+09-migrate-reup	docker compose --profile dev run --rm api alembic upgrade head	0	3	artifacts/verification/milestone-04-clean-final/logs/09-migrate-reup.log		PASS
+10-migration-head	docker compose --profile dev run --rm api alembic current --check-heads	0	3	artifacts/verification/milestone-04-clean-final/logs/10-migration-head.log		PASS
+11-http-ready	docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness ready	0	0	artifacts/verification/milestone-04-clean-final/logs/11-http-ready.log		PASS
+12-stop-redis	docker compose --profile dev stop redis	0	0	artifacts/verification/milestone-04-clean-final/logs/12-stop-redis.log		PASS
+13-http-redis-down	docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness redis-down	0	4	artifacts/verification/milestone-04-clean-final/logs/13-http-redis-down.log		PASS
+14-restore-redis	docker compose --profile dev up -d --wait redis	0	6	artifacts/verification/milestone-04-clean-final/logs/14-restore-redis.log		PASS
+15-stop-db	docker compose --profile dev stop db	0	1	artifacts/verification/milestone-04-clean-final/logs/15-stop-db.log		PASS
+16-http-db-down	docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness database-down	0	4	artifacts/verification/milestone-04-clean-final/logs/16-http-db-down.log		PASS
+17-restore-stack	docker compose --profile dev up -d --wait	0	7	artifacts/verification/milestone-04-clean-final/logs/17-restore-stack.log		PASS
+18-integration-pytest	docker compose --profile dev run --rm -e JOB_AGENT_RUN_INTEGRATION=true api pytest -q -m integration	0	4	artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log	2	PASS
+19-worker-ping	docker compose --profile dev exec -T api python scripts/check_worker_ping.py	0	1	artifacts/verification/milestone-04-clean-final/logs/19-worker-ping.log		PASS
+20-restart-stack	docker compose --profile dev restart	0	2	artifacts/verification/milestone-04-clean-final/logs/20-restart-stack.log		PASS
+21-restart-health	docker compose --profile dev up -d --wait	0	6	artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log		PASS
+22-validate-docs	docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py	0	1	artifacts/verification/milestone-04-clean-final/logs/22-validate-docs.log		PASS
+23-validate-milestone	docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all	0	1	artifacts/verification/milestone-04-clean-final/logs/23-validate-milestone.log		PASS
+24-validate-codex-controls	docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py	0	1	artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log		PASS
+25-ruff	docker compose --profile dev run --rm --no-deps api ruff check .	0	1	artifacts/verification/milestone-04-clean-final/logs/25-ruff.log		PASS
+26-mypy	docker compose --profile dev run --rm --no-deps api mypy src	0	5	artifacts/verification/milestone-04-clean-final/logs/26-mypy.log		PASS
+27-pytest	docker compose --profile dev run --rm --no-deps api pytest -q	0	6	artifacts/verification/milestone-04-clean-final/logs/27-pytest.log	249	PASS
+28-pre-commit	docker compose --profile dev run --rm --no-deps api pre-commit run --all-files	0	10	artifacts/verification/milestone-04-clean-final/logs/28-pre-commit.log		PASS
+29-teardown	docker compose --profile dev down --volumes --remove-orphans	0	3	artifacts/verification/milestone-04-clean-final/logs/29-teardown.log		PASS

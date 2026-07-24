@@ -1,0 +1,1 @@
+{"commit": "094c2d9981b605ed9e06a2a1c8013dfb858352e6", "liveness": "live", "readiness": {"components": {"database": "up", "redis": "up"}, "status": "ready"}, "version": "0.22.0"}

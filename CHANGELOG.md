@@ -27,6 +27,12 @@
   portfolio provenance and confidentiality controls, typed claim restrictions,
   executable KPI semantics, safe CLI validation, 210-test main/clean evidence,
   and independent evidence PASS and policy/release GO reviews.
+- Accepted Milestone 04 with a pinned Docker-only Python runtime, health-aware
+  PostgreSQL/pgvector, Redis, FastAPI, Celery worker, and Celery beat stack,
+  dependency-sensitive HTTP readiness, reversible initial migration, JSON-only
+  task serialization, 29-gate main/clean evidence with 249 full-suite and 2
+  explicit integration tests per capture, and independent evidence PASS and
+  policy/release GO reviews.
 
 No milestone beyond the accepted recovery entries in `IMPLEMENTATION_STATUS.md`
 is claimed complete by this documentation reset.

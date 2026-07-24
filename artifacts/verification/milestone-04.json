@@ -1,0 +1,917 @@
+{
+  "milestone": "04",
+  "tested_commit": "094c2d9981b605ed9e06a2a1c8013dfb858352e6",
+  "timestamp_utc": "2026-07-24T23:05:33Z",
+  "image_digest": "sha256:3152f3abe720b4264616eaab2f51eb066d145195efdd6e3761d5f2adbf64ac30",
+  "result": "PASS",
+  "commands": [
+    {
+      "run": "main",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker-app:local --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "04-start-stack",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 14.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/04-start-stack.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "05-stack-state",
+      "command": "docker compose --profile dev ps",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "06-migrate-up",
+      "command": "docker compose --profile dev run --rm api alembic upgrade head",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/06-migrate-up.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "07-pgvector-revision",
+      "command": "docker compose --profile dev exec -T db psql --username job_agent --dbname job_agent --tuples-only --no-align --set ON_ERROR_STOP=1 --command SELECT\\ extname\\ \\|\\|\\ \\':\\'\\ \\|\\|\\ \\(SELECT\\ version_num\\ FROM\\ alembic_version\\)\\ FROM\\ pg_extension\\ WHERE\\ extname\\ =\\ \\'vector\\'\\;",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/07-pgvector-revision.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "08-migrate-down",
+      "command": "docker compose --profile dev run --rm api alembic downgrade base",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/08-migrate-down.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "09-migrate-reup",
+      "command": "docker compose --profile dev run --rm api alembic upgrade head",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/09-migrate-reup.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "10-migration-head",
+      "command": "docker compose --profile dev run --rm api alembic current --check-heads",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/10-migration-head.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "11-http-ready",
+      "command": "docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness ready",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/11-http-ready.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "12-stop-redis",
+      "command": "docker compose --profile dev stop redis",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/12-stop-redis.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "13-http-redis-down",
+      "command": "docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness redis-down",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/13-http-redis-down.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "14-restore-redis",
+      "command": "docker compose --profile dev up -d --wait redis",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/14-restore-redis.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "15-stop-db",
+      "command": "docker compose --profile dev stop db",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/15-stop-db.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "16-http-db-down",
+      "command": "docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness database-down",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/16-http-db-down.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "17-restore-stack",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/17-restore-stack.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "18-integration-pytest",
+      "command": "docker compose --profile dev run --rm -e JOB_AGENT_RUN_INTEGRATION=true api pytest -q -m integration",
+      "exit_code": 0,
+      "duration_seconds": 5.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/18-integration-pytest.log"
+      ],
+      "test_count": 2
+    },
+    {
+      "run": "main",
+      "gate_id": "19-worker-ping",
+      "command": "docker compose --profile dev exec -T api python scripts/check_worker_ping.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/19-worker-ping.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "20-restart-stack",
+      "command": "docker compose --profile dev restart",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/20-restart-stack.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "21-restart-health",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/21-restart-health.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "22-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/22-validate-docs.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "23-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/23-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "24-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/24-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "25-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/25-ruff.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "26-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/26-mypy.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "27-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 5.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log"
+      ],
+      "test_count": 249
+    },
+    {
+      "run": "main",
+      "gate_id": "28-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api pre-commit run --all-files",
+      "exit_code": 0,
+      "duration_seconds": 11.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/28-pre-commit.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "29-teardown",
+      "command": "docker compose --profile dev down --volumes --remove-orphans",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-main-final/logs/29-teardown.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker-app:local --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "04-start-stack",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 14.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/04-start-stack.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "05-stack-state",
+      "command": "docker compose --profile dev ps",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "06-migrate-up",
+      "command": "docker compose --profile dev run --rm api alembic upgrade head",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/06-migrate-up.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "07-pgvector-revision",
+      "command": "docker compose --profile dev exec -T db psql --username job_agent --dbname job_agent --tuples-only --no-align --set ON_ERROR_STOP=1 --command SELECT\\ extname\\ \\|\\|\\ \\':\\'\\ \\|\\|\\ \\(SELECT\\ version_num\\ FROM\\ alembic_version\\)\\ FROM\\ pg_extension\\ WHERE\\ extname\\ =\\ \\'vector\\'\\;",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/07-pgvector-revision.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "08-migrate-down",
+      "command": "docker compose --profile dev run --rm api alembic downgrade base",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/08-migrate-down.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "09-migrate-reup",
+      "command": "docker compose --profile dev run --rm api alembic upgrade head",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/09-migrate-reup.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "10-migration-head",
+      "command": "docker compose --profile dev run --rm api alembic current --check-heads",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/10-migration-head.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "11-http-ready",
+      "command": "docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness ready",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/11-http-ready.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "12-stop-redis",
+      "command": "docker compose --profile dev stop redis",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/12-stop-redis.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "13-http-redis-down",
+      "command": "docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness redis-down",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/13-http-redis-down.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "14-restore-redis",
+      "command": "docker compose --profile dev up -d --wait redis",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/14-restore-redis.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "15-stop-db",
+      "command": "docker compose --profile dev stop db",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/15-stop-db.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "16-http-db-down",
+      "command": "docker compose --profile dev exec -T api python scripts/check_runtime_http.py --expected-commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6 --expected-readiness database-down",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/16-http-db-down.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "17-restore-stack",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 7.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/17-restore-stack.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "18-integration-pytest",
+      "command": "docker compose --profile dev run --rm -e JOB_AGENT_RUN_INTEGRATION=true api pytest -q -m integration",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log"
+      ],
+      "test_count": 2
+    },
+    {
+      "run": "clean",
+      "gate_id": "19-worker-ping",
+      "command": "docker compose --profile dev exec -T api python scripts/check_worker_ping.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/19-worker-ping.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "20-restart-stack",
+      "command": "docker compose --profile dev restart",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/20-restart-stack.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "21-restart-health",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "22-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/22-validate-docs.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "23-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/23-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "24-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "25-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/25-ruff.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "26-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 5.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/26-mypy.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "27-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log"
+      ],
+      "test_count": 249
+    },
+    {
+      "run": "clean",
+      "gate_id": "28-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api pre-commit run --all-files",
+      "exit_code": 0,
+      "duration_seconds": 10.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/28-pre-commit.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "29-teardown",
+      "command": "docker compose --profile dev down --volumes --remove-orphans",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-04-clean-final/logs/29-teardown.log"
+      ]
+    }
+  ],
+  "acceptance": {
+    "M04-AC01": {
+      "result": "PASS",
+      "references": [
+        "Dockerfile",
+        "pyproject.toml",
+        "uv.lock",
+        "artifacts/verification/milestone-04-main-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-04-main-final/logs/02-build-api.log",
+        "artifacts/verification/milestone-04-main-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/02-build-api.log",
+        "artifacts/verification/milestone-04-clean-final/logs/03-image-digest.log"
+      ]
+    },
+    "M04-AC02": {
+      "result": "PASS",
+      "references": [
+        "compose.yaml",
+        "Dockerfile",
+        "tests/test_runtime_foundation.py",
+        "artifacts/verification/milestone-04-main-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-04-main-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log"
+      ]
+    },
+    "M04-AC03": {
+      "result": "PASS",
+      "references": [
+        "compose.yaml",
+        "artifacts/verification/milestone-04-main-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-main-final/logs/20-restart-stack.log",
+        "artifacts/verification/milestone-04-main-final/logs/21-restart-health.log",
+        "artifacts/verification/milestone-04-main-final/logs/29-teardown.log",
+        "artifacts/verification/milestone-04-clean-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/20-restart-stack.log",
+        "artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log",
+        "artifacts/verification/milestone-04-clean-final/logs/29-teardown.log"
+      ]
+    },
+    "M04-AC04": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/web/app.py",
+        "src/job_agent/web/health.py",
+        "scripts/check_runtime_http.py",
+        "tests/test_runtime_integration.py",
+        "artifacts/verification/milestone-04-main-final/logs/11-http-ready.log",
+        "artifacts/verification/milestone-04-main-final/logs/13-http-redis-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/16-http-db-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/11-http-ready.log",
+        "artifacts/verification/milestone-04-clean-final/logs/13-http-redis-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/16-http-db-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log"
+      ]
+    },
+    "M04-AC05": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/db/base.py",
+        "src/job_agent/db/session.py",
+        "alembic/env.py",
+        "alembic/versions/0001_initial.py",
+        "tests/test_runtime_integration.py",
+        "artifacts/verification/milestone-04-main-final/logs/06-migrate-up.log",
+        "artifacts/verification/milestone-04-main-final/logs/07-pgvector-revision.log",
+        "artifacts/verification/milestone-04-main-final/logs/08-migrate-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/09-migrate-reup.log",
+        "artifacts/verification/milestone-04-main-final/logs/10-migration-head.log",
+        "artifacts/verification/milestone-04-main-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/06-migrate-up.log",
+        "artifacts/verification/milestone-04-clean-final/logs/07-pgvector-revision.log",
+        "artifacts/verification/milestone-04-clean-final/logs/08-migrate-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/09-migrate-reup.log",
+        "artifacts/verification/milestone-04-clean-final/logs/10-migration-head.log"
+      ]
+    },
+    "M04-AC06": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/workers/app.py",
+        "scripts/check_worker_ping.py",
+        "src/job_agent/web/healthcheck.py",
+        "artifacts/verification/milestone-04-main-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-04-main-final/logs/19-worker-ping.log",
+        "artifacts/verification/milestone-04-main-final/logs/20-restart-stack.log",
+        "artifacts/verification/milestone-04-main-final/logs/21-restart-health.log",
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/19-worker-ping.log",
+        "artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log"
+      ]
+    },
+    "M04-AC07": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/config/settings.py",
+        ".env.example",
+        ".dockerignore",
+        ".gitignore",
+        "tests/test_runtime_foundation.py",
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log"
+      ]
+    },
+    "M04-AC08": {
+      "result": "PASS",
+      "references": [
+        "Makefile",
+        "scripts/bootstrap.sh",
+        "scripts/check.sh",
+        "scripts/dev.sh",
+        "tests/test_runtime_foundation.py",
+        "artifacts/verification/milestone-04-main-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log"
+      ]
+    },
+    "M04-AC09": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-04-main-final/logs/06-migrate-up.log",
+        "artifacts/verification/milestone-04-main-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-main-final/logs/22-validate-docs.log",
+        "artifacts/verification/milestone-04-main-final/logs/23-validate-milestone.log",
+        "artifacts/verification/milestone-04-main-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-main-final/logs/25-ruff.log",
+        "artifacts/verification/milestone-04-main-final/logs/26-mypy.log",
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-main-final/logs/28-pre-commit.log",
+        "artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/22-validate-docs.log",
+        "artifacts/verification/milestone-04-clean-final/logs/23-validate-milestone.log",
+        "artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-clean-final/logs/25-ruff.log",
+        "artifacts/verification/milestone-04-clean-final/logs/26-mypy.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/28-pre-commit.log"
+      ]
+    },
+    "M04-AC10": {
+      "result": "PASS",
+      "references": [
+        "scripts/run_milestone_04_gates.sh",
+        "scripts/generate_milestone_04_receipt.py",
+        "tests/test_milestone_04_evidence.py",
+        "artifacts/verification/milestone-04-clean-final/manifest.tsv",
+        "artifacts/verification/milestone-04-clean-final/metadata.tsv",
+        "artifacts/verification/milestone-04-clean-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-04-clean-final/logs/02-build-api.log",
+        "artifacts/verification/milestone-04-clean-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/06-migrate-up.log",
+        "artifacts/verification/milestone-04-clean-final/logs/07-pgvector-revision.log",
+        "artifacts/verification/milestone-04-clean-final/logs/08-migrate-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/09-migrate-reup.log",
+        "artifacts/verification/milestone-04-clean-final/logs/10-migration-head.log",
+        "artifacts/verification/milestone-04-clean-final/logs/11-http-ready.log",
+        "artifacts/verification/milestone-04-clean-final/logs/12-stop-redis.log",
+        "artifacts/verification/milestone-04-clean-final/logs/13-http-redis-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/14-restore-redis.log",
+        "artifacts/verification/milestone-04-clean-final/logs/15-stop-db.log",
+        "artifacts/verification/milestone-04-clean-final/logs/16-http-db-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/17-restore-stack.log",
+        "artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/19-worker-ping.log",
+        "artifacts/verification/milestone-04-clean-final/logs/20-restart-stack.log",
+        "artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log",
+        "artifacts/verification/milestone-04-clean-final/logs/22-validate-docs.log",
+        "artifacts/verification/milestone-04-clean-final/logs/23-validate-milestone.log",
+        "artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-clean-final/logs/25-ruff.log",
+        "artifacts/verification/milestone-04-clean-final/logs/26-mypy.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/28-pre-commit.log",
+        "artifacts/verification/milestone-04-clean-final/logs/29-teardown.log",
+        "artifacts/verification/milestone-04-clean-final/checkout-status.log",
+        "artifacts/verification/milestone-04-evidence-review.json",
+        "artifacts/verification/milestone-04-policy-review.json",
+        "AGENTS.md",
+        "docs/milestones/04-local-environment-and-repository-bootstrap.md",
+        "docs/prompts/04-local-environment-and-repository-bootstrap.md",
+        "Dockerfile",
+        "compose.yaml",
+        "uv.lock",
+        ".dockerignore",
+        ".gitignore",
+        ".env.example",
+        "src/job_agent/config/settings.py",
+        "src/job_agent/web/health.py",
+        "src/job_agent/workers/app.py",
+        "alembic/versions/0001_initial.py",
+        "artifacts/verification/milestone-04-main-final/metadata.tsv",
+        "artifacts/verification/milestone-04-main-final/manifest.tsv",
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-main-final/logs/13-http-redis-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/16-http-db-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/19-worker-ping.log"
+      ]
+    }
+  },
+  "review": {
+    "verdict": "GO",
+    "reviewer": "policy-release-reviewer",
+    "tested_commit": "094c2d9981b605ed9e06a2a1c8013dfb858352e6",
+    "references": [
+      "artifacts/verification/milestone-04-policy-review.json",
+      "AGENTS.md",
+      "docs/milestones/04-local-environment-and-repository-bootstrap.md",
+      "docs/prompts/04-local-environment-and-repository-bootstrap.md",
+      "Dockerfile",
+      "compose.yaml",
+      "uv.lock",
+      ".dockerignore",
+      ".gitignore",
+      ".env.example",
+      "src/job_agent/config/settings.py",
+      "src/job_agent/web/health.py",
+      "src/job_agent/workers/app.py",
+      "alembic/versions/0001_initial.py",
+      "scripts/run_milestone_04_gates.sh",
+      "artifacts/verification/milestone-04-main-final/metadata.tsv",
+      "artifacts/verification/milestone-04-main-final/manifest.tsv",
+      "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+      "artifacts/verification/milestone-04-main-final/logs/13-http-redis-down.log",
+      "artifacts/verification/milestone-04-main-final/logs/16-http-db-down.log",
+      "artifacts/verification/milestone-04-main-final/logs/19-worker-ping.log",
+      "artifacts/verification/milestone-04-clean-final/metadata.tsv",
+      "artifacts/verification/milestone-04-clean-final/manifest.tsv",
+      "artifacts/verification/milestone-04-clean-final/checkout-status.log",
+      "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log"
+    ],
+    "unresolved_high_critical": []
+  },
+  "clean_checkout": {
+    "result": "PASS",
+    "references": [
+      "artifacts/verification/milestone-04-clean-final/manifest.tsv",
+      "artifacts/verification/milestone-04-clean-final/metadata.tsv",
+      "artifacts/verification/milestone-04-clean-final/logs/01-compose-config.log",
+      "artifacts/verification/milestone-04-clean-final/logs/02-build-api.log",
+      "artifacts/verification/milestone-04-clean-final/logs/03-image-digest.log",
+      "artifacts/verification/milestone-04-clean-final/logs/04-start-stack.log",
+      "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log",
+      "artifacts/verification/milestone-04-clean-final/logs/06-migrate-up.log",
+      "artifacts/verification/milestone-04-clean-final/logs/07-pgvector-revision.log",
+      "artifacts/verification/milestone-04-clean-final/logs/08-migrate-down.log",
+      "artifacts/verification/milestone-04-clean-final/logs/09-migrate-reup.log",
+      "artifacts/verification/milestone-04-clean-final/logs/10-migration-head.log",
+      "artifacts/verification/milestone-04-clean-final/logs/11-http-ready.log",
+      "artifacts/verification/milestone-04-clean-final/logs/12-stop-redis.log",
+      "artifacts/verification/milestone-04-clean-final/logs/13-http-redis-down.log",
+      "artifacts/verification/milestone-04-clean-final/logs/14-restore-redis.log",
+      "artifacts/verification/milestone-04-clean-final/logs/15-stop-db.log",
+      "artifacts/verification/milestone-04-clean-final/logs/16-http-db-down.log",
+      "artifacts/verification/milestone-04-clean-final/logs/17-restore-stack.log",
+      "artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log",
+      "artifacts/verification/milestone-04-clean-final/logs/19-worker-ping.log",
+      "artifacts/verification/milestone-04-clean-final/logs/20-restart-stack.log",
+      "artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log",
+      "artifacts/verification/milestone-04-clean-final/logs/22-validate-docs.log",
+      "artifacts/verification/milestone-04-clean-final/logs/23-validate-milestone.log",
+      "artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log",
+      "artifacts/verification/milestone-04-clean-final/logs/25-ruff.log",
+      "artifacts/verification/milestone-04-clean-final/logs/26-mypy.log",
+      "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log",
+      "artifacts/verification/milestone-04-clean-final/logs/28-pre-commit.log",
+      "artifacts/verification/milestone-04-clean-final/logs/29-teardown.log",
+      "artifacts/verification/milestone-04-clean-final/checkout-status.log"
+    ]
+  },
+  "placeholders": {
+    "result": "PASS",
+    "matches": [],
+    "references": [
+      "artifacts/verification/milestone-04-placeholder-scan.log"
+    ],
+    "scope": [
+      ".dockerignore",
+      ".env.example",
+      ".gitignore",
+      "Dockerfile",
+      "Makefile",
+      "alembic.ini",
+      "alembic/env.py",
+      "alembic/versions/0001_initial.py",
+      "compose.yaml",
+      "docs/OPERATIONS.md",
+      "docs/milestones/04-local-environment-and-repository-bootstrap.md",
+      "pyproject.toml",
+      "scripts/bootstrap.sh",
+      "scripts/check.sh",
+      "scripts/check_runtime_http.py",
+      "scripts/check_worker_ping.py",
+      "scripts/dev.sh",
+      "scripts/generate_milestone_04_receipt.py",
+      "scripts/run_milestone_04_gates.sh",
+      "src/job_agent/config/settings.py",
+      "src/job_agent/db/__init__.py",
+      "src/job_agent/db/base.py",
+      "src/job_agent/db/session.py",
+      "src/job_agent/web/app.py",
+      "src/job_agent/web/health.py",
+      "src/job_agent/web/healthcheck.py",
+      "src/job_agent/workers/app.py",
+      "tests/test_milestone_04_evidence.py",
+      "tests/test_runtime_foundation.py",
+      "tests/test_runtime_integration.py"
+    ]
+  },
+  "known_limitations": [
+    "Milestone 04 provides only SQLAlchemy/Alembic infrastructure and pgvector enablement; persistent domain tables and repositories remain Milestone 06.",
+    "The Celery application, worker control path, and beat process are operational, but task routing, schedules, idempotency, and recovery remain Milestone 16.",
+    "The deterministic test suite emits one upstream Starlette/httpx TestClient deprecation warning; the running Uvicorn HTTP gates are unaffected.",
+    "The Compose subnet is configurable because host VPN and existing Docker network allocations vary; operators must choose a non-overlapping private CIDR.",
+    "Evaluation and release-check behavior remain later-milestone scaffold and did not provide Milestone 04 acceptance evidence."
+  ]
+}

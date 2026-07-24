@@ -1,0 +1,169 @@
+{
+  "result": "PASS",
+  "reviewer": "test-evidence-analyst",
+  "tested_commit": "094c2d9981b605ed9e06a2a1c8013dfb858352e6",
+  "acceptance": {
+    "M04-AC01": {
+      "result": "PASS",
+      "references": [
+        "Dockerfile",
+        "pyproject.toml",
+        "uv.lock",
+        "artifacts/verification/milestone-04-main-final/logs/02-build-api.log",
+        "artifacts/verification/milestone-04-main-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/02-build-api.log",
+        "artifacts/verification/milestone-04-clean-final/logs/03-image-digest.log"
+      ]
+    },
+    "M04-AC02": {
+      "result": "PASS",
+      "references": [
+        "compose.yaml",
+        "Dockerfile",
+        "tests/test_runtime_foundation.py",
+        "artifacts/verification/milestone-04-main-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log"
+      ]
+    },
+    "M04-AC03": {
+      "result": "PASS",
+      "references": [
+        "compose.yaml",
+        "artifacts/verification/milestone-04-main-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-main-final/logs/20-restart-stack.log",
+        "artifacts/verification/milestone-04-main-final/logs/21-restart-health.log",
+        "artifacts/verification/milestone-04-main-final/logs/29-teardown.log",
+        "artifacts/verification/milestone-04-clean-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/20-restart-stack.log",
+        "artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log",
+        "artifacts/verification/milestone-04-clean-final/logs/29-teardown.log"
+      ]
+    },
+    "M04-AC04": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/web/app.py",
+        "src/job_agent/web/health.py",
+        "scripts/check_runtime_http.py",
+        "tests/test_runtime_integration.py",
+        "artifacts/verification/milestone-04-main-final/logs/11-http-ready.log",
+        "artifacts/verification/milestone-04-main-final/logs/13-http-redis-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/16-http-db-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/11-http-ready.log",
+        "artifacts/verification/milestone-04-clean-final/logs/13-http-redis-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/16-http-db-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log"
+      ]
+    },
+    "M04-AC05": {
+      "result": "PASS",
+      "references": [
+        "alembic/env.py",
+        "alembic/versions/0001_initial.py",
+        "src/job_agent/db/base.py",
+        "src/job_agent/db/session.py",
+        "artifacts/verification/milestone-04-main-final/logs/06-migrate-up.log",
+        "artifacts/verification/milestone-04-main-final/logs/07-pgvector-revision.log",
+        "artifacts/verification/milestone-04-main-final/logs/08-migrate-down.log",
+        "artifacts/verification/milestone-04-main-final/logs/09-migrate-reup.log",
+        "artifacts/verification/milestone-04-main-final/logs/10-migration-head.log",
+        "artifacts/verification/milestone-04-clean-final/logs/06-migrate-up.log",
+        "artifacts/verification/milestone-04-clean-final/logs/07-pgvector-revision.log",
+        "artifacts/verification/milestone-04-clean-final/logs/08-migrate-down.log",
+        "artifacts/verification/milestone-04-clean-final/logs/09-migrate-reup.log",
+        "artifacts/verification/milestone-04-clean-final/logs/10-migration-head.log"
+      ]
+    },
+    "M04-AC06": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/workers/app.py",
+        "src/job_agent/web/healthcheck.py",
+        "scripts/check_worker_ping.py",
+        "artifacts/verification/milestone-04-main-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-main-final/logs/19-worker-ping.log",
+        "artifacts/verification/milestone-04-main-final/logs/21-restart-health.log",
+        "artifacts/verification/milestone-04-clean-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-04-clean-final/logs/19-worker-ping.log",
+        "artifacts/verification/milestone-04-clean-final/logs/21-restart-health.log"
+      ]
+    },
+    "M04-AC07": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/config/settings.py",
+        ".env.example",
+        ".dockerignore",
+        ".gitignore",
+        "tests/test_runtime_foundation.py",
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log"
+      ]
+    },
+    "M04-AC08": {
+      "result": "PASS",
+      "references": [
+        "Makefile",
+        "scripts/bootstrap.sh",
+        "scripts/check.sh",
+        "scripts/dev.sh",
+        "tests/test_runtime_foundation.py",
+        "artifacts/verification/milestone-04-main-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log"
+      ]
+    },
+    "M04-AC09": {
+      "result": "PASS",
+      "references": [
+        "artifacts/verification/milestone-04-main-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-main-final/logs/22-validate-docs.log",
+        "artifacts/verification/milestone-04-main-final/logs/23-validate-milestone.log",
+        "artifacts/verification/milestone-04-main-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-main-final/logs/25-ruff.log",
+        "artifacts/verification/milestone-04-main-final/logs/26-mypy.log",
+        "artifacts/verification/milestone-04-main-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-main-final/logs/28-pre-commit.log",
+        "artifacts/verification/milestone-04-clean-final/logs/18-integration-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/22-validate-docs.log",
+        "artifacts/verification/milestone-04-clean-final/logs/23-validate-milestone.log",
+        "artifacts/verification/milestone-04-clean-final/logs/24-validate-codex-controls.log",
+        "artifacts/verification/milestone-04-clean-final/logs/25-ruff.log",
+        "artifacts/verification/milestone-04-clean-final/logs/26-mypy.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/28-pre-commit.log"
+      ]
+    },
+    "M04-AC10": {
+      "result": "PASS",
+      "references": [
+        "scripts/run_milestone_04_gates.sh",
+        "scripts/generate_milestone_04_receipt.py",
+        "tests/test_milestone_04_evidence.py",
+        "artifacts/verification/milestone-04-main-final/manifest.tsv",
+        "artifacts/verification/milestone-04-main-final/metadata.tsv",
+        "artifacts/verification/milestone-04-clean-final/manifest.tsv",
+        "artifacts/verification/milestone-04-clean-final/metadata.tsv",
+        "artifacts/verification/milestone-04-clean-final/checkout-status.log",
+        "artifacts/verification/milestone-04-clean-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/27-pytest.log",
+        "artifacts/verification/milestone-04-clean-final/logs/29-teardown.log"
+      ]
+    }
+  },
+  "findings": [
+    "Both final manifests contain the exact 29 ordered gate commands, zero exit codes, PASS results, tested commit 094c2d9981b605ed9e06a2a1c8013dfb858352e6, and matching recorded image-digest logs.",
+    "Both full pytest gates report 249 passed and 2 skipped; the skipped integration tests are explicitly executed by the dedicated Compose integration gates, which report 2 passed in both captures. No zero-test or silently skipped acceptance gate was found.",
+    "The HTTP evidence exercises running Uvicorn endpoints and proves ready/200, Redis-down/503, database-down/503, independent liveness, and the tested commit. It does not rely on private-method calls.",
+    "Both stack-state logs show all five required services healthy, API publication restricted to 127.0.0.1, and no PostgreSQL or Redis host publication. Both restart-health gates and teardowns passed.",
+    "The failed-worktree capture is retained only as repair-loop context: its pytest failure came from inaccessible external Git metadata. The subsequent clean-final capture reran all 29 gates successfully and left an empty checkout-status log.",
+    "No flaky divergence exists between the authoritative main and clean results. Their image digests differ because they are separate BuildKit captures, but each digest matches its own build export, metadata, and image-inspection log.",
+    "After recording this review and an independent policy-release GO, generate the milestone receipt from the authoritative main and clean manifests."
+  ]
+}
