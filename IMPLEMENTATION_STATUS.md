@@ -1,16 +1,14 @@
 # Implementation status
 
-**Current milestone:** 03 (`BLOCKED`)
+**Current milestone:** 03 (`IN_PROGRESS`)
 **Last completed milestone:** 02
-**Overall state:** Milestone 03's independent policy/release review returned
-`NO-GO` for tested commit `41c2b25c77c577b36ad7d9c6ec758844aa90fb99`.
-Three HIGH findings block acceptance: count KPIs can hide nonzero safety
-violations, evidence verification/confidentiality states are not reconciled
-fail-closed, and unsupported schema versions are accepted. The earlier main and
-standalone-clean captures remain historical evidence only; fixes require a new
-implementation commit and complete reruns. The latest recovery stopped before
-runtime edits when `git diff --cached --check` rejected whitespace preserved in
-raw historical Docker logs; the scoped historical files remain staged.
+**Overall state:** Milestone 03's three policy-review HIGH findings are addressed
+in the working tree. Strict count KPIs preserve nonzero safety violations,
+evidence verification and confidentiality reconcile fail-closed, unsupported
+schema versions are rejected, and independent reviews must match the tested
+commit. The complete Docker preflight passes all eleven gates with 207 tests.
+A new implementation commit, authoritative main and standalone-clean captures,
+fresh independent reviews, and final acceptance evidence remain in progress.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-25
 
@@ -45,7 +43,7 @@ coordinating agent reruns the required gates.
 | 00 | Recovery harness and Docker tooling container | DONE | Docker-only harness, fail-closed controls, portable machine evidence, clean reproduction, and independent review accepted | `artifacts/verification/milestone-00.json` (tested commit `b5b45af0e2bcd143cda9e05ef5d36a91351f0b45`) |
 | 01 | Project charter and working-demo contract | DONE | Frozen charter, accepted ADRs, executable semantics, fail-closed clean evidence, and independent review | `artifacts/verification/milestone-01.json` (tested commit `522cfbef9f169b4a3add5088e29a3f51941d1bd8`) |
 | 02 | Compliance and platform policy registry | DONE | Strict versioned policy schema, pre-I/O denial, bounded confirmation, audit events, CLI, and independent review | `artifacts/verification/milestone-02.json` (tested commit `d410a82e783629297f58c0dd046f459951c35a2d`) |
-| 03 | Positioning profile, portfolio inputs, and success metrics | BLOCKED | Profile/scoring YAML | Policy/release `NO-GO`: `M03-PR-H01`, `M03-PR-H02`, and `M03-PR-H03`; see `artifacts/verification/milestone-03-policy-review.json` and blocker log |
+| 03 | Positioning profile, portfolio inputs, and success metrics | IN_PROGRESS | Profile/scoring YAML | Policy-safe recovery preflight PASS with 207 tests; implementation commit and fresh acceptance evidence pending |
 | 04 | Docker-only development and runtime foundation | PENDING | Dockerfile, Compose, scripts, packaging | Not run |
 | 05 | Architecture, service contracts, and state machines | PENDING | Architecture/state docs and enums | Not run |
 | 06 | PostgreSQL/pgvector schema, repositories, and migrations | PENDING | Minimal dataclasses/migration must be replaced | Not run |

@@ -387,3 +387,103 @@ Stop decision:
 - The historical files remain staged and this new blocker entry is unstaged.
 - Per the milestone nonzero-command rule, the failed precheck was not rerun and
   the recovery implementation did not begin.
+
+Policy-safe schema recovery targeted test
+Date: 2026-07-25
+Result: BLOCKED
+
+Changed conditions before the gate:
+- Historical blocker evidence was committed as `cc4c987`.
+- The three HIGH findings were addressed in the working tree with strict count
+  semantics, exact verification/provenance reconciliation, explicit
+  confidentiality states, and schema version `1.0`.
+- Receipt generation was hardened so both independent reviews must identify the
+  same tested commit as the main and clean machine captures.
+
+Exact failed command:
+- `docker compose --profile dev run --rm --no-deps api pytest -q
+  tests/test_profile.py tests/test_cli.py tests/test_milestone_03_evidence.py`
+- Exit code: 1
+- Result before failure: 81 passed, 1 failed.
+- Failing test:
+  `tests/test_profile.py::test_unverified_confidential_and_ineligible_evidence_fail_closed`
+- Expected message fragment: `ineligible evidence`
+- Actual fail-closed validation: `completed-work claims require
+  proposal-eligible evidence`
+
+Probable root cause:
+- The strengthened `EvidenceRecord` validator now rejects the contradictory
+  record locally: `proposal_eligible=false` cannot coexist with
+  `completed_work_claim_allowed=true`.
+- The legacy assertion expected validation to reach the later bundle-level claim
+  resolution check. The new earlier failure is stricter and policy-safe, but the
+  test mutation no longer isolates the bundle-level ineligible-evidence path.
+
+Policy-safe possible fixes:
+1. Preferred: in the existing ineligible-evidence test case, also set
+   `completed_work_claim_allowed=false` and `proposal_reference.allowed=false`
+   before validating the bundle. This creates an internally consistent but
+   proposal-ineligible evidence record, allowing the bundle-level
+   `ineligible evidence` assertion to remain meaningful.
+2. Change the assertion to expect the earlier completed-work contradiction.
+   This would cover the new record-level guard but lose direct regression
+   coverage of bundle-level rejection of an otherwise consistent ineligible
+   evidence reference.
+3. Remove the completed-work/proposal-eligibility consistency rule. This weakens
+   the fail-closed contract and is rejected.
+
+Preferred recovery files:
+- `tests/test_profile.py`
+
+Preferred recovery verification:
+- `docker compose --profile dev run --rm --no-deps api pytest -q
+  tests/test_profile.py tests/test_cli.py tests/test_milestone_03_evidence.py`
+- `bash scripts/run_milestone_03_gates.sh --output-dir
+  artifacts/verification/milestone-03-preflight --reference-dir
+  artifacts/verification/milestone-03-preflight --project-name
+  jobseeker_m03_preflight --run-label preflight`
+- After a clean implementation commit, rerun the complete authoritative main and
+  standalone-clone clean wrappers from gate 01.
+
+Stop decision:
+- No test was changed or rerun after the nonzero Docker command.
+- No implementation commit, authoritative capture, clean reproduction, new
+  independent review, receipt, DONE transition, or Milestone 04 work was
+  produced.
+- Milestone 03 remains BLOCKED.
+
+Policy-safe schema recovery resolution
+Date: 2026-07-25
+Result: RESOLVED
+
+Resolution:
+- The ineligible-evidence regression fixture now disables proposal eligibility,
+  completed-work claims, and proposal references together. This preserves the
+  strengthened record-level consistency rule while continuing to prove that the
+  bundle rejects claims backed by an internally consistent ineligible record.
+- No production validation rule was weakened.
+- The targeted Docker suite passed with 82 tests.
+- The complete Milestone 03 Docker preflight was rerun from gate 01.
+
+Passing results:
+- All eleven wrapper gates passed.
+- `job-agent profile-validate` returned a sanitized `PASS` summary for schema
+  version `1.0`.
+- Ruff passed.
+- Mypy reported no issues in 41 source files.
+- Pytest reported 207 passed.
+- Pre-commit passed documentation, Codex controls, Ruff, mypy, and pytest.
+
+Machine capture:
+- `artifacts/verification/milestone-03-preflight/manifest.tsv`
+- `artifacts/verification/milestone-03-preflight/metadata.tsv`
+- `artifacts/verification/milestone-03-preflight/logs/04-profile-validate.log`
+- `artifacts/verification/milestone-03-preflight/logs/10-pytest.log`
+- `artifacts/verification/milestone-03-preflight/logs/11-pre-commit.log`
+
+Next required proof:
+- Create a new implementation commit.
+- Run the authoritative main wrapper from a clean tree.
+- Reproduce every gate from a fresh standalone clone detached at that commit.
+- Obtain fresh evidence-analysis PASS and independent policy/release GO tied to
+  that exact commit before generating the final receipt.

@@ -4,10 +4,11 @@ records:
   - evidence_id: "herbacorium_amazon_content"
     project_title: "HERBACORIUM — Amazon A+ Content & Listing Images"
     evidence_source:
-      source_type: "behance_and_owner_verified"
-      public_source: "Behance portfolio project"
+      source_type: "owner_records"
+      public_source: "Behance profile reference"
       public_reference_url: "https://www.behance.net/47pixels"
       owner_verified: true
+      publicly_verified: false
       owner_verified_record_types:
         - "Final Amazon listing artwork"
         - "Amazon A+ content designs"

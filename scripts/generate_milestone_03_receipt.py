@@ -202,11 +202,17 @@ def read_manifest(
 
 
 def read_reviews(
-    root: Path, policy_value: str | Path, evidence_value: str | Path
+    root: Path,
+    policy_value: str | Path,
+    evidence_value: str | Path,
+    *,
+    tested_commit: str,
 ) -> tuple[dict[str, Any], dict[str, list[str]], list[str]]:
     policy, policy_ref = read_json_object(root, policy_value, "policy/release review")
     if policy.get("verdict") != "GO" or policy.get("unresolved_high_critical") != []:
         raise EvidenceError("policy/release review is not an unqualified GO")
+    if policy.get("tested_commit") != tested_commit:
+        raise EvidenceError("policy/release review tested a different commit")
     reviewer = policy.get("reviewer")
     if not isinstance(reviewer, str) or not reviewer.strip():
         raise EvidenceError("policy/release review has no reviewer")
@@ -215,6 +221,8 @@ def read_reviews(
     evidence, evidence_ref = read_json_object(root, evidence_value, "evidence analyst review")
     if evidence.get("result") != "PASS":
         raise EvidenceError("evidence analyst review did not PASS")
+    if evidence.get("tested_commit") != tested_commit:
+        raise EvidenceError("evidence analyst review tested a different commit")
     acceptance = evidence.get("acceptance")
     if not isinstance(acceptance, dict) or set(acceptance) != set(ACCEPTANCE_IDS):
         raise EvidenceError("evidence analyst review lacks the exact M03 acceptance set")
@@ -229,6 +237,7 @@ def read_reviews(
     review = {
         "verdict": "GO",
         "reviewer": reviewer,
+        "tested_commit": tested_commit,
         "references": sorted(set([policy_ref, *policy_refs])),
         "unresolved_high_critical": [],
     }
@@ -299,7 +308,10 @@ def main() -> int:
         if main_metadata["tested_commit"] != clean_metadata["tested_commit"]:
             raise EvidenceError("main and clean runs tested different commits")
         review, evidence_refs, evidence_review_refs = read_reviews(
-            ROOT, args.policy_review, args.evidence_review
+            ROOT,
+            args.policy_review,
+            args.evidence_review,
+            tested_commit=main_metadata["tested_commit"],
         )
 
         findings = placeholder_findings(ROOT)

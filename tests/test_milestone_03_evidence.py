@@ -11,6 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 GATE_WRAPPER = ROOT / "scripts" / "run_milestone_03_gates.sh"
+TESTED_COMMIT = "a" * 40
 
 
 def load_generator() -> ModuleType:
@@ -41,11 +42,13 @@ def valid_reviews(root: Path) -> tuple[Path, Path]:
     policy = {
         "verdict": "GO",
         "reviewer": "policy-release-reviewer",
+        "tested_commit": TESTED_COMMIT,
         "references": references,
         "unresolved_high_critical": [],
     }
     evidence = {
         "result": "PASS",
+        "tested_commit": TESTED_COMMIT,
         "acceptance": {
             acceptance_id: {"result": "PASS", "references": references}
             for acceptance_id in GENERATOR.ACCEPTANCE_IDS
@@ -73,13 +76,25 @@ def test_m03_acceptance_and_gate_sets_are_stable() -> None:
 
 def test_m03_reviews_require_exact_pass_and_go(tmp_path: Path) -> None:
     policy, evidence = valid_reviews(tmp_path)
-    review, acceptance, references = GENERATOR.read_reviews(tmp_path, policy, evidence)
+    review, acceptance, references = GENERATOR.read_reviews(
+        tmp_path, policy, evidence, tested_commit=TESTED_COMMIT
+    )
     assert review["verdict"] == "GO"
+    assert review["tested_commit"] == TESTED_COMMIT
     assert set(acceptance) == set(GENERATOR.ACCEPTANCE_IDS)
     assert references == ["artifacts/reviews/evidence.json"]
 
 
-@pytest.mark.parametrize("mutation", ["no_go", "unresolved", "missing_acceptance"])
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "no_go",
+        "unresolved",
+        "missing_acceptance",
+        "stale_policy_commit",
+        "stale_evidence_commit",
+    ],
+)
 def test_m03_reviews_fail_closed(tmp_path: Path, mutation: str) -> None:
     policy_path, evidence_path = valid_reviews(tmp_path)
     policy = json.loads(policy_path.read_text(encoding="utf-8"))
@@ -88,12 +103,21 @@ def test_m03_reviews_fail_closed(tmp_path: Path, mutation: str) -> None:
         policy["verdict"] = "NO-GO"
     elif mutation == "unresolved":
         policy["unresolved_high_critical"] = ["blocker"]
-    else:
+    elif mutation == "missing_acceptance":
         evidence["acceptance"].pop("M03-AC06")
+    elif mutation == "stale_policy_commit":
+        policy["tested_commit"] = "b" * 40
+    else:
+        evidence["tested_commit"] = "b" * 40
     policy_path.write_text(json.dumps(policy), encoding="utf-8")
     evidence_path.write_text(json.dumps(evidence), encoding="utf-8")
     with pytest.raises(GENERATOR.EvidenceError):
-        GENERATOR.read_reviews(tmp_path, policy_path, evidence_path)
+        GENERATOR.read_reviews(
+            tmp_path,
+            policy_path,
+            evidence_path,
+            tested_commit=TESTED_COMMIT,
+        )
 
 
 def test_m03_placeholder_scan_rejects_markers_and_missing_files(tmp_path: Path) -> None:

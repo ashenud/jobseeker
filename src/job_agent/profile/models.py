@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import StrEnum
 import math
 from statistics import median
-from typing import Annotated, Self
+from typing import Annotated, Literal, Self
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -26,6 +26,8 @@ ServiceIdentifier = Annotated[
 ]
 NonEmptyText = Annotated[StrictStr, Field(min_length=1)]
 HttpUrl = Annotated[StrictStr, Field(min_length=1)]
+SupportedSchemaVersion = Literal["1.0"]
+SUPPORTED_SCHEMA_VERSION = "1.0"
 
 
 class StrictProfileModel(BaseModel):
@@ -65,6 +67,23 @@ class VerificationStatus(StrEnum):
     publicly_verified = "publicly_verified"
     owner_and_publicly_verified = "owner_and_publicly_verified"
     unverified = "unverified"
+
+
+class EvidenceProvenance(StrEnum):
+    owner_records = "owner_records"
+    public_record = "public_record"
+    owner_and_public_records = "owner_and_public_records"
+    unverified_reference = "unverified_reference"
+
+
+class ConfidentialityLevel(StrEnum):
+    public = "public"
+    public_portfolio_reference_with_restrictions = (
+        "public_portfolio_reference_with_restrictions"
+    )
+    restricted = "restricted"
+    confidential = "confidential"
+    unknown = "unknown"
 
 
 class ClaimLevel(StrEnum):
@@ -250,7 +269,7 @@ class ProposalClaim(StrictProfileModel):
 
 
 class ProfileConfig(StrictProfileModel):
-    schema_version: Annotated[StrictStr, Field(pattern=r"^\d+\.\d+$")]
+    schema_version: SupportedSchemaVersion
     identity: Identity
     services: tuple[Service, ...] = Field(min_length=1)
     constraints: Constraints
@@ -368,11 +387,14 @@ class KpiDefinition(StrictProfileModel):
 
         if isinstance(numerator_value, tuple):
             raise TypeError("non-median KPI numerator must be a scalar")
+        if self.calculation == KpiCalculation.numerator_count:
+            return self._finite_non_negative_integral(
+                numerator_value, label="numerator"
+            )
+
         numerator = self._finite_non_negative(numerator_value, label="numerator")
         if denominator == 0:
             return self._zero_denominator_result()
-        if self.calculation == KpiCalculation.numerator_count:
-            return numerator
         if self.calculation == KpiCalculation.ratio:
             return numerator / denominator
         if numerator > denominator:
@@ -390,6 +412,13 @@ class KpiDefinition(StrictProfileModel):
             raise ValueError(f"KPI {label} must be non-negative")
         return result
 
+    @classmethod
+    def _finite_non_negative_integral(cls, value: float, *, label: str) -> float:
+        result = cls._finite_non_negative(value, label=label)
+        if not result.is_integer():
+            raise ValueError(f"KPI {label} count must be integral")
+        return result
+
     def _zero_denominator_result(self) -> float | None:
         if self.zero_denominator_behavior == ZeroDenominatorBehavior.zero:
             return 0.0
@@ -402,7 +431,7 @@ class PilotBehavior(StrictProfileModel):
 
 
 class ScoringConfig(StrictProfileModel):
-    schema_version: Annotated[StrictStr, Field(pattern=r"^\d+\.\d+$")]
+    schema_version: SupportedSchemaVersion
     thresholds: ScoreThresholds
     rules: ScoringRules
     dimensions: tuple[ScoreDimension, ...] = Field(min_length=1)
@@ -428,11 +457,12 @@ class ScoringConfig(StrictProfileModel):
 
 
 class EvidenceSource(StrictProfileModel):
-    source_type: Identifier
+    source_type: EvidenceProvenance
     public_source: NonEmptyText
     public_reference_url: HttpUrl
     owner_verified: StrictBool
-    owner_verified_record_types: tuple[NonEmptyText, ...] = Field(min_length=1)
+    publicly_verified: StrictBool
+    owner_verified_record_types: tuple[NonEmptyText, ...] = ()
 
     @field_validator("public_reference_url")
     @classmethod
@@ -440,9 +470,22 @@ class EvidenceSource(StrictProfileModel):
         return _validate_http_url(value)
 
     @model_validator(mode="after")
-    def validate_record_types(self) -> Self:
+    def validate_provenance(self) -> Self:
         if _duplicates(self.owner_verified_record_types):
             raise ValueError("owner-verified record types must be unique")
+        if self.owner_verified and not self.owner_verified_record_types:
+            raise ValueError("owner verification requires owner record types")
+        if not self.owner_verified and self.owner_verified_record_types:
+            raise ValueError("owner record types require owner verification")
+
+        expected_flags = {
+            EvidenceProvenance.owner_records: (True, False),
+            EvidenceProvenance.public_record: (False, True),
+            EvidenceProvenance.owner_and_public_records: (True, True),
+            EvidenceProvenance.unverified_reference: (False, False),
+        }[self.source_type]
+        if (self.owner_verified, self.publicly_verified) != expected_flags:
+            raise ValueError("evidence provenance contradicts verification sources")
         return self
 
 
@@ -460,9 +503,21 @@ class ProposalReference(StrictProfileModel):
 
 
 class ConfidentialityAndAttribution(StrictProfileModel):
-    confidentiality_level: Identifier
+    confidentiality_level: ConfidentialityLevel
     public_reference_allowed: StrictBool
     restrictions: tuple[NonEmptyText, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_public_reference_permission(self) -> Self:
+        public_reference_safe = self.confidentiality_level in {
+            ConfidentialityLevel.public,
+            ConfidentialityLevel.public_portfolio_reference_with_restrictions,
+        }
+        if self.public_reference_allowed and not public_reference_safe:
+            raise ValueError(
+                "restricted, confidential, or unknown evidence cannot be public"
+            )
+        return self
 
 
 class EvidenceRecord(StrictProfileModel):
@@ -491,11 +546,26 @@ class EvidenceRecord(StrictProfileModel):
             raise ValueError("supported service IDs must be unique")
         if _duplicates(self.safe_claims):
             raise ValueError("safe claims must be unique")
-        verified = self.verification_status != VerificationStatus.unverified
+
+        expected_verification_status = {
+            (True, False): VerificationStatus.owner_verified,
+            (False, True): VerificationStatus.publicly_verified,
+            (True, True): VerificationStatus.owner_and_publicly_verified,
+            (False, False): VerificationStatus.unverified,
+        }[(self.evidence_source.owner_verified, self.evidence_source.publicly_verified)]
+        if self.verification_status != expected_verification_status:
+            raise ValueError("verification status contradicts verification sources")
+
+        verified = expected_verification_status != VerificationStatus.unverified
         if self.proposal_eligible and not verified:
             raise ValueError("unverified evidence cannot be proposal eligible")
         if self.proposal_eligible and not self.proposal_reference.allowed:
             raise ValueError("proposal-eligible evidence must allow proposal references")
+        if (
+            self.proposal_eligible
+            and not self.confidentiality_and_attribution.public_reference_allowed
+        ):
+            raise ValueError("restricted evidence cannot be proposal eligible")
         if (
             self.completed_work_claim_allowed
             and self.classification != EvidenceClassification.completed_client_work
@@ -503,16 +573,27 @@ class EvidenceRecord(StrictProfileModel):
             raise ValueError("non-client work cannot allow completed-work claims")
         if self.completed_work_claim_allowed and not verified:
             raise ValueError("unverified evidence cannot allow completed-work claims")
+        if self.completed_work_claim_allowed and not self.proposal_eligible:
+            raise ValueError(
+                "completed-work claims require proposal-eligible evidence"
+            )
         if (
             self.proposal_reference.allowed
             and not self.confidentiality_and_attribution.public_reference_allowed
         ):
             raise ValueError("proposal reference conflicts with confidentiality")
+        if self.proposal_reference.allowed and not verified:
+            raise ValueError("unverified evidence cannot allow proposal references")
+        if (
+            self.public_visuals_allowed
+            and not self.confidentiality_and_attribution.public_reference_allowed
+        ):
+            raise ValueError("public visuals conflict with confidentiality")
         return self
 
 
 class PortfolioManifest(StrictProfileModel):
-    schema_version: Annotated[StrictStr, Field(pattern=r"^\d+\.\d+$")]
+    schema_version: SupportedSchemaVersion
     portfolio_url: HttpUrl
     records: tuple[EvidenceRecord, ...] = Field(min_length=1)
 
@@ -536,6 +617,14 @@ class ProfileBundle(StrictProfileModel):
 
     @model_validator(mode="after")
     def validate_cross_file_contract(self) -> Self:
+        schema_versions = (
+            self.profile.schema_version,
+            self.scoring.schema_version,
+            self.manifest.schema_version,
+        )
+        if schema_versions != (SUPPORTED_SCHEMA_VERSION,) * 3:
+            raise ValueError("profile bundle schema versions are incompatible")
+
         if self.profile.identity.portfolio_url != self.manifest.portfolio_url:
             raise ValueError("profile and manifest portfolio URLs differ")
 

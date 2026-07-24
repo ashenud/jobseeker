@@ -9,7 +9,9 @@ import pytest
 import yaml
 
 from job_agent.profile import (
+    ConfidentialityLevel,
     EvidenceClassification,
+    EvidenceProvenance,
     ProfileBundle,
     ProfileBundleService,
     ProfileConfig,
@@ -49,6 +51,13 @@ def test_canonical_bundle_resolves_claims_and_returns_sanitized_summary() -> Non
     record = service.bundle.manifest.records[0]
     assert record.evidence_id == "herbacorium_amazon_content"
     assert record.classification == EvidenceClassification.completed_client_work
+    assert record.evidence_source.source_type == EvidenceProvenance.owner_records
+    assert record.evidence_source.owner_verified is True
+    assert record.evidence_source.publicly_verified is False
+    assert (
+        record.confidentiality_and_attribution.confidentiality_level
+        == ConfidentialityLevel.public_portfolio_reference_with_restrictions
+    )
     assert record.proposal_eligible is True
     assert record.source_files_allowed is False
     assert record.performance_claims_allowed is False
@@ -218,9 +227,101 @@ def test_unverified_confidential_and_ineligible_evidence_fail_closed() -> None:
         PortfolioManifest.model_validate(confidential["manifest"])
 
     ineligible = _canonical_data()
-    ineligible["manifest"]["records"][0]["proposal_eligible"] = False
+    ineligible_record = ineligible["manifest"]["records"][0]
+    ineligible_record["proposal_eligible"] = False
+    ineligible_record["completed_work_claim_allowed"] = False
+    ineligible_record["proposal_reference"]["allowed"] = False
     with pytest.raises(ValidationError, match="ineligible evidence"):
         ProfileBundle.model_validate(ineligible)
+
+
+def test_verification_status_is_reconciled_exactly_with_source_evidence() -> None:
+    owner_contradiction = _canonical_data()
+    owner_source = owner_contradiction["manifest"]["records"][0]["evidence_source"]
+    owner_source["source_type"] = "unverified_reference"
+    owner_source["owner_verified"] = False
+    owner_source["owner_verified_record_types"] = ()
+    with pytest.raises(ValidationError, match="verification status contradicts"):
+        PortfolioManifest.model_validate(owner_contradiction["manifest"])
+
+    public_contradiction = _canonical_data()
+    public_contradiction["manifest"]["records"][0][
+        "verification_status"
+    ] = "publicly_verified"
+    with pytest.raises(ValidationError, match="verification status contradicts"):
+        PortfolioManifest.model_validate(public_contradiction["manifest"])
+
+    provenance_contradiction = _canonical_data()
+    provenance_contradiction["manifest"]["records"][0]["evidence_source"][
+        "source_type"
+    ] = "public_record"
+    with pytest.raises(ValidationError, match="provenance contradicts"):
+        PortfolioManifest.model_validate(provenance_contradiction["manifest"])
+
+
+@pytest.mark.parametrize("confidentiality_level", ("restricted", "confidential", "unknown"))
+def test_non_public_confidentiality_cannot_allow_public_references(
+    confidentiality_level: str,
+) -> None:
+    data = _canonical_data()
+    data["manifest"]["records"][0]["confidentiality_and_attribution"][
+        "confidentiality_level"
+    ] = confidentiality_level
+    with pytest.raises(ValidationError, match="cannot be public"):
+        PortfolioManifest.model_validate(data["manifest"])
+
+
+def test_restricted_states_cannot_support_proposals_completed_work_or_visuals() -> None:
+    data = _canonical_data()
+    record = data["manifest"]["records"][0]
+    record["confidentiality_and_attribution"]["confidentiality_level"] = "restricted"
+    record["confidentiality_and_attribution"]["public_reference_allowed"] = False
+    with pytest.raises(ValidationError, match="restricted evidence"):
+        PortfolioManifest.model_validate(data["manifest"])
+
+    ineligible_completed_work = _canonical_data()
+    ineligible_completed_work["manifest"]["records"][0]["proposal_eligible"] = False
+    with pytest.raises(ValidationError, match="completed-work claims require"):
+        PortfolioManifest.model_validate(ineligible_completed_work["manifest"])
+
+    restricted_visuals = _canonical_data()
+    restricted_record = restricted_visuals["manifest"]["records"][0]
+    restricted_record["confidentiality_and_attribution"][
+        "confidentiality_level"
+    ] = "restricted"
+    restricted_record["confidentiality_and_attribution"][
+        "public_reference_allowed"
+    ] = False
+    restricted_record["proposal_reference"]["allowed"] = False
+    restricted_record["proposal_eligible"] = False
+    restricted_record["completed_work_claim_allowed"] = False
+    with pytest.raises(ValidationError, match="public visuals conflict"):
+        PortfolioManifest.model_validate(restricted_visuals["manifest"])
+
+
+@pytest.mark.parametrize(
+    ("bundle_section", "model"),
+    (
+        ("profile", ProfileConfig),
+        ("scoring", ScoringConfig),
+        ("manifest", PortfolioManifest),
+    ),
+)
+def test_each_configuration_rejects_unsupported_schema_versions(
+    bundle_section: str,
+    model: type[ProfileConfig] | type[ScoringConfig] | type[PortfolioManifest],
+) -> None:
+    data = _canonical_data()[bundle_section]
+    data["schema_version"] = "2.0"
+    with pytest.raises(ValidationError):
+        model.model_validate(data)
+
+
+def test_profile_bundle_rejects_mixed_schema_versions() -> None:
+    data = _canonical_data()
+    data["scoring"]["schema_version"] = "1.1"
+    with pytest.raises(ValidationError):
+        ProfileBundle.model_validate(data)
 
 
 def test_duplicate_yaml_keys_and_invalid_values_raise_only_safe_exception(
@@ -313,7 +414,7 @@ def test_kpis_honor_both_zero_denominator_behaviors() -> None:
         for metric in ProfileBundleService.from_yaml().bundle.scoring.metrics
     }
 
-    assert metrics["unsupported_proposal_claim_count"].evaluate(8.0, 0.0) == 0.0
+    assert metrics["unsupported_proposal_claim_count"].evaluate(8.0, 0.0) == 8.0
     assert metrics["response_rate"].evaluate(0.0, 0.0) is None
     assert metrics["median_discovery_to_review_minutes"].evaluate((), 0.0) is None
 
@@ -350,6 +451,30 @@ def test_kpi_evaluation_rejects_invalid_or_inconsistent_inputs(
 
     with pytest.raises(error):
         metrics[metric_id].evaluate(numerator, denominator)
+
+
+@pytest.mark.parametrize(
+    ("numerator", "error"),
+    (
+        (float("nan"), ValueError),
+        (float("inf"), ValueError),
+        (-1.0, ValueError),
+        (1.5, ValueError),
+        (True, TypeError),
+        ((1.0,), TypeError),
+    ),
+)
+def test_numerator_count_rejects_non_integral_or_non_scalar_values(
+    numerator: float | tuple[float, ...],
+    error: type[Exception],
+) -> None:
+    metrics = {
+        metric.metric_id: metric
+        for metric in ProfileBundleService.from_yaml().bundle.scoring.metrics
+    }
+
+    with pytest.raises(error):
+        metrics["unsupported_proposal_claim_count"].evaluate(numerator, 0.0)
 
 
 def test_private_inputs_are_ignored_and_only_scrubbed_metadata_is_tracked() -> None:

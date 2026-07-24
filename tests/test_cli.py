@@ -4,9 +4,11 @@ import json
 from pathlib import Path
 
 import pytest
+import yaml
 
 from job_agent.cli import main
 from job_agent.policy.models import PolicyAction
+from job_agent.profile import ProfileBundleService
 
 
 def _write_policy(path: Path, discover: str) -> None:
@@ -116,3 +118,38 @@ def test_profile_validate_failure_is_safe_json(
     assert payload["valid"] is False
     assert payload["error"]["code"] == "profile_configuration_invalid"
     assert "must-not-leak" not in output
+
+
+def test_profile_validate_unsupported_version_fails_with_safe_json(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    bundle = ProfileBundleService.from_yaml().bundle.model_dump(mode="json")
+    bundle["profile"]["schema_version"] = "2.0"
+    bundle["profile"]["identity"]["display_name"] = "must-not-leak"
+    paths = {
+        section: tmp_path / f"{section}.yaml"
+        for section in ("profile", "scoring", "manifest")
+    }
+    for section, path in paths.items():
+        path.write_text(yaml.safe_dump(bundle[section]), encoding="utf-8")
+
+    assert (
+        main(
+            [
+                "profile-validate",
+                "--profile",
+                str(paths["profile"]),
+                "--scoring",
+                str(paths["scoring"]),
+                "--manifest",
+                str(paths["manifest"]),
+            ]
+        )
+        == 3
+    )
+    output = capsys.readouterr().out
+    payload = json.loads(output)
+    assert payload["valid"] is False
+    assert payload["error"]["code"] == "profile_configuration_invalid"
+    assert "must-not-leak" not in output
+    assert str(tmp_path) not in output
