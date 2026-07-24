@@ -34,6 +34,7 @@ APPROVED_SHELL_WRAPPERS = {
     "scripts/run_milestone_00_gates.sh",
     "scripts/run_milestone_03_gates.sh",
     "scripts/run_milestone_04_gates.sh",
+    "scripts/run_milestone_05_gates.sh",
 }
 APPROVED_MAKE_TARGETS = {
     "bootstrap",

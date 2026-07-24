@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from job_agent.config.settings import Settings
+from job_agent.web.architecture_routes import router as architecture_router
 from job_agent.web.health import ComponentHealth, probe_dependencies
 
 
@@ -30,6 +31,7 @@ def create_app(
         docs_url=None,
         redoc_url=None,
     )
+    application.include_router(architecture_router)
 
     @application.get("/health/live")
     def liveness() -> dict[str, str]:

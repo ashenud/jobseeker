@@ -352,6 +352,7 @@ def validate_boundary_cases() -> list[str]:
         "bash scripts/bootstrap.sh",
         "bash scripts/run_milestone_00_gates.sh --run-label clean",
         "bash scripts/run_milestone_03_gates.sh --run-label clean",
+        "bash scripts/run_milestone_05_gates.sh --run-label preflight",
         "make lint",
     )
     for command in allowed:

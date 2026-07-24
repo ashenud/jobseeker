@@ -24,9 +24,10 @@ from fastapi.testclient import TestClient
 
 def sample_job(): return normalize(ManualAdapter().capture("https://EXAMPLE.com/job?utm_source=x","Packaging label design","Need packaging, label and dieline. Budget $500."))
 def test_state_transitions():
-    assert can_transition(JobState.raw, JobState.normalized)
-    assert not can_transition(JobState.raw, ProposalState.draft)
-    with pytest.raises(ValueError): require_transition(JobState.raw, JobState.scored)
+    assert can_transition(JobState.DISCOVERED, JobState.NORMALIZED)
+    assert not can_transition(JobState.DISCOVERED, ProposalState.GENERATING)
+    with pytest.raises(ValueError):
+        require_transition(JobState.DISCOVERED, JobState.SCORED)
 def test_normalize_score_retrieve_proposal_flow():
     job=sample_job(); assert job.budget and "packaging_label" in job.services
     assert rule_decision(job)[0]=="keep"
@@ -40,8 +41,10 @@ def test_submission_manual_separation():
     pkg=build_package("manual","https://example.test/job","body"); assert pkg.status=="prepared"
     assert mark_manual_submitted(pkg,"sent-1")["status"]=="submitted"
 def test_crm_followup_auditable():
-    t=ApplicationTimeline(); t.transition(ApplicationState.submitted,"manual submit")
-    due=schedule_follow_up(datetime(2026,7,18,tzinfo=UTC)); assert due.day==23 and len(t.events)==1
+    t=ApplicationTimeline()
+    t.transition(ApplicationState.PACKAGE_PREPARED, "prepare manual package")
+    t.transition(ApplicationState.SUBMITTED_MANUAL, "record manual submit")
+    due=schedule_follow_up(datetime(2026,7,18,tzinfo=UTC)); assert due.day==23 and len(t.events)==2
 def test_security_sanitizes_and_redacts():
     assert "script" not in sanitize_html("<script>alert(1)</script><p>ok</p>")
     assert "[REDACTED]" in redact("api_key=secret")

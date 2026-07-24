@@ -238,6 +238,7 @@ def test_host_toolchain_and_wrapper_bypasses_are_denied(command: str, denied: st
         "bash scripts/check.sh",
         "bash scripts/run_milestone_03_gates.sh --run-label clean",
         "bash scripts/run_milestone_04_gates.sh --run-label preflight",
+        "bash scripts/run_milestone_05_gates.sh --run-label preflight",
         "make logs",
         "make type",
         "make typecheck",

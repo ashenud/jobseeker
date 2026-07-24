@@ -113,8 +113,41 @@ class SubmissionConnector(Protocol):
 
 ## Acceptance criteria
 
-- [ ] Every module has a clear responsibility and forbidden responsibility.
-- [ ] Job, proposal, and application transitions are explicit and tested.
-- [ ] Policy checks and confirmation tokens are architectural requirements.
-- [ ] Interfaces do not depend on a specific LLM or marketplace.
-- [ ] The architecture is understandable without reading code.
+- **M05-AC01:** `docs/ARCHITECTURE.md` defines every bounded module's
+  responsibility, forbidden responsibility, dependency direction, and the rule
+  that workers orchestrate application services without containing domain rules.
+- **M05-AC02:** Importable repository and unit-of-work protocols define
+  transaction ownership, optimistic state checks, idempotency lookup, atomic
+  state-and-audit persistence, UTC timestamps, and UUID aggregate identifiers
+  without adding a concrete repository or Milestone 06 schema.
+- **M05-AC03:** Importable source, LLM, embedding, evidence, notification, and
+  submission protocols use provider-neutral request/result types and contain no
+  selected marketplace, provider model, endpoint, credential, or threshold.
+- **M05-AC04:** The job state machine contains every documented job state and
+  exhaustive container tests cover its complete allowed-edge matrix, forbidden
+  edges, cross-machine attempts, and terminal states.
+- **M05-AC05:** The proposal state machine contains generation, validation,
+  review, edit, rejection, approval, and locked-for-submission semantics;
+  exhaustive container tests prove a locked revision cannot be edited in place.
+- **M05-AC06:** The application state machine keeps package preparation,
+  submission cancellation, manual/API submission, and outcomes distinct;
+  exhaustive container tests cover allowed, forbidden, cross-machine, and
+  terminal transitions.
+- **M05-AC07:** A transition command is the only application-service mutation
+  contract and requires aggregate identity, expected state, actor, reason,
+  correlation ID, and idempotency key. Successful commands atomically emit a
+  structured secret-free audit event; conflicts and invalid transitions expose
+  stable typed error semantics.
+- **M05-AC08:** Architecture and importable contracts require a current
+  fail-closed policy decision before external I/O and require an owner feature
+  flag plus a destination/checksum-bound, short-lived, single-use confirmation
+  token for any future API write.
+- **M05-AC09:** Container tests prove proposal approval performs no connector
+  call, approval only permits package preparation, and retryable worker
+  transition handling cannot invoke an external submission operation.
+- **M05-AC10:** A running FastAPI container exposes typed architecture,
+  state-machine, and transition-validation operations in OpenAPI; real HTTP
+  tests prove those operations execute the importable contracts and return
+  stable success and error schemas. Milestone Docker gates, the repository fast
+  suite, clean-checkout reproduction, placeholder scan, evidence analysis, and
+  independent policy/release review all pass.
