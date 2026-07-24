@@ -487,3 +487,177 @@ Next required proof:
 - Reproduce every gate from a fresh standalone clone detached at that commit.
 - Obtain fresh evidence-analysis PASS and independent policy/release GO tied to
   that exact commit before generating the final receipt.
+
+Authoritative main capture: tracked live log interaction
+Date: 2026-07-25
+Result: BLOCKED
+Tested commit: 7c38c91da549513e1f95b8f67a2e782bcb2f0d73
+
+Exact failed command:
+- `bash scripts/run_milestone_03_gates.sh --output-dir
+  artifacts/verification/milestone-03-main --reference-dir
+  artifacts/verification/milestone-03-main --project-name jobseeker_m03_main
+  --run-label main`
+- Exit code: 1
+- Failed gate: `11-pre-commit`
+- Gates 01-10 passed.
+- Pytest reported 207 passed.
+- Each pre-commit hook completed its underlying check successfully but reported:
+  `files were modified by this hook`.
+
+Probable root cause:
+- The rejected commit's `artifacts/verification/milestone-03-main/` capture was
+  committed as historical blocker evidence in `cc4c987`.
+- Gate 11 redirects the running pre-commit process into the now-tracked
+  `artifacts/verification/milestone-03-main/logs/11-pre-commit.log`.
+- That tracked file changes while pre-commit runs its hooks. Pre-commit detects
+  the concurrent working-tree mutation after each hook and fails closed.
+- The preflight capture passed because its output directory is not tracked and
+  therefore its live log does not mutate a tracked file during hooks.
+
+Policy-safe possible fixes:
+1. Preferred: preserve the historical tracked capture and run the next
+   authoritative `main` capture into a new, repository-relative, previously
+   untracked directory such as
+   `artifacts/verification/milestone-03-main-recovery`. Supply that same path as
+   `--reference-dir`, and later pass its manifest explicitly to the receipt
+   generator. This keeps raw historical evidence unchanged and avoids a live
+   tracked-log mutation without weakening any gate.
+2. Change the gate wrapper so gate 11 writes to a temporary path outside the
+   repository and atomically moves the completed log into the output directory.
+   This is more invasive, requires another implementation commit and clean
+   reproduction of the wrapper change, and is not preferred.
+3. Delete or rewrite the tracked historical main logs. This damages blocker
+   evidence and is rejected.
+
+Preferred recovery verification:
+- Confirm the implementation commit is unchanged:
+  `git rev-parse HEAD`
+- Restore a clean source tree by committing this blocker record separately while
+  preserving the failed capture.
+- Run a fresh authoritative capture from gate 01:
+  `bash scripts/run_milestone_03_gates.sh --output-dir
+  artifacts/verification/milestone-03-main-recovery --reference-dir
+  artifacts/verification/milestone-03-main-recovery --project-name
+  jobseeker_m03_main_recovery --run-label main`
+- Then create a fresh standalone clone detached at the tested implementation
+  commit and run the clean wrapper into a separate recovery directory.
+
+Stop decision:
+- The failed main gate was not rerun.
+- The wrapper and tracked historical logs were not modified to bypass the
+  failure.
+- No clean reproduction, independent review, final receipt, DONE transition, or
+  Milestone 04 work was produced.
+- Milestone 03 remains BLOCKED.
+
+Authoritative main recovery: Docker network pool exhaustion
+Date: 2026-07-25
+Result: BLOCKED
+Tested commit: 7c38c91da549513e1f95b8f67a2e782bcb2f0d73
+
+Changed condition:
+- A fresh standalone clone was detached at the exact implementation commit with
+  an empty Git status.
+- The authoritative recovery wrote to the previously untracked external
+  `artifacts/verification/milestone-03-main-recovery` directory, so the clone
+  remained unchanged and the tracked live-log interaction could not recur.
+
+Exact failed command:
+- `bash scripts/run_milestone_03_gates.sh --output-dir
+  /home/kesh/projects/codex-workspace/jobseeker/artifacts/verification/milestone-03-main-recovery
+  --reference-dir artifacts/verification/milestone-03-main-recovery
+  --project-name jobseeker_m03_main_recovery --run-label main`
+- Exit code: 1
+- The image build and image-digest gates passed.
+- Gate 04 failed before profile validation when Docker Compose attempted to
+  create `jobseeker_m03_main_recovery_default`.
+- Docker error:
+  `all predefined address pools have been fully subnetted`
+
+Probable root cause:
+- Repeated isolated Compose project names have accumulated Docker networks until
+  the daemon's default address pools no longer contain an unused subnet.
+- This is Docker engine resource state. It does not indicate a profile,
+  validation, policy, or test regression.
+
+Policy-safe possible fixes:
+1. Preferred: use read-only Docker inspection to confirm the existing
+   `jobseeker_m03_main_default` network has no active containers, then rerun the
+   standalone-clone recovery with the already established
+   `jobseeker_m03_main` project name and the new external evidence directory.
+   Reusing that project network avoids allocating another subnet and preserves
+   all gates.
+2. List accumulated `jobseeker_m03_*` networks, confirm each has no attached
+   container, and explicitly remove only unused milestone-recovery networks
+   before rerunning. This reclaims address space but mutates Docker engine state,
+   so it requires exact target resolution.
+3. Change Compose networking or Docker daemon address pools. This is broader
+   environment configuration and is not preferred for a milestone recovery.
+
+Preferred recovery diagnostics:
+- `docker network ls --format '{{.Name}}\t{{.Driver}}\t{{.Scope}}'`
+- `docker network inspect jobseeker_m03_main_default`
+- `docker ps --filter network=jobseeker_m03_main_default --format
+  '{{.ID}}\t{{.Names}}\t{{.Status}}'`
+
+Preferred recovery verification:
+- From a fresh standalone clone detached at the implementation commit:
+  `bash scripts/run_milestone_03_gates.sh --output-dir
+  /home/kesh/projects/codex-workspace/jobseeker/artifacts/verification/milestone-03-main-recovery
+  --reference-dir artifacts/verification/milestone-03-main-recovery
+  --project-name jobseeker_m03_main --run-label main`
+- Then run the clean reproduction from a separate fresh standalone clone,
+  reusing a confirmed inactive existing clean project network if necessary.
+
+Stop decision:
+- No network was pruned, removed, or reconfigured.
+- The failed authoritative recovery was not rerun.
+- No clean reproduction, independent review, final receipt, DONE transition, or
+  Milestone 04 work was produced.
+- Milestone 03 remains BLOCKED.
+
+Recovery resolution: repair-and-rerun loop completed
+Date: 2026-07-25
+Result: RESOLVED
+Final tested commit: d40b66f7763fcfb333c77773fc6acb274b69b44c
+
+Workflow classification:
+- The tracked-log interaction and Docker network-pool exhaustion recorded above
+  were recoverable execution and infrastructure faults. Under the repository's
+  current workflow they remain `IN_PROGRESS` while repaired and are not terminal
+  blockers.
+- No Docker network was deleted or reconfigured. Read-only inspection confirmed
+  the existing milestone project networks were inactive, and both final runs
+  safely reused those exact project names.
+- A policy/release review of commit
+  `2708393e78b4eb0917281cf7d3dbc02180de77ce` then demonstrated
+  `M03-FR-H01`: restricted performance claim text could be promoted into the
+  safe-claim set. This actionable finding also entered the repair loop.
+
+Policy-safe repair:
+- Commit `d40b66f7763fcfb333c77773fc6acb274b69b44c` rejects duplicate
+  restricted claims and all overlap between safe claims and claims requiring
+  additional evidence.
+- Proposal claims now carry a typed `work_scope` or `performance` category.
+  Typed performance claims fail closed unless every referenced evidence record
+  explicitly permits performance claims.
+- Negative regressions cover the exact demonstrated promotion path and the
+  performance-permission gate.
+
+Final verification:
+- `artifacts/verification/milestone-03-main-final/manifest.tsv`: all eleven
+  gates passed; pytest recorded 210 tests.
+- `artifacts/verification/milestone-03-clean-final/manifest.tsv`: all eleven
+  gates passed; pytest recorded 210 tests.
+- `artifacts/verification/milestone-03-clean-final/checkout-status.log` is empty.
+- The final evidence analyst passed `M03-AC01` through `M03-AC06`.
+- The final policy/release reviewer returned `GO` with no unresolved high or
+  critical findings.
+- `artifacts/verification/milestone-03.json` was generated from the final
+  machine captures and commit-bound reviews and passed Docker milestone
+  validation.
+
+Final decision:
+- Milestone 03 is `DONE`.
+- Milestone 04 is `READY`.

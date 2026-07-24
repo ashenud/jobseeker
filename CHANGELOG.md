@@ -19,6 +19,14 @@
   disabled-by-default live/write authority, pre-I/O connector denial, bounded
   single-use confirmations, secret-free audit decisions, CLI checks, and
   128-test main/clean evidence.
+- Updated the milestone workflow so ordinary command, evidence, infrastructure,
+  placeholder, and review failures are fixed and rerun without weakening gates;
+  terminal `BLOCKED` status is reserved for required user input/authority or
+  unresolved security, privacy, or compliance decisions.
+- Accepted Milestone 03 with strict profile and scoring schemas, scrubbed
+  portfolio provenance and confidentiality controls, typed claim restrictions,
+  executable KPI semantics, safe CLI validation, 210-test main/clean evidence,
+  and independent evidence PASS and policy/release GO reviews.
 
 No milestone beyond the accepted recovery entries in `IMPLEMENTATION_STATUS.md`
 is claimed complete by this documentation reset.

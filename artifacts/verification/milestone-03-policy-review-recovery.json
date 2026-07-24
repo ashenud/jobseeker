@@ -1,0 +1,37 @@
+{
+  "verdict": "NO-GO",
+  "reviewer": "policy-release-reviewer",
+  "tested_commit": "2708393e78b4eb0917281cf7d3dbc02180de77ce",
+  "critical_findings": [],
+  "high_findings": [
+    {
+      "id": "M03-FR-H01",
+      "title": "Proposal-safe claims are not reconciled with explicit claim restrictions",
+      "finding": "EvidenceRecord permits the same claim in safe_claims and claims_requiring_additional_evidence, while ProfileBundle checks only membership in safe_claims. The performance_claims_allowed flag is also not consulted during claim resolution, allowing an explicitly restricted performance claim to be promoted into a proposal-safe claim.",
+      "references": [
+        "src/job_agent/profile/models.py",
+        "data/private/portfolio_manifest.yaml",
+        "tests/test_profile.py"
+      ],
+      "preferred_safe_fix": "Reject overlap between safe and restricted claims, require a typed claim category, enforce performance_claims_allowed during resolution, and add negative regression coverage.",
+      "unresolved": true
+    }
+  ],
+  "medium_findings": [],
+  "unresolved_high_critical": [
+    "M03-FR-H01"
+  ],
+  "references": [
+    "artifacts/verification/milestone-03-main-recovery/manifest.tsv",
+    "artifacts/verification/milestone-03-main-recovery/metadata.tsv",
+    "artifacts/verification/milestone-03-main-recovery/logs/10-pytest.log",
+    "artifacts/verification/milestone-03-clean-recovery/manifest.tsv",
+    "artifacts/verification/milestone-03-clean-recovery/metadata.tsv",
+    "artifacts/verification/milestone-03-clean-recovery/checkout-status.log",
+    "artifacts/verification/milestone-03-clean-recovery/logs/10-pytest.log"
+  ],
+  "known_limitations": [
+    "The captures passed all recorded gates, but the suite did not cover the demonstrated contradictory-claim case.",
+    "Only HERBACORIUM is owner-verified for completed-client-work claims."
+  ]
+}

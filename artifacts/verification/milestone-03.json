@@ -1,0 +1,404 @@
+{
+  "milestone": "03",
+  "tested_commit": "d40b66f7763fcfb333c77773fc6acb274b69b44c",
+  "timestamp_utc": "2026-07-24T22:19:32Z",
+  "image_digest": "sha256:d1e9ac4e7fa78b8a14b3e2c678fcc0eb35aa9c6b6c57c45234f7f8697b12b562",
+  "result": "PASS",
+  "commands": [
+    {
+      "run": "main",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 36.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker_m03_main-api --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "04-profile-validate",
+      "command": "docker compose --profile dev run --rm --no-deps api job-agent profile-validate",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/04-profile-validate.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "05-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/05-validate-docs.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "06-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/06-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "07-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/07-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "08-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/08-ruff.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "09-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/09-mypy.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "10-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/10-pytest.log"
+      ],
+      "test_count": 210
+    },
+    {
+      "run": "main",
+      "gate_id": "11-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api sh -c git\\ config\\ --global\\ --add\\ safe.directory\\ /app\\ \\&\\&\\ pre-commit\\ run\\ --all-files",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-main-final/logs/11-pre-commit.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker_m03_clean_standalone-api --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "04-profile-validate",
+      "command": "docker compose --profile dev run --rm --no-deps api job-agent profile-validate",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/04-profile-validate.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "05-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/05-validate-docs.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "06-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/06-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "07-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/07-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "08-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/08-ruff.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "09-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/09-mypy.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "10-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log"
+      ],
+      "test_count": 210
+    },
+    {
+      "run": "clean",
+      "gate_id": "11-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api sh -c git\\ config\\ --global\\ --add\\ safe.directory\\ /app\\ \\&\\&\\ pre-commit\\ run\\ --all-files",
+      "exit_code": 0,
+      "duration_seconds": 5.0,
+      "log_refs": [
+        "artifacts/verification/milestone-03-clean-final/logs/11-pre-commit.log"
+      ]
+    }
+  ],
+  "acceptance": {
+    "M03-AC01": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "config/scoring.yaml",
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "src/job_agent/profile/service.py",
+        "src/job_agent/cli.py",
+        "artifacts/verification/milestone-03-main-final/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+        "docs/SUCCESS_METRICS.md",
+        "tests/test_cli.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-clean-final/logs/04-profile-validate.log"
+      ]
+    },
+    "M03-AC02": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC03": {
+      "result": "PASS",
+      "references": [
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+        "config/profile.yaml",
+        "docs/milestones/03-positioning-profile-and-success-metrics.md",
+        "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC04": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "config/scoring.yaml",
+        "config/profile.example.yaml",
+        "config/scoring.example.yaml",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+        "src/job_agent/profile/models.py",
+        "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC05": {
+      "result": "PASS",
+      "references": [
+        "docs/SUCCESS_METRICS.md",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+        "config/scoring.yaml",
+        "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC06": {
+      "result": "PASS",
+      "references": [
+        ".gitignore",
+        "data/private/portfolio_manifest.yaml",
+        "data/private/proposal_style_anchors/README.md",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-final/manifest.tsv",
+        "artifacts/verification/milestone-03-clean-final/metadata.tsv",
+        "artifacts/verification/milestone-03-clean-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-03-clean-final/logs/02-build-api.log",
+        "artifacts/verification/milestone-03-clean-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-03-clean-final/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-clean-final/logs/05-validate-docs.log",
+        "artifacts/verification/milestone-03-clean-final/logs/06-validate-milestone.log",
+        "artifacts/verification/milestone-03-clean-final/logs/07-validate-codex-controls.log",
+        "artifacts/verification/milestone-03-clean-final/logs/08-ruff.log",
+        "artifacts/verification/milestone-03-clean-final/logs/09-mypy.log",
+        "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-final/logs/11-pre-commit.log",
+        "artifacts/verification/milestone-03-clean-final/checkout-status.log",
+        "data/private/README.md"
+      ]
+    }
+  },
+  "review": {
+    "verdict": "GO",
+    "reviewer": "policy-release-reviewer",
+    "tested_commit": "d40b66f7763fcfb333c77773fc6acb274b69b44c",
+    "references": [
+      ".agents/skills/jobseeker-milestone/SKILL.md",
+      ".gitignore",
+      "AGENTS.md",
+      "artifacts/verification/milestone-03-clean-final/checkout-status.log",
+      "artifacts/verification/milestone-03-clean-final/logs/04-profile-validate.log",
+      "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log",
+      "artifacts/verification/milestone-03-clean-final/logs/11-pre-commit.log",
+      "artifacts/verification/milestone-03-clean-final/manifest.tsv",
+      "artifacts/verification/milestone-03-clean-final/metadata.tsv",
+      "artifacts/verification/milestone-03-main-final/logs/04-profile-validate.log",
+      "artifacts/verification/milestone-03-main-final/logs/07-validate-codex-controls.log",
+      "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+      "artifacts/verification/milestone-03-main-final/logs/11-pre-commit.log",
+      "artifacts/verification/milestone-03-main-final/manifest.tsv",
+      "artifacts/verification/milestone-03-main-final/metadata.tsv",
+      "artifacts/verification/milestone-03-policy-review-final.json",
+      "config/profile.yaml",
+      "data/private/portfolio_manifest.yaml",
+      "docs/milestones/03-positioning-profile-and-success-metrics.md",
+      "src/job_agent/profile/models.py",
+      "tests/test_cli.py",
+      "tests/test_milestone_03_evidence.py",
+      "tests/test_profile.py"
+    ],
+    "unresolved_high_critical": []
+  },
+  "clean_checkout": {
+    "result": "PASS",
+    "references": [
+      "artifacts/verification/milestone-03-clean-final/manifest.tsv",
+      "artifacts/verification/milestone-03-clean-final/metadata.tsv",
+      "artifacts/verification/milestone-03-clean-final/logs/01-compose-config.log",
+      "artifacts/verification/milestone-03-clean-final/logs/02-build-api.log",
+      "artifacts/verification/milestone-03-clean-final/logs/03-image-digest.log",
+      "artifacts/verification/milestone-03-clean-final/logs/04-profile-validate.log",
+      "artifacts/verification/milestone-03-clean-final/logs/05-validate-docs.log",
+      "artifacts/verification/milestone-03-clean-final/logs/06-validate-milestone.log",
+      "artifacts/verification/milestone-03-clean-final/logs/07-validate-codex-controls.log",
+      "artifacts/verification/milestone-03-clean-final/logs/08-ruff.log",
+      "artifacts/verification/milestone-03-clean-final/logs/09-mypy.log",
+      "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log",
+      "artifacts/verification/milestone-03-clean-final/logs/11-pre-commit.log",
+      "artifacts/verification/milestone-03-clean-final/checkout-status.log"
+    ]
+  },
+  "placeholders": {
+    "result": "PASS",
+    "matches": [],
+    "references": [
+      "artifacts/verification/milestone-03-placeholder-scan.log"
+    ],
+    "scope": [
+      ".gitignore",
+      "config/profile.yaml",
+      "config/profile.example.yaml",
+      "config/scoring.yaml",
+      "config/scoring.example.yaml",
+      "data/private/portfolio_manifest.yaml",
+      "data/private/proposal_style_anchors/README.md",
+      "docs/SUCCESS_METRICS.md",
+      "docs/milestones/03-positioning-profile-and-success-metrics.md",
+      "src/job_agent/profile/__init__.py",
+      "src/job_agent/profile/exceptions.py",
+      "src/job_agent/profile/models.py",
+      "src/job_agent/profile/service.py",
+      "src/job_agent/cli.py",
+      "tests/test_profile.py",
+      "tests/test_cli.py",
+      "scripts/run_milestone_03_gates.sh",
+      "scripts/generate_milestone_03_receipt.py",
+      "tests/test_milestone_03_evidence.py"
+    ]
+  },
+  "known_limitations": [
+    "Only HERBACORIUM is currently verified for completed-client-work proposal claims; other service claims require owner-approved evidence.",
+    "PDF and bounded public-link content ingestion are deferred to Milestone 11; M03 stores scrubbed provenance metadata only."
+  ]
+}

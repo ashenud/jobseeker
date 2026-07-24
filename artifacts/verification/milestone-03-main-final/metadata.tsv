@@ -1,0 +1,8 @@
+key	value
+schema_version	1
+run_label	main
+tested_commit	d40b66f7763fcfb333c77773fc6acb274b69b44c
+timestamp_utc	2026-07-24T22:19:32Z
+compose_project_name	jobseeker_m03_main
+image_digest	sha256:d1e9ac4e7fa78b8a14b3e2c678fcc0eb35aa9c6b6c57c45234f7f8697b12b562
+result	PASS

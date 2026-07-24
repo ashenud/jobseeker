@@ -1,0 +1,88 @@
+{
+  "result": "PASS",
+  "reviewer": "m03_final_evidence_review",
+  "tested_commit": "2708393e78b4eb0917281cf7d3dbc02180de77ce",
+  "acceptance": {
+    "M03-AC01": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "config/scoring.yaml",
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "src/job_agent/profile/service.py",
+        "src/job_agent/cli.py",
+        "tests/test_cli.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-recovery/logs/04-profile-validate.log",
+        "artifacts/verification/milestone-03-clean-recovery/logs/04-profile-validate.log"
+      ]
+    },
+    "M03-AC02": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-recovery/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-recovery/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC03": {
+      "result": "PASS",
+      "references": [
+        "data/private/portfolio_manifest.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-recovery/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-recovery/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC04": {
+      "result": "PASS",
+      "references": [
+        "config/profile.yaml",
+        "config/profile.example.yaml",
+        "config/scoring.yaml",
+        "config/scoring.example.yaml",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-recovery/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-recovery/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC05": {
+      "result": "PASS",
+      "references": [
+        "config/scoring.yaml",
+        "docs/SUCCESS_METRICS.md",
+        "src/job_agent/profile/models.py",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-main-recovery/logs/10-pytest.log",
+        "artifacts/verification/milestone-03-clean-recovery/logs/10-pytest.log"
+      ]
+    },
+    "M03-AC06": {
+      "result": "PASS",
+      "references": [
+        ".gitignore",
+        "data/private/README.md",
+        "data/private/portfolio_manifest.yaml",
+        "data/private/proposal_style_anchors/README.md",
+        "tests/test_profile.py",
+        "artifacts/verification/milestone-03-clean-recovery/checkout-status.log",
+        "artifacts/verification/milestone-03-clean-recovery/logs/10-pytest.log"
+      ]
+    }
+  },
+  "findings": [
+    "Both metadata files identify exact commit 2708393e78b4eb0917281cf7d3dbc02180de77ce.",
+    "Main and clean manifests contain the exact required 11-gate order; all 22 recorded executions exited zero and report PASS.",
+    "Both pytest gates report 207 passed tests.",
+    "The clean capture post-gate checkout status is empty.",
+    "No live external integration is required by Milestone 03.",
+    "No secret indicators, private payloads, fake-pass markers, or flaky-result differences were found."
+  ],
+  "missing_evidence": []
+}

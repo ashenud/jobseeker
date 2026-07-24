@@ -1,0 +1,38 @@
+{
+  "verdict": "GO",
+  "reviewer": "policy-release-reviewer",
+  "tested_commit": "d40b66f7763fcfb333c77773fc6acb274b69b44c",
+  "critical_findings": [],
+  "high_findings": [],
+  "medium_findings": [],
+  "unresolved_high_critical": [],
+  "references": [
+    "AGENTS.md",
+    ".agents/skills/jobseeker-milestone/SKILL.md",
+    "docs/milestones/03-positioning-profile-and-success-metrics.md",
+    "src/job_agent/profile/models.py",
+    "config/profile.yaml",
+    "data/private/portfolio_manifest.yaml",
+    ".gitignore",
+    "tests/test_profile.py",
+    "tests/test_cli.py",
+    "tests/test_milestone_03_evidence.py",
+    "artifacts/verification/milestone-03-main-final/manifest.tsv",
+    "artifacts/verification/milestone-03-main-final/metadata.tsv",
+    "artifacts/verification/milestone-03-main-final/logs/04-profile-validate.log",
+    "artifacts/verification/milestone-03-main-final/logs/07-validate-codex-controls.log",
+    "artifacts/verification/milestone-03-main-final/logs/10-pytest.log",
+    "artifacts/verification/milestone-03-main-final/logs/11-pre-commit.log",
+    "artifacts/verification/milestone-03-clean-final/manifest.tsv",
+    "artifacts/verification/milestone-03-clean-final/metadata.tsv",
+    "artifacts/verification/milestone-03-clean-final/checkout-status.log",
+    "artifacts/verification/milestone-03-clean-final/logs/04-profile-validate.log",
+    "artifacts/verification/milestone-03-clean-final/logs/10-pytest.log",
+    "artifacts/verification/milestone-03-clean-final/logs/11-pre-commit.log"
+  ],
+  "known_limitations": [
+    "Only HERBACORIUM is currently owner-verified for completed-client-work proposal claims; other service claims require separately approved evidence.",
+    "PDF and bounded public-link ingestion are deferred to Milestone 11; Milestone 03 stores scrubbed provenance metadata only.",
+    "Database persistence and migrations, runtime idempotency, web security, and backup and restore are outside Milestone 03."
+  ]
+}

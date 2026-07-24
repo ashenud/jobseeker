@@ -1,7 +1,36 @@
- Container jobseeker_m03_main-api-run-e058cd1b4301 Creating 
- Container jobseeker_m03_main-api-run-e058cd1b4301 Created 
-validate canonical documentation.........................................Passed
-validate repository Codex controls.......................................Passed
-ruff.....................................................................Passed
-mypy.....................................................................Passed
-pytest...................................................................Passed
+ Container jobseeker_m03_main-api-run-3fc966a7cdf0 Creating 
+ Container jobseeker_m03_main-api-run-3fc966a7cdf0 Created 
+validate canonical documentation.........................................Failed
+- hook id: validate-docs
+- files were modified by this hook
+
+documentation validation passed
+
+validate repository Codex controls.......................................Failed
+- hook id: validate-codex-controls
+- files were modified by this hook
+
+Codex control validation passed
+
+ruff.....................................................................Failed
+- hook id: ruff
+- files were modified by this hook
+
+All checks passed!
+
+mypy.....................................................................Failed
+- hook id: mypy
+- files were modified by this hook
+
+Success: no issues found in 41 source files
+
+pytest...................................................................Failed
+- hook id: pytest
+- files were modified by this hook
+
+........................................................................ [ 34%]
+........................................................................ [ 69%]
+...............................................................          [100%]
+207 passed in 1.80s
+
+

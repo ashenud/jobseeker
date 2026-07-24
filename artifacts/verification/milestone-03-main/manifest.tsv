@@ -8,5 +8,5 @@ gate_id	command	exit_code	duration_seconds	log_ref	test_count	result
 07-validate-codex-controls	docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py	0	1	artifacts/verification/milestone-03-main/logs/07-validate-codex-controls.log		PASS
 08-ruff	docker compose --profile dev run --rm --no-deps api ruff check .	0	1	artifacts/verification/milestone-03-main/logs/08-ruff.log		PASS
 09-mypy	docker compose --profile dev run --rm --no-deps api mypy src	0	3	artifacts/verification/milestone-03-main/logs/09-mypy.log		PASS
-10-pytest	docker compose --profile dev run --rm --no-deps api pytest -q	0	3	artifacts/verification/milestone-03-main/logs/10-pytest.log	189	PASS
-11-pre-commit	docker compose --profile dev run --rm --no-deps api sh -c git\ config\ --global\ --add\ safe.directory\ /app\ \&\&\ pre-commit\ run\ --all-files	0	5	artifacts/verification/milestone-03-main/logs/11-pre-commit.log		PASS
+10-pytest	docker compose --profile dev run --rm --no-deps api pytest -q	0	4	artifacts/verification/milestone-03-main/logs/10-pytest.log	207	PASS
+11-pre-commit	docker compose --profile dev run --rm --no-deps api sh -c git\ config\ --global\ --add\ safe.directory\ /app\ \&\&\ pre-commit\ run\ --all-files	1	6	artifacts/verification/milestone-03-main/logs/11-pre-commit.log		FAIL

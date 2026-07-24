@@ -1,7 +1,3 @@
- Network jobseeker_m03_main_default Creating 
- Network jobseeker_m03_main_default Created 
- Volume jobseeker_m03_main_postgres_data Creating 
- Volume jobseeker_m03_main_postgres_data Created 
- Container jobseeker_m03_main-api-run-fa26c7fc03d8 Creating 
- Container jobseeker_m03_main-api-run-fa26c7fc03d8 Created 
+ Container jobseeker_m03_main-api-run-b3124cc4d41b Creating 
+ Container jobseeker_m03_main-api-run-b3124cc4d41b Created 
 {"contradictions": [], "counts": {"evidence_records": 1, "metrics": 18, "proposal_eligible_claims": 8, "services": 12}, "dangling_evidence_ids": [], "ineligible_evidence_ids": [], "result": "PASS", "schema_versions": {"portfolio_manifest": "1.0", "profile": "1.0", "scoring": "1.0"}, "valid": true}

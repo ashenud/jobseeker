@@ -1,16 +1,15 @@
 # Implementation status
 
-**Current milestone:** 03 (`IN_PROGRESS`)
-**Last completed milestone:** 02
-**Overall state:** Milestone 03's three policy-review HIGH findings are addressed
-in implementation commit `7c38c91da549513e1f95b8f67a2e782bcb2f0d73`, and the
-complete Docker preflight passes all eleven gates with 207 tests. The
-first authoritative main capture passed gates 01-10 with 207 tests but stopped
-at gate 11 because its tracked historical log changed while pre-commit ran. A
-fresh standalone-clone recovery avoided that interaction, but stopped at gate 04
-when Docker reported that all predefined network address pools were exhausted.
-Under the repair-and-rerun policy this infrastructure fault remains
-`IN_PROGRESS`; it does not require user input or a protected policy decision.
+**Current milestone:** 04 (`READY`)
+**Last completed milestone:** 03
+**Overall state:** Milestone 03 is accepted at implementation commit
+`d40b66f7763fcfb333c77773fc6acb274b69b44c`. Authoritative main and independent
+clean-checkout captures passed all eleven Docker gates with 210 tests each.
+Evidence review passed all six acceptance criteria, and policy/release review
+returned `GO` with no high or critical findings. Ordinary gate, infrastructure,
+and review failures now enter a repair-and-rerun loop; only user-owned
+input/authority or unresolved security, privacy, or compliance decisions are
+terminal blockers.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-25
 
@@ -46,8 +45,8 @@ coordinating agent reruns the required gates.
 | 00 | Recovery harness and Docker tooling container | DONE | Docker-only harness, fail-closed controls, portable machine evidence, clean reproduction, and independent review accepted | `artifacts/verification/milestone-00.json` (tested commit `b5b45af0e2bcd143cda9e05ef5d36a91351f0b45`) |
 | 01 | Project charter and working-demo contract | DONE | Frozen charter, accepted ADRs, executable semantics, fail-closed clean evidence, and independent review | `artifacts/verification/milestone-01.json` (tested commit `522cfbef9f169b4a3add5088e29a3f51941d1bd8`) |
 | 02 | Compliance and platform policy registry | DONE | Strict versioned policy schema, pre-I/O denial, bounded confirmation, audit events, CLI, and independent review | `artifacts/verification/milestone-02.json` (tested commit `d410a82e783629297f58c0dd046f459951c35a2d`) |
-| 03 | Positioning profile, portfolio inputs, and success metrics | IN_PROGRESS | Profile/scoring YAML | Repairing Docker network-pool exhaustion, then rerunning authoritative main and clean evidence |
-| 04 | Docker-only development and runtime foundation | PENDING | Dockerfile, Compose, scripts, packaging | Not run |
+| 03 | Positioning profile, portfolio inputs, and success metrics | DONE | Strict profile/scoring schemas, scrubbed evidence provenance, typed claim restrictions, executable KPIs, safe CLI, and independent review | `artifacts/verification/milestone-03.json` (tested commit `d40b66f7763fcfb333c77773fc6acb274b69b44c`) |
+| 04 | Docker-only development and runtime foundation | READY | Dockerfile, Compose, scripts, packaging | Not run |
 | 05 | Architecture, service contracts, and state machines | PENDING | Architecture/state docs and enums | Not run |
 | 06 | PostgreSQL/pgvector schema, repositories, and migrations | PENDING | Minimal dataclasses/migration must be replaced | Not run |
 | 07 | Source adapter framework and ingestion persistence | PENDING | In-memory adapter protocol | Not run |

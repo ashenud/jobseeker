@@ -14,42 +14,42 @@
 #4 transferring context: 110B done
 #4 DONE 0.0s
 
-#5 [internal] load build context
-#5 transferring context: 24.41kB 0.1s done
+#5 [ 1/13] FROM docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de
+#5 resolve docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de 0.1s done
 #5 DONE 0.1s
 
-#6 [ 1/13] FROM docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de
-#6 resolve docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de 0.1s done
+#6 [internal] load build context
+#6 transferring context: 24.73kB 0.1s done
 #6 DONE 0.1s
 
-#7 [ 9/13] COPY config /app/config
+#7 [11/13] COPY scripts /app/scripts
 #7 CACHED
 
 #8 [ 3/13] WORKDIR /app
 #8 CACHED
 
-#9 [ 4/13] COPY pyproject.toml README.md /app/
+#9 [ 2/13] RUN apt-get update     && apt-get install --yes --no-install-recommends git     && rm -rf /var/lib/apt/lists/*
 #9 CACHED
 
-#10 [ 8/13] COPY .codex /app/.codex
+#10 [ 7/13] COPY .agents /app/.agents
 #10 CACHED
 
-#11 [10/13] COPY docs /app/docs
+#11 [ 8/13] COPY .codex /app/.codex
 #11 CACHED
 
-#12 [ 6/13] RUN pip install --no-cache-dir --disable-pip-version-check -e ".[dev]"
+#12 [ 5/13] COPY src /app/src
 #12 CACHED
 
-#13 [ 5/13] COPY src /app/src
+#13 [ 6/13] RUN pip install --no-cache-dir --disable-pip-version-check -e ".[dev]"
 #13 CACHED
 
-#14 [11/13] COPY scripts /app/scripts
+#14 [ 9/13] COPY config /app/config
 #14 CACHED
 
-#15 [ 2/13] RUN apt-get update     && apt-get install --yes --no-install-recommends git     && rm -rf /var/lib/apt/lists/*
+#15 [10/13] COPY docs /app/docs
 #15 CACHED
 
-#16 [ 7/13] COPY .agents /app/.agents
+#16 [ 4/13] COPY pyproject.toml README.md /app/
 #16 CACHED
 
 #17 [12/13] COPY tests /app/tests
@@ -61,12 +61,12 @@
 #19 exporting to image
 #19 exporting layers
 #19 exporting layers 0.3s done
-#19 exporting manifest sha256:c41d1116f5928b2eb68cc306a83837ae3f8d6df57d4835462481fcfadeef9765 0.1s done
-#19 exporting config sha256:6cbc3d50154148a8f2096b6d3fbcd5f24dfe76a1d611f74d6824f9459aca33d1 0.1s done
-#19 exporting attestation manifest sha256:a5ab80327b246618a9e1e2452b82477046bb56e4097be7063bf992e58c5932b5
-#19 exporting attestation manifest sha256:a5ab80327b246618a9e1e2452b82477046bb56e4097be7063bf992e58c5932b5 0.2s done
-#19 exporting manifest list sha256:aa80e32cb11a42d7e272e26cf2902ed7c3aba7a4f3e269e3a9a1591a2bd01554
-#19 exporting manifest list sha256:aa80e32cb11a42d7e272e26cf2902ed7c3aba7a4f3e269e3a9a1591a2bd01554 0.1s done
+#19 exporting manifest sha256:35fb1c543fec1f2f53794de49aa347e279d09d8755f065b01c0f6ac85137c398 0.1s done
+#19 exporting config sha256:1ae1f1099ad3cc4f9a014411f2f646c338f6c7fb5c4a086c68847cb1ea62931b 0.1s done
+#19 exporting attestation manifest sha256:41e17c66f15205e193cf8f865b2d83428d125e2c5c58108714ee1c86bbc80191
+#19 exporting attestation manifest sha256:41e17c66f15205e193cf8f865b2d83428d125e2c5c58108714ee1c86bbc80191 0.2s done
+#19 exporting manifest list sha256:ec965ac88def377a153d189e409da029101f58740b99cc6f5c94569a5f99e482
+#19 exporting manifest list sha256:ec965ac88def377a153d189e409da029101f58740b99cc6f5c94569a5f99e482 0.1s done
 #19 naming to docker.io/library/jobseeker_m03_main-api:latest 0.0s done
 #19 unpacking to docker.io/library/jobseeker_m03_main-api:latest 0.1s done
 #19 DONE 1.0s

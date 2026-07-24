@@ -1,0 +1,3 @@
+ Container jobseeker_m03_main-api-run-5e6728876d41 Creating 
+ Container jobseeker_m03_main-api-run-5e6728876d41 Created 
+{"contradictions": [], "counts": {"evidence_records": 1, "metrics": 18, "proposal_eligible_claims": 8, "services": 12}, "dangling_evidence_ids": [], "ineligible_evidence_ids": [], "result": "PASS", "schema_versions": {"portfolio_manifest": "1.0", "profile": "1.0", "scoring": "1.0"}, "valid": true}
