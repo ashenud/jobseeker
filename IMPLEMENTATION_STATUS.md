@@ -1,15 +1,17 @@
 # Implementation status
 
-**Current milestone:** 05 (`IN_PROGRESS`)
-**Last completed milestone:** 04
-**Overall state:** Milestone 05 architecture, contract, and state-machine recovery
-is in progress. Milestone 04 is accepted at implementation commit
-`094c2d9981b605ed9e06a2a1c8013dfb858352e6`. Authoritative main and independent
-clean-checkout captures passed all 29 Docker gates with 249 full-suite tests and
-2 explicit integration tests each. Evidence review passed all ten acceptance
-criteria, and policy/release review returned `GO` with no high or critical
-findings. The local five-service runtime, real health/readiness API, initial
-pgvector migration, and Celery worker/beat foundation are operational.
+**Current milestone:** 06 (`READY`)
+**Last completed milestone:** 05
+**Overall state:** Milestone 05 is accepted at implementation commit
+`1ef2e6d50fb01ccb0a0f6d891d6dcaccb2eba65f`. Authoritative main and independent
+clean-checkout captures each passed all 18 Docker gates with 76 focused, 73
+policy/provider, and 339 full-suite tests; the two opt-in integration skips are
+explicitly disclosed and runtime health, migrations, and real HTTP/OpenAPI
+behavior passed separate gates. Evidence review passed all ten acceptance
+criteria, and policy/release review returned `GO` with no unresolved high or
+critical findings. The modular boundaries, provider-neutral policy-gated
+contracts, exhaustive state graphs, atomic transition protocol, protected
+submission semantics, and running architecture API are operational.
 **Demo readiness:** NO-GO
 **Last updated:** 2026-07-25
 
@@ -47,8 +49,8 @@ coordinating agent reruns the required gates.
 | 02 | Compliance and platform policy registry | DONE | Strict versioned policy schema, pre-I/O denial, bounded confirmation, audit events, CLI, and independent review | `artifacts/verification/milestone-02.json` (tested commit `d410a82e783629297f58c0dd046f459951c35a2d`) |
 | 03 | Positioning profile, portfolio inputs, and success metrics | DONE | Strict profile/scoring schemas, scrubbed evidence provenance, typed claim restrictions, executable KPIs, safe CLI, and independent review | `artifacts/verification/milestone-03.json` (tested commit `d40b66f7763fcfb333c77773fc6acb274b69b44c`) |
 | 04 | Docker-only development and runtime foundation | DONE | Pinned Docker/Compose runtime, health-aware five-service stack, real FastAPI readiness, pgvector migration, Celery worker/beat, Docker-only scripts, and independent review | `artifacts/verification/milestone-04.json` (tested commit `094c2d9981b605ed9e06a2a1c8013dfb858352e6`) |
-| 05 | Architecture, service contracts, and state machines | IN_PROGRESS | Architecture/state docs and enums | Not run |
-| 06 | PostgreSQL/pgvector schema, repositories, and migrations | PENDING | Minimal dataclasses/migration must be replaced | Not run |
+| 05 | Architecture, service contracts, and state machines | DONE | Modular boundaries, provider-neutral policy-gated contracts, exhaustive state graphs, atomic transition/audit protocol, protected submission semantics, and running architecture API | `artifacts/verification/milestone-05.json` (tested commit `1ef2e6d50fb01ccb0a0f6d891d6dcaccb2eba65f`) |
+| 06 | PostgreSQL/pgvector schema, repositories, and migrations | READY | Minimal dataclasses/migration must be replaced | Not run |
 | 07 | Source adapter framework and ingestion persistence | PENDING | In-memory adapter protocol | Not run |
 | 08 | Manual capture and permitted live read integrations | PENDING | Fixture adapters; no live HTTP connector | Not run |
 | 09 | Normalization, deduplication, and deterministic filters | PENDING | In-memory rules | Not run |

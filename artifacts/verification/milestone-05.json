@@ -1,0 +1,636 @@
+{
+  "milestone": "05",
+  "tested_commit": "1ef2e6d50fb01ccb0a0f6d891d6dcaccb2eba65f",
+  "timestamp_utc": "2026-07-25T00:36:47Z",
+  "image_digest": "sha256:54f24c95b6ef658417080459ddb245a4c24d9f41ac09c4c9388b7fac7f133080",
+  "result": "PASS",
+  "commands": [
+    {
+      "run": "main",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker-app:local --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "04-start-stack",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 14.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/04-start-stack.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "05-stack-state",
+      "command": "docker compose --profile dev ps",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/05-stack-state.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "06-http-contracts",
+      "command": "docker compose --profile dev exec -T api python scripts/check_architecture_http.py --base-url http://127.0.0.1:8000",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/06-http-contracts.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "07-focused-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q tests/test_milestone_05_states.py tests/test_milestone_05_contracts.py tests/test_milestone_05_providers.py tests/test_milestone_05_http.py",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ],
+      "test_count": 76
+    },
+    {
+      "run": "main",
+      "gate_id": "08-policy-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q tests/test_policy.py tests/test_milestone_05_providers.py",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log"
+      ],
+      "test_count": 73
+    },
+    {
+      "run": "main",
+      "gate_id": "09-migrate-up",
+      "command": "docker compose --profile dev run --rm api alembic upgrade head",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/09-migrate-up.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "10-migration-head",
+      "command": "docker compose --profile dev run --rm api alembic current --check-heads",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/10-migration-head.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "11-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/11-validate-docs.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "12-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/12-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "13-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/13-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "14-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/14-ruff.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "15-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 5.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/15-mypy.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "16-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/16-pytest.log"
+      ],
+      "test_count": 339
+    },
+    {
+      "run": "main",
+      "gate_id": "17-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api pre-commit run --all-files",
+      "exit_code": 0,
+      "duration_seconds": 10.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/17-pre-commit.log"
+      ]
+    },
+    {
+      "run": "main",
+      "gate_id": "18-teardown",
+      "command": "docker compose --profile dev down --volumes --remove-orphans",
+      "exit_code": 0,
+      "duration_seconds": 5.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-main-final/logs/18-teardown.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "01-compose-config",
+      "command": "docker compose --profile dev config --quiet",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/01-compose-config.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "02-build-api",
+      "command": "docker compose --profile dev build api",
+      "exit_code": 0,
+      "duration_seconds": 10.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/02-build-api.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "03-image-digest",
+      "command": "docker image inspect jobseeker-app:local --format \\{\\{.Id\\}\\}",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/03-image-digest.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "04-start-stack",
+      "command": "docker compose --profile dev up -d --wait",
+      "exit_code": 0,
+      "duration_seconds": 14.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/04-start-stack.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "05-stack-state",
+      "command": "docker compose --profile dev ps",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/05-stack-state.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "06-http-contracts",
+      "command": "docker compose --profile dev exec -T api python scripts/check_architecture_http.py --base-url http://127.0.0.1:8000",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/06-http-contracts.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "07-focused-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q tests/test_milestone_05_states.py tests/test_milestone_05_contracts.py tests/test_milestone_05_providers.py tests/test_milestone_05_http.py",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/07-focused-pytest.log"
+      ],
+      "test_count": 76
+    },
+    {
+      "run": "clean",
+      "gate_id": "08-policy-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q tests/test_policy.py tests/test_milestone_05_providers.py",
+      "exit_code": 0,
+      "duration_seconds": 2.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/08-policy-pytest.log"
+      ],
+      "test_count": 73
+    },
+    {
+      "run": "clean",
+      "gate_id": "09-migrate-up",
+      "command": "docker compose --profile dev run --rm api alembic upgrade head",
+      "exit_code": 0,
+      "duration_seconds": 3.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/09-migrate-up.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "10-migration-head",
+      "command": "docker compose --profile dev run --rm api alembic current --check-heads",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/10-migration-head.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "11-validate-docs",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/11-validate-docs.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "12-validate-milestone",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/12-validate-milestone.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "13-validate-codex-controls",
+      "command": "docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/13-validate-codex-controls.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "14-ruff",
+      "command": "docker compose --profile dev run --rm --no-deps api ruff check .",
+      "exit_code": 0,
+      "duration_seconds": 1.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/14-ruff.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "15-mypy",
+      "command": "docker compose --profile dev run --rm --no-deps api mypy src",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/15-mypy.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "16-pytest",
+      "command": "docker compose --profile dev run --rm --no-deps api pytest -q",
+      "exit_code": 0,
+      "duration_seconds": 6.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/16-pytest.log"
+      ],
+      "test_count": 339
+    },
+    {
+      "run": "clean",
+      "gate_id": "17-pre-commit",
+      "command": "docker compose --profile dev run --rm --no-deps api pre-commit run --all-files",
+      "exit_code": 0,
+      "duration_seconds": 11.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/17-pre-commit.log"
+      ]
+    },
+    {
+      "run": "clean",
+      "gate_id": "18-teardown",
+      "command": "docker compose --profile dev down --volumes --remove-orphans",
+      "exit_code": 0,
+      "duration_seconds": 4.0,
+      "log_refs": [
+        "artifacts/verification/milestone-05-clean-final/logs/18-teardown.log"
+      ]
+    }
+  ],
+  "acceptance": {
+    "M05-AC01": {
+      "result": "PASS",
+      "references": [
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/core/architecture.py",
+        "tests/test_milestone_05_http.py",
+        "artifacts/verification/milestone-05-main-final/logs/06-http-contracts.log",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC02": {
+      "result": "PASS",
+      "references": [
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/core/contracts.py",
+        "src/job_agent/core/transitions.py",
+        "tests/test_milestone_05_contracts.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC03": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/providers/contracts.py",
+        "tests/test_milestone_05_providers.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log",
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/policy/models.py",
+        "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log"
+      ]
+    },
+    "M05-AC04": {
+      "result": "PASS",
+      "references": [
+        "docs/STATE_MACHINES.md",
+        "src/job_agent/core/states.py",
+        "tests/test_milestone_05_states.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC05": {
+      "result": "PASS",
+      "references": [
+        "docs/STATE_MACHINES.md",
+        "src/job_agent/core/states.py",
+        "tests/test_milestone_05_states.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC06": {
+      "result": "PASS",
+      "references": [
+        "docs/STATE_MACHINES.md",
+        "src/job_agent/core/states.py",
+        "tests/test_milestone_05_states.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC07": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/core/commands.py",
+        "src/job_agent/core/audit.py",
+        "src/job_agent/core/errors.py",
+        "src/job_agent/core/contracts.py",
+        "src/job_agent/core/transitions.py",
+        "src/job_agent/crm/service.py",
+        "src/job_agent/submission/service.py",
+        "tests/test_milestone_05_contracts.py",
+        "tests/test_pipeline.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC08": {
+      "result": "PASS",
+      "references": [
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/policy/models.py",
+        "src/job_agent/policy/service.py",
+        "src/job_agent/providers/contracts.py",
+        "tests/test_milestone_05_providers.py",
+        "tests/test_policy.py",
+        "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log"
+      ]
+    },
+    "M05-AC09": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/core/transitions.py",
+        "src/job_agent/workers/transitions.py",
+        "tests/test_milestone_05_contracts.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log",
+        "src/job_agent/core/commands.py",
+        "src/job_agent/submission/service.py"
+      ]
+    },
+    "M05-AC10": {
+      "result": "PASS",
+      "references": [
+        "docs/adr/0003-modular-monolith.md",
+        "docs/adr/0004-server-rendered-dashboard.md",
+        "docs/milestones/05-architecture-boundaries-and-state-machines.md",
+        "src/job_agent/web/architecture_routes.py",
+        "src/job_agent/web/schemas.py",
+        "scripts/check_architecture_http.py",
+        "tests/test_milestone_05_http.py",
+        "tests/test_milestone_05_evidence.py",
+        "artifacts/verification/milestone-05-main-final/logs/06-http-contracts.log",
+        "artifacts/verification/milestone-05-main-final/logs/09-migrate-up.log",
+        "artifacts/verification/milestone-05-main-final/logs/10-migration-head.log",
+        "artifacts/verification/milestone-05-main-final/logs/11-validate-docs.log",
+        "artifacts/verification/milestone-05-main-final/logs/12-validate-milestone.log",
+        "artifacts/verification/milestone-05-main-final/logs/13-validate-codex-controls.log",
+        "artifacts/verification/milestone-05-main-final/logs/14-ruff.log",
+        "artifacts/verification/milestone-05-main-final/logs/15-mypy.log",
+        "artifacts/verification/milestone-05-main-final/logs/16-pytest.log",
+        "artifacts/verification/milestone-05-main-final/logs/17-pre-commit.log",
+        "artifacts/verification/milestone-05-clean-final/manifest.tsv",
+        "artifacts/verification/milestone-05-clean-final/metadata.tsv",
+        "artifacts/verification/milestone-05-clean-final/logs/01-compose-config.log",
+        "artifacts/verification/milestone-05-clean-final/logs/02-build-api.log",
+        "artifacts/verification/milestone-05-clean-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/04-start-stack.log",
+        "artifacts/verification/milestone-05-clean-final/logs/05-stack-state.log",
+        "artifacts/verification/milestone-05-clean-final/logs/06-http-contracts.log",
+        "artifacts/verification/milestone-05-clean-final/logs/07-focused-pytest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/08-policy-pytest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/09-migrate-up.log",
+        "artifacts/verification/milestone-05-clean-final/logs/10-migration-head.log",
+        "artifacts/verification/milestone-05-clean-final/logs/11-validate-docs.log",
+        "artifacts/verification/milestone-05-clean-final/logs/12-validate-milestone.log",
+        "artifacts/verification/milestone-05-clean-final/logs/13-validate-codex-controls.log",
+        "artifacts/verification/milestone-05-clean-final/logs/14-ruff.log",
+        "artifacts/verification/milestone-05-clean-final/logs/15-mypy.log",
+        "artifacts/verification/milestone-05-clean-final/logs/16-pytest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/17-pre-commit.log",
+        "artifacts/verification/milestone-05-clean-final/logs/18-teardown.log",
+        "artifacts/verification/milestone-05-clean-final/checkout-status.log",
+        "artifacts/verification/milestone-05-main-final/metadata.tsv",
+        "artifacts/verification/milestone-05-main-final/manifest.tsv",
+        "artifacts/verification/milestone-05-main-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log",
+        "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log"
+      ]
+    }
+  },
+  "review": {
+    "verdict": "GO",
+    "reviewer": "policy-release-reviewer",
+    "tested_commit": "1ef2e6d50fb01ccb0a0f6d891d6dcaccb2eba65f",
+    "references": [
+      "artifacts/verification/milestone-05-policy-review.json",
+      "AGENTS.md",
+      "IMPLEMENTATION_STATUS.md",
+      "docs/ARCHITECTURE.md",
+      "docs/STATE_MACHINES.md",
+      "docs/OPERATIONS.md",
+      "docs/milestones/05-architecture-boundaries-and-state-machines.md",
+      "config/platform_policy.yaml",
+      "src/job_agent/core/audit.py",
+      "src/job_agent/core/commands.py",
+      "src/job_agent/core/contracts.py",
+      "src/job_agent/core/transitions.py",
+      "src/job_agent/crm/service.py",
+      "src/job_agent/policy/models.py",
+      "src/job_agent/policy/service.py",
+      "src/job_agent/providers/contracts.py",
+      "src/job_agent/submission/service.py",
+      "src/job_agent/workers/transitions.py",
+      "src/job_agent/web/app.py",
+      "src/job_agent/web/architecture_routes.py",
+      "tests/test_milestone_05_contracts.py",
+      "tests/test_milestone_05_providers.py",
+      "tests/test_policy.py",
+      "alembic/versions/0001_initial.py",
+      "artifacts/verification/milestone-05-main-final/metadata.tsv",
+      "artifacts/verification/milestone-05-main-final/manifest.tsv",
+      "artifacts/verification/milestone-05-main-final/logs/05-stack-state.log",
+      "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log",
+      "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log",
+      "artifacts/verification/milestone-05-main-final/logs/10-migration-head.log",
+      "artifacts/verification/milestone-05-main-final/logs/16-pytest.log",
+      "artifacts/verification/milestone-05-clean-final/metadata.tsv",
+      "artifacts/verification/milestone-05-clean-final/manifest.tsv",
+      "artifacts/verification/milestone-05-clean-final/checkout-status.log"
+    ],
+    "unresolved_high_critical": []
+  },
+  "clean_checkout": {
+    "result": "PASS",
+    "references": [
+      "artifacts/verification/milestone-05-clean-final/manifest.tsv",
+      "artifacts/verification/milestone-05-clean-final/metadata.tsv",
+      "artifacts/verification/milestone-05-clean-final/logs/01-compose-config.log",
+      "artifacts/verification/milestone-05-clean-final/logs/02-build-api.log",
+      "artifacts/verification/milestone-05-clean-final/logs/03-image-digest.log",
+      "artifacts/verification/milestone-05-clean-final/logs/04-start-stack.log",
+      "artifacts/verification/milestone-05-clean-final/logs/05-stack-state.log",
+      "artifacts/verification/milestone-05-clean-final/logs/06-http-contracts.log",
+      "artifacts/verification/milestone-05-clean-final/logs/07-focused-pytest.log",
+      "artifacts/verification/milestone-05-clean-final/logs/08-policy-pytest.log",
+      "artifacts/verification/milestone-05-clean-final/logs/09-migrate-up.log",
+      "artifacts/verification/milestone-05-clean-final/logs/10-migration-head.log",
+      "artifacts/verification/milestone-05-clean-final/logs/11-validate-docs.log",
+      "artifacts/verification/milestone-05-clean-final/logs/12-validate-milestone.log",
+      "artifacts/verification/milestone-05-clean-final/logs/13-validate-codex-controls.log",
+      "artifacts/verification/milestone-05-clean-final/logs/14-ruff.log",
+      "artifacts/verification/milestone-05-clean-final/logs/15-mypy.log",
+      "artifacts/verification/milestone-05-clean-final/logs/16-pytest.log",
+      "artifacts/verification/milestone-05-clean-final/logs/17-pre-commit.log",
+      "artifacts/verification/milestone-05-clean-final/logs/18-teardown.log",
+      "artifacts/verification/milestone-05-clean-final/checkout-status.log"
+    ]
+  },
+  "placeholders": {
+    "result": "PASS",
+    "matches": [],
+    "references": [
+      "artifacts/verification/milestone-05-placeholder-scan.log"
+    ],
+    "scope": [
+      "docs/ARCHITECTURE.md",
+      "docs/STATE_MACHINES.md",
+      "docs/adr/0003-modular-monolith.md",
+      "docs/adr/0004-server-rendered-dashboard.md",
+      "docs/milestones/05-architecture-boundaries-and-state-machines.md",
+      "src/job_agent/core/architecture.py",
+      "src/job_agent/core/audit.py",
+      "src/job_agent/core/commands.py",
+      "src/job_agent/core/contracts.py",
+      "src/job_agent/core/errors.py",
+      "src/job_agent/core/states.py",
+      "src/job_agent/core/transitions.py",
+      "src/job_agent/crm/service.py",
+      "src/job_agent/policy/models.py",
+      "src/job_agent/policy/service.py",
+      "src/job_agent/providers/contracts.py",
+      "src/job_agent/submission/service.py",
+      "src/job_agent/web/app.py",
+      "src/job_agent/web/architecture_routes.py",
+      "src/job_agent/web/schemas.py",
+      "src/job_agent/workers/transitions.py",
+      "scripts/check_architecture_http.py",
+      "scripts/run_milestone_05_gates.sh",
+      "scripts/generate_milestone_05_receipt.py",
+      "tests/test_milestone_05_contracts.py",
+      "tests/test_milestone_05_evidence.py",
+      "tests/test_milestone_05_http.py",
+      "tests/test_milestone_05_providers.py",
+      "tests/test_milestone_05_states.py",
+      "tests/test_pipeline.py",
+      "tests/test_policy.py"
+    ]
+  },
+  "known_limitations": [
+    "Milestone 05 defines repository and unit-of-work protocols only; concrete PostgreSQL persistence remains Milestone 06.",
+    "No marketplace submission connector is implemented or authorized; the MVP remains manual-only and external writes fail closed.",
+    "The full deterministic suite excludes two explicitly opt-in PostgreSQL/Redis integration tests; the running five-service stack, migration head, and HTTP contracts are verified separately.",
+    "BuildKit provenance attestations can produce different manifest-list digests for main and clean builds; each captured sha256 digest is validated against its own log and both runs test the same commit."
+  ]
+}

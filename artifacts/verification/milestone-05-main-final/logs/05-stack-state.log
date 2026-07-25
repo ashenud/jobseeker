@@ -1,0 +1,6 @@
+NAME                             IMAGE                                                                                            COMMAND                  SERVICE     CREATED          STATUS                    PORTS
+jobseeker_m05_main-api-1         jobseeker-app:local                                                                              "uvicorn job_agent.w…"   api         14 seconds ago   Up 7 seconds (healthy)    127.0.0.1:8000->8000/tcp
+jobseeker_m05_main-db-1          pgvector/pgvector:pg16@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb   "docker-entrypoint.s…"   db          14 seconds ago   Up 13 seconds (healthy)   5432/tcp
+jobseeker_m05_main-redis-1       redis:7-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99           "docker-entrypoint.s…"   redis       14 seconds ago   Up 13 seconds (healthy)   6379/tcp
+jobseeker_m05_main-scheduler-1   jobseeker-app:local                                                                              "celery -A job_agent…"   scheduler   14 seconds ago   Up 7 seconds (healthy)    8000/tcp
+jobseeker_m05_main-worker-1      jobseeker-app:local                                                                              "celery -A job_agent…"   worker      14 seconds ago   Up 7 seconds (healthy)    8000/tcp

@@ -33,6 +33,13 @@
   task serialization, 29-gate main/clean evidence with 249 full-suite and 2
   explicit integration tests per capture, and independent evidence PASS and
   policy/release GO reviews.
+- Accepted Milestone 05 with documented modular-monolith boundaries,
+  provider-neutral policy-gated async contracts, exhaustive job/proposal/
+  application state graphs, a single atomic transition-and-audit repository
+  protocol, secret/PII-safe audit identifiers, protected API-submission receipt
+  semantics, real architecture/state/OpenAPI endpoints, and 18-gate main/clean
+  evidence with 76 focused, 73 policy/provider, and 339 full-suite tests per
+  capture plus independent evidence PASS and policy/release GO reviews.
 
 No milestone beyond the accepted recovery entries in `IMPLEMENTATION_STATUS.md`
 is claimed complete by this documentation reset.

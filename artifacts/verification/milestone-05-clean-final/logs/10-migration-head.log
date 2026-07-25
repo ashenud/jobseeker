@@ -1,0 +1,9 @@
+ Container jobseeker_m05_clean-db-1 Running 
+ Container jobseeker_m05_clean-redis-1 Running 
+ Container jobseeker_m05_clean-db-1 Waiting 
+ Container jobseeker_m05_clean-redis-1 Waiting 
+ Container jobseeker_m05_clean-db-1 Healthy 
+ Container jobseeker_m05_clean-redis-1 Healthy 
+ Container jobseeker_m05_clean-api-run-9a0e3f33468c Creating 
+ Container jobseeker_m05_clean-api-run-9a0e3f33468c Created 
+0001_initial (head)

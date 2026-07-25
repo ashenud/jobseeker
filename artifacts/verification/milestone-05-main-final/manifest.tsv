@@ -1,0 +1,19 @@
+gate_id	command	exit_code	duration_seconds	log_ref	test_count	result
+01-compose-config	docker compose --profile dev config --quiet	0	0	artifacts/verification/milestone-05-main-final/logs/01-compose-config.log		PASS
+02-build-api	docker compose --profile dev build api	0	4	artifacts/verification/milestone-05-main-final/logs/02-build-api.log		PASS
+03-image-digest	docker image inspect jobseeker-app:local --format \{\{.Id\}\}	0	0	artifacts/verification/milestone-05-main-final/logs/03-image-digest.log		PASS
+04-start-stack	docker compose --profile dev up -d --wait	0	14	artifacts/verification/milestone-05-main-final/logs/04-start-stack.log		PASS
+05-stack-state	docker compose --profile dev ps	0	0	artifacts/verification/milestone-05-main-final/logs/05-stack-state.log		PASS
+06-http-contracts	docker compose --profile dev exec -T api python scripts/check_architecture_http.py --base-url http://127.0.0.1:8000	0	0	artifacts/verification/milestone-05-main-final/logs/06-http-contracts.log		PASS
+07-focused-pytest	docker compose --profile dev run --rm --no-deps api pytest -q tests/test_milestone_05_states.py tests/test_milestone_05_contracts.py tests/test_milestone_05_providers.py tests/test_milestone_05_http.py	0	4	artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log	76	PASS
+08-policy-pytest	docker compose --profile dev run --rm --no-deps api pytest -q tests/test_policy.py tests/test_milestone_05_providers.py	0	2	artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log	73	PASS
+09-migrate-up	docker compose --profile dev run --rm api alembic upgrade head	0	3	artifacts/verification/milestone-05-main-final/logs/09-migrate-up.log		PASS
+10-migration-head	docker compose --profile dev run --rm api alembic current --check-heads	0	3	artifacts/verification/milestone-05-main-final/logs/10-migration-head.log		PASS
+11-validate-docs	docker compose --profile dev run --rm --no-deps api python scripts/validate_docs.py	0	1	artifacts/verification/milestone-05-main-final/logs/11-validate-docs.log		PASS
+12-validate-milestone	docker compose --profile dev run --rm --no-deps api python scripts/validate_milestone.py --all	0	2	artifacts/verification/milestone-05-main-final/logs/12-validate-milestone.log		PASS
+13-validate-codex-controls	docker compose --profile dev run --rm --no-deps api python scripts/validate_codex_controls.py	0	1	artifacts/verification/milestone-05-main-final/logs/13-validate-codex-controls.log		PASS
+14-ruff	docker compose --profile dev run --rm --no-deps api ruff check .	0	1	artifacts/verification/milestone-05-main-final/logs/14-ruff.log		PASS
+15-mypy	docker compose --profile dev run --rm --no-deps api mypy src	0	5	artifacts/verification/milestone-05-main-final/logs/15-mypy.log		PASS
+16-pytest	docker compose --profile dev run --rm --no-deps api pytest -q	0	6	artifacts/verification/milestone-05-main-final/logs/16-pytest.log	339	PASS
+17-pre-commit	docker compose --profile dev run --rm --no-deps api pre-commit run --all-files	0	10	artifacts/verification/milestone-05-main-final/logs/17-pre-commit.log		PASS
+18-teardown	docker compose --profile dev down --volumes --remove-orphans	0	5	artifacts/verification/milestone-05-main-final/logs/18-teardown.log		PASS

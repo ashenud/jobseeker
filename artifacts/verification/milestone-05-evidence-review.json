@@ -1,0 +1,160 @@
+{
+  "reviewer": "test-evidence-analyst",
+  "result": "PASS",
+  "tested_commit": "1ef2e6d50fb01ccb0a0f6d891d6dcaccb2eba65f",
+  "acceptance": {
+    "M05-AC01": {
+      "result": "PASS",
+      "references": [
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/core/architecture.py",
+        "tests/test_milestone_05_http.py",
+        "artifacts/verification/milestone-05-main-final/logs/06-http-contracts.log",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC02": {
+      "result": "PASS",
+      "references": [
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/core/contracts.py",
+        "src/job_agent/core/transitions.py",
+        "tests/test_milestone_05_contracts.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC03": {
+      "result": "PASS",
+      "references": [
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/providers/contracts.py",
+        "src/job_agent/policy/models.py",
+        "tests/test_milestone_05_providers.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log",
+        "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log"
+      ]
+    },
+    "M05-AC04": {
+      "result": "PASS",
+      "references": [
+        "docs/STATE_MACHINES.md",
+        "src/job_agent/core/states.py",
+        "tests/test_milestone_05_states.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC05": {
+      "result": "PASS",
+      "references": [
+        "docs/STATE_MACHINES.md",
+        "src/job_agent/core/states.py",
+        "tests/test_milestone_05_states.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC06": {
+      "result": "PASS",
+      "references": [
+        "docs/STATE_MACHINES.md",
+        "src/job_agent/core/states.py",
+        "tests/test_milestone_05_states.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC07": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/core/commands.py",
+        "src/job_agent/core/audit.py",
+        "src/job_agent/core/errors.py",
+        "src/job_agent/core/contracts.py",
+        "src/job_agent/core/transitions.py",
+        "src/job_agent/crm/service.py",
+        "src/job_agent/submission/service.py",
+        "tests/test_milestone_05_contracts.py",
+        "tests/test_pipeline.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC08": {
+      "result": "PASS",
+      "references": [
+        "docs/ARCHITECTURE.md",
+        "src/job_agent/policy/models.py",
+        "src/job_agent/policy/service.py",
+        "src/job_agent/providers/contracts.py",
+        "tests/test_policy.py",
+        "tests/test_milestone_05_providers.py",
+        "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log"
+      ]
+    },
+    "M05-AC09": {
+      "result": "PASS",
+      "references": [
+        "src/job_agent/core/commands.py",
+        "src/job_agent/core/transitions.py",
+        "src/job_agent/workers/transitions.py",
+        "src/job_agent/submission/service.py",
+        "tests/test_milestone_05_contracts.py",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log"
+      ]
+    },
+    "M05-AC10": {
+      "result": "PASS",
+      "references": [
+        "docs/adr/0003-modular-monolith.md",
+        "docs/adr/0004-server-rendered-dashboard.md",
+        "docs/milestones/05-architecture-boundaries-and-state-machines.md",
+        "src/job_agent/web/architecture_routes.py",
+        "src/job_agent/web/schemas.py",
+        "scripts/check_architecture_http.py",
+        "tests/test_milestone_05_http.py",
+        "tests/test_milestone_05_evidence.py",
+        "artifacts/verification/milestone-05-main-final/metadata.tsv",
+        "artifacts/verification/milestone-05-main-final/manifest.tsv",
+        "artifacts/verification/milestone-05-main-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-05-main-final/logs/06-http-contracts.log",
+        "artifacts/verification/milestone-05-main-final/logs/07-focused-pytest.log",
+        "artifacts/verification/milestone-05-main-final/logs/08-policy-pytest.log",
+        "artifacts/verification/milestone-05-main-final/logs/09-migrate-up.log",
+        "artifacts/verification/milestone-05-main-final/logs/10-migration-head.log",
+        "artifacts/verification/milestone-05-main-final/logs/11-validate-docs.log",
+        "artifacts/verification/milestone-05-main-final/logs/12-validate-milestone.log",
+        "artifacts/verification/milestone-05-main-final/logs/13-validate-codex-controls.log",
+        "artifacts/verification/milestone-05-main-final/logs/14-ruff.log",
+        "artifacts/verification/milestone-05-main-final/logs/15-mypy.log",
+        "artifacts/verification/milestone-05-main-final/logs/16-pytest.log",
+        "artifacts/verification/milestone-05-main-final/logs/17-pre-commit.log",
+        "artifacts/verification/milestone-05-clean-final/metadata.tsv",
+        "artifacts/verification/milestone-05-clean-final/manifest.tsv",
+        "artifacts/verification/milestone-05-clean-final/checkout-status.log",
+        "artifacts/verification/milestone-05-clean-final/logs/03-image-digest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/06-http-contracts.log",
+        "artifacts/verification/milestone-05-clean-final/logs/07-focused-pytest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/08-policy-pytest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/09-migrate-up.log",
+        "artifacts/verification/milestone-05-clean-final/logs/10-migration-head.log",
+        "artifacts/verification/milestone-05-clean-final/logs/11-validate-docs.log",
+        "artifacts/verification/milestone-05-clean-final/logs/12-validate-milestone.log",
+        "artifacts/verification/milestone-05-clean-final/logs/13-validate-codex-controls.log",
+        "artifacts/verification/milestone-05-clean-final/logs/14-ruff.log",
+        "artifacts/verification/milestone-05-clean-final/logs/15-mypy.log",
+        "artifacts/verification/milestone-05-clean-final/logs/16-pytest.log",
+        "artifacts/verification/milestone-05-clean-final/logs/17-pre-commit.log"
+      ]
+    }
+  },
+  "findings": [
+    "Both main and clean evidence contain the exact ordered set of 18 required gates, with every gate reporting exit code zero and PASS.",
+    "Both runs identify the tested commit and the clean checkout status is empty.",
+    "Both runs report 76 focused, 73 policy, and 339 full-suite tests with exactly two disclosed skips.",
+    "Atomic transition, fail-closed policy, direct-mutation removal, external-write proof, strict UTC, and provider-neutral threshold repairs are covered by passing tests.",
+    "The running application passed real HTTP/OpenAPI, migration, documentation, Ruff, mypy, pre-commit, and full-suite gates."
+  ],
+  "known_limitations": [
+    "Concrete repository and unit-of-work implementations are deferred to Milestone 06.",
+    "No marketplace submission connector is enabled; submission remains manual-safe.",
+    "Two opt-in PostgreSQL and Redis integration tests are disclosed as skipped while stack health, migrations, and real HTTP behavior are separately verified.",
+    "Independent BuildKit provenance produces different main and clean image digests; each matches its own run and both test the same commit."
+  ]
+}
