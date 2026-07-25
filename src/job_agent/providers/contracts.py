@@ -34,8 +34,7 @@ def _require_external_policy(
     requested_at: datetime,
 ) -> None:
     """Fail closed unless a decision authorizes this exact external request."""
-    if requested_at.tzinfo is None or requested_at.utcoffset() is None:
-        raise ValueError("requested_at must be timezone-aware")
+    _require_utc("requested_at", requested_at)
     if (
         not policy.allowed
         or policy.platform_id != platform_id
@@ -45,6 +44,14 @@ def _require_external_policy(
         or requested_at.astimezone(UTC).date() > policy.review_due_at
     ):
         raise ValueError("a current exact external policy decision is required")
+
+
+def _require_utc(field_name: str, value: datetime) -> None:
+    if (
+        value.tzinfo is None
+        or value.utcoffset() != UTC.utcoffset(value)
+    ):
+        raise ValueError(f"{field_name} must be UTC")
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,6 +65,9 @@ class RawJob:
     external_id: str
     captured_at: datetime
     payload: dict[str, object]
+
+    def __post_init__(self) -> None:
+        _require_utc("captured_at", self.captured_at)
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,8 +87,8 @@ class DiscoveryRequest:
             action=PolicyAction.discover,
             requested_at=self.requested_at,
         )
-        if not 0 < self.limit <= 100:
-            raise ValueError("discovery limit must be between 1 and 100")
+        if self.limit <= 0:
+            raise ValueError("discovery limit must be positive")
 
 
 @dataclass(frozen=True, slots=True)
@@ -322,6 +332,9 @@ class SubmissionReceipt:
     external_reference: str
     submitted_at: datetime
     request_checksum: str
+
+    def __post_init__(self) -> None:
+        _require_utc("submitted_at", self.submitted_at)
 
 
 class SubmissionConnector(Protocol):

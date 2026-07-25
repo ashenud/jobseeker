@@ -1,0 +1,39 @@
+{
+  "reviewer": "policy-release-reviewer",
+  "verdict": "NO-GO",
+  "tested_commit": "47e817559f5b1577ff9d82ad0421a5d3ba89f823",
+  "unresolved_high_critical": [],
+  "findings": [
+    {
+      "id": "M05-R01",
+      "severity": "medium",
+      "acceptance_blocker": true,
+      "summary": "DiscoveryRequest hardcoded a maximum batch threshold instead of receiving a validated policy/runtime limit.",
+      "references": [
+        "src/job_agent/providers/contracts.py",
+        "docs/milestones/05-architecture-boundaries-and-state-machines.md",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "M05-R02",
+      "severity": "medium",
+      "acceptance_blocker": true,
+      "summary": "New provider request, capture, authorization, and receipt timestamps did not all enforce UTC.",
+      "references": [
+        "src/job_agent/providers/contracts.py",
+        "src/job_agent/policy/models.py",
+        "docs/ARCHITECTURE.md"
+      ]
+    }
+  ],
+  "resolved_prior_findings": [
+    "direct state mutation",
+    "authoritative policy on external requests",
+    "single-use confirmation and action idempotency",
+    "atomic transition repository contract",
+    "audit privacy",
+    "SUBMITTED_API receipt and worker protection"
+  ],
+  "disposition": "Repair required; Milestone 05 remained IN_PROGRESS."
+}

@@ -43,6 +43,11 @@ IDs, and narrow typed request/result objects. Raw third-party payloads and full
 proposal text do not cross a boundary unless the receiving use case explicitly
 needs them.
 
+Provider contracts validate UTC—not merely timezone awareness—for capture,
+request, authorization, receipt, and transition timestamps. Request limits are
+positive values supplied by validated policy/runtime configuration; provider
+protocols do not hardcode product thresholds.
+
 ## Transactions, repositories, and audit
 
 `TransitionCommand` is the only application-service mutation contract. It

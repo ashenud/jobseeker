@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from enum import StrEnum
 import json
 import re
@@ -178,8 +178,11 @@ class AuthorizedExternalWrite(StrictPolicyModel):
             raise ValueError("external write authorization requires a write action")
         if not self.destination or not self.checksum or not self.action_id:
             raise ValueError("external write authorization bindings must be nonempty")
-        if self.authorized_at.tzinfo is None or self.authorized_at.utcoffset() is None:
-            raise ValueError("authorized_at must be timezone-aware")
+        if (
+            self.authorized_at.tzinfo is None
+            or self.authorized_at.utcoffset() != UTC.utcoffset(self.authorized_at)
+        ):
+            raise ValueError("authorized_at must be UTC")
         return self
 
 

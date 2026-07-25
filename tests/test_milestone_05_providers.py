@@ -1,14 +1,21 @@
 from __future__ import annotations
 
-from datetime import UTC, date, datetime
+from dataclasses import replace
+from datetime import UTC, date, datetime, timedelta, timezone
 import inspect
 from typing import Any, Callable
 from uuid import UUID
 
 import pytest
+from pydantic import ValidationError
 
 from job_agent.policy.exceptions import PolicyDeniedError
-from job_agent.policy.models import PolicyAction, PolicyDecision, PolicyRegistry
+from job_agent.policy.models import (
+    AuthorizedExternalWrite,
+    PolicyAction,
+    PolicyDecision,
+    PolicyRegistry,
+)
 from job_agent.policy.service import PolicyService, RuntimeFlags
 from job_agent.providers.contracts import (
     DetailRequest,
@@ -21,9 +28,11 @@ from job_agent.providers.contracts import (
     NotificationProvider,
     NotificationRequest,
     ProposalRequest,
+    RawJob,
     ScoreRequest,
     SourceAdapter,
     SubmissionConnector,
+    SubmissionReceipt,
     SubmissionRequest,
 )
 
@@ -32,6 +41,7 @@ APPLICATION_ID = UUID("00000000-0000-0000-0000-000000000511")
 CORRELATION_ID = UUID("00000000-0000-0000-0000-000000000512")
 ACTION_ID = UUID("00000000-0000-0000-0000-000000000513")
 REFERENCE = "synthetic_provider"
+NON_UTC = timezone(timedelta(hours=5, minutes=30))
 
 
 def policy_service(
@@ -188,6 +198,29 @@ def test_every_external_read_contract_accepts_exact_authoritative_policy(
 
 
 @pytest.mark.parametrize(("action", "factory"), read_request_factories())
+def test_every_external_read_contract_requires_utc(
+    action: PolicyAction,
+    factory: Callable[[PolicyDecision], object],
+) -> None:
+    request = factory(decision(action))
+    with pytest.raises(ValueError, match="requested_at must be UTC"):
+        replace(request, requested_at=NOW.astimezone(NON_UTC))
+
+
+def test_discovery_limit_has_no_provider_contract_threshold() -> None:
+    request = DiscoveryRequest(
+        ACTION_ID,
+        CORRELATION_ID,
+        REFERENCE,
+        decision(PolicyAction.discover),
+        NOW,
+        None,
+        10_000,
+    )
+    assert request.limit == 10_000
+
+
+@pytest.mark.parametrize(("action", "factory"), read_request_factories())
 @pytest.mark.parametrize("failure", ("denied", "wrong_action", "stale", "manual"))
 def test_every_external_read_contract_fails_closed(
     action: PolicyAction,
@@ -276,4 +309,31 @@ def test_connector_request_rejects_rebound_consumed_authorization() -> None:
             proposal_checksum="sha256:proposal",
             idempotency_key="submit-0502",
             authorization=authorization,
+        )
+
+
+def test_provider_capture_receipt_and_write_capability_require_utc() -> None:
+    with pytest.raises(ValueError, match="captured_at must be UTC"):
+        RawJob(
+            REFERENCE,
+            "external-1",
+            NOW.astimezone(NON_UTC),
+            {},
+        )
+    with pytest.raises(ValueError, match="submitted_at must be UTC"):
+        SubmissionReceipt(
+            "submit-0503",
+            "external-receipt",
+            NOW.astimezone(NON_UTC),
+            "sha256:request",
+        )
+    with pytest.raises(ValidationError, match="authorized_at must be UTC"):
+        AuthorizedExternalWrite(
+            platform_id=REFERENCE,
+            action=PolicyAction.submit,
+            destination="https://example.test/jobs/1",
+            checksum="sha256:proposal",
+            action_id="submit-0503",
+            policy_version="m05-test-v1",
+            authorized_at=NOW.astimezone(NON_UTC),
         )
