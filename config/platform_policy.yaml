@@ -10,6 +10,9 @@ platforms:
     actions: &manual_marketplace_actions
       discover: manual_only
       read_detail: manual_only
+      score: disabled
+      embed: disabled
+      retrieve: disabled
       store: manual_only
       notify: disabled
       draft: manual_only
@@ -45,6 +48,9 @@ platforms:
     actions:
       discover: disabled
       read_detail: disabled
+      score: disabled
+      embed: disabled
+      retrieve: disabled
       store: manual_only
       notify: disabled
       draft: manual_only
@@ -67,6 +73,9 @@ platforms:
     actions: &disabled_read_manual_package_actions
       discover: disabled
       read_detail: disabled
+      score: disabled
+      embed: disabled
+      retrieve: disabled
       store: manual_only
       notify: disabled
       draft: manual_only
@@ -102,6 +111,9 @@ platforms:
     actions:
       discover: manual_only
       read_detail: manual_only
+      score: disabled
+      embed: disabled
+      retrieve: disabled
       store: manual_only
       notify: manual_only
       draft: manual_only

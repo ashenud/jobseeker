@@ -23,6 +23,9 @@ class PolicyMode(StrEnum):
 class PolicyAction(StrEnum):
     discover = "discover"
     read_detail = "read_detail"
+    score = "score"
+    embed = "embed"
+    retrieve = "retrieve"
     store = "store"
     notify = "notify"
     draft = "draft"
@@ -33,7 +36,15 @@ class PolicyAction(StrEnum):
 
 
 NETWORK_ACTIONS: frozenset[PolicyAction] = frozenset(
-    {PolicyAction.discover, PolicyAction.read_detail}
+    {
+        PolicyAction.discover,
+        PolicyAction.read_detail,
+        PolicyAction.score,
+        PolicyAction.embed,
+        PolicyAction.retrieve,
+        PolicyAction.notify,
+        PolicyAction.draft,
+    }
 )
 WRITE_ACTIONS: frozenset[PolicyAction] = frozenset(
     {PolicyAction.submit, PolicyAction.message, PolicyAction.follow_up}
@@ -148,6 +159,28 @@ class PolicyDecision(StrictPolicyModel):
 
     def to_json(self) -> str:
         return self.model_dump_json()
+
+
+class AuthorizedExternalWrite(StrictPolicyModel):
+    """Post-consumption capability for one exact external write."""
+
+    platform_id: str
+    action: PolicyAction
+    destination: str
+    checksum: str
+    action_id: str
+    policy_version: str
+    authorized_at: datetime
+
+    @model_validator(mode="after")
+    def validate_write_authorization(self) -> Self:
+        if self.action not in WRITE_ACTIONS:
+            raise ValueError("external write authorization requires a write action")
+        if not self.destination or not self.checksum or not self.action_id:
+            raise ValueError("external write authorization bindings must be nonempty")
+        if self.authorized_at.tzinfo is None or self.authorized_at.utcoffset() is None:
+            raise ValueError("authorized_at must be timezone-aware")
+        return self
 
 
 class PolicyAuditEvent(StrictPolicyModel):

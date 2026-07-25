@@ -76,21 +76,25 @@ Once locked, edits create a new proposal revision.
 
 ```python
 class SourceAdapter(Protocol):
-    platform_id: str
-    async def discover(self, cursor: Cursor | None) -> DiscoveryBatch: ...
-    async def fetch_detail(self, external_id: str) -> RawJob: ...
+    source_id: str
+    async def discover(self, request: DiscoveryRequest) -> DiscoveryBatch: ...
+    async def fetch_detail(self, request: DetailRequest) -> RawJob: ...
 
 class LLMProvider(Protocol):
     async def score_job(self, request: ScoreRequest) -> ScoreResult: ...
     async def draft_proposal(self, request: ProposalRequest) -> ProposalResult: ...
 
 class EvidenceRetriever(Protocol):
-    async def retrieve(self, job: Job, limit: int) -> list[EvidenceChunk]: ...
+    async def retrieve(self, request: EvidenceRequest) -> EvidenceResult: ...
 
 class SubmissionConnector(Protocol):
-    async def prepare(self, application_id: UUID) -> SubmissionPreview: ...
-    async def submit(self, confirmation: ConfirmationToken) -> SubmissionReceipt: ...
+    async def prepare(self, request: SubmissionPreviewRequest) -> SubmissionPreview: ...
+    async def submit(self, request: SubmissionRequest) -> SubmissionReceipt: ...
 ```
+
+Every external read request contains an exact current policy decision. A
+submission request contains the post-consumption `AuthorizedExternalWrite`
+capability, never a raw confirmation token or caller-asserted feature flag.
 
 ## Cross-cutting rules
 
@@ -117,9 +121,9 @@ class SubmissionConnector(Protocol):
   responsibility, forbidden responsibility, dependency direction, and the rule
   that workers orchestrate application services without containing domain rules.
 - **M05-AC02:** Importable repository and unit-of-work protocols define
-  transaction ownership, optimistic state checks, idempotency lookup, atomic
-  state-and-audit persistence, UTC timestamps, and UUID aggregate identifiers
-  without adding a concrete repository or Milestone 06 schema.
+  transaction ownership, one atomic compare-and-swap/idempotency operation,
+  atomic state-and-audit persistence, UTC timestamps, and UUID aggregate
+  identifiers without adding a concrete repository or Milestone 06 schema.
 - **M05-AC03:** Importable source, LLM, embedding, evidence, notification, and
   submission protocols use provider-neutral request/result types and contain no
   selected marketplace, provider model, endpoint, credential, or threshold.
@@ -139,9 +143,10 @@ class SubmissionConnector(Protocol):
   structured secret-free audit event; conflicts and invalid transitions expose
   stable typed error semantics.
 - **M05-AC08:** Architecture and importable contracts require a current
-  fail-closed policy decision before external I/O and require an owner feature
-  flag plus a destination/checksum-bound, short-lived, single-use confirmation
-  token for any future API write.
+  fail-closed policy decision before every external I/O and require the policy
+  service to verify an owner feature flag and atomically consume a
+  destination/checksum/action-bound, short-lived confirmation token before
+  issuing any future API-write capability.
 - **M05-AC09:** Container tests prove proposal approval performs no connector
   call, approval only permits package preparation, and retryable worker
   transition handling cannot invoke an external submission operation.

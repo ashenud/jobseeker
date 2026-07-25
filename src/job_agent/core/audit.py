@@ -13,6 +13,8 @@ from job_agent.core.states import MachineName
 _SECRET_PATTERN = re.compile(
     r"(?i)(api[_-]?key|access[_-]?token|authorization|bearer|cookie|password|secret)\s*[:=]"
 )
+_SAFE_IDENTIFIER_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_.:-]*$")
+_PHONE_PATTERN = re.compile(r"\+?[0-9][0-9() -]{7,}[0-9]")
 
 
 def validate_audit_text(field_name: str, value: str, *, maximum_length: int) -> None:
@@ -24,6 +26,15 @@ def validate_audit_text(field_name: str, value: str, *, maximum_length: int) -> 
         raise UnsafeAuditMetadataError(f"{field_name} must be single-line text")
     if _SECRET_PATTERN.search(value):
         raise UnsafeAuditMetadataError(f"{field_name} appears to contain secret material")
+    if (
+        not _SAFE_IDENTIFIER_PATTERN.fullmatch(value)
+        or "@" in value
+        or _PHONE_PATTERN.fullmatch(value)
+        or value.count(".") > 1
+    ):
+        raise UnsafeAuditMetadataError(
+            f"{field_name} must be a lowercase structured identifier, not free text or PII"
+        )
 
 
 @dataclass(frozen=True, slots=True)

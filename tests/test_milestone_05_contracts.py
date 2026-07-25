@@ -1,20 +1,31 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import UTC, datetime
 from uuid import UUID
 
 import pytest
 
 from job_agent.core.audit import AuditEvent
-from job_agent.core.commands import TransitionCommand
+from job_agent.core.commands import ExternalWriteProof, TransitionCommand
 from job_agent.core.contracts import TransitionResult
 from job_agent.core.errors import (
+    AggregateNotFoundError,
+    ExternalWriteProofRequiredError,
     IdempotencyConflictError,
     InvalidTransitionError,
+    ProtectedTransitionError,
     StateConflictError,
     UnsafeAuditMetadataError,
 )
-from job_agent.core.states import JobState, MachineName, ProposalState
+from job_agent.core.states import (
+    ApplicationState,
+    JobState,
+    MachineName,
+    MachineState,
+    ProposalState,
+    machine_for_state,
+)
 from job_agent.core.transitions import ProposalApprovalService, TransitionApplicationService
 from job_agent.workers.transitions import RetryableTransitionHandler
 
@@ -25,35 +36,52 @@ NOW = datetime(2026, 7, 25, 10, 30, tzinfo=UTC)
 
 
 class FakeTransitionRepository:
-    def __init__(self, state: JobState | ProposalState) -> None:
-        machine = (
-            MachineName.JOB if isinstance(state, JobState) else MachineName.PROPOSAL
-        )
-        self.states = {(machine, AGGREGATE_ID): state}
+    """Test-only model of the single atomic repository operation."""
+
+    def __init__(self, state: MachineState) -> None:
+        self.states = {(machine_for_state(state), AGGREGATE_ID): state}
         self.results: dict[tuple[MachineName, str], TransitionResult] = {}
         self.pending: tuple[TransitionCommand, AuditEvent, TransitionResult] | None = None
         self.audit_events: list[AuditEvent] = []
 
-    def current_state(
-        self, aggregate_type: MachineName, aggregate_id: UUID
-    ) -> JobState | ProposalState | None:
-        return self.states.get((aggregate_type, aggregate_id))
-
-    def find_by_idempotency_key(
-        self, aggregate_type: MachineName, idempotency_key: str
-    ) -> TransitionResult | None:
-        return self.results.get((aggregate_type, idempotency_key))
-
-    def stage_state_and_audit(
+    def apply_transition(
         self,
         command: TransitionCommand,
         event: AuditEvent,
         result: TransitionResult,
-    ) -> None:
+    ) -> TransitionResult:
+        previous = self.results.get(
+            (command.aggregate_type, command.idempotency_key)
+        )
+        if previous is not None:
+            if previous.command_fingerprint != result.command_fingerprint:
+                raise IdempotencyConflictError(
+                    machine=command.aggregate_type,
+                    current_state=command.expected_state.value,
+                    target_state=command.target_state.value,
+                )
+            return replace(previous, replayed=True)
+
+        current = self.states.get((command.aggregate_type, command.aggregate_id))
+        if current is None:
+            raise AggregateNotFoundError(
+                machine=command.aggregate_type,
+                current_state=command.expected_state.value,
+                target_state=command.target_state.value,
+            )
+        if current != command.expected_state:
+            raise StateConflictError(
+                machine=command.aggregate_type,
+                current_state=command.expected_state.value,
+                target_state=command.target_state.value,
+                actual_state=current.value,
+            )
         self.pending = (command, event, result)
+        return result
 
     def commit_pending(self) -> None:
-        assert self.pending is not None
+        if self.pending is None:
+            return
         command, event, result = self.pending
         self.states[(command.aggregate_type, command.aggregate_id)] = result.current_state
         self.results[(command.aggregate_type, command.idempotency_key)] = result
@@ -118,16 +146,14 @@ class TransitionAndSubmissionSpy:
 
 def command(
     *,
-    expected_state: JobState | ProposalState = JobState.DISCOVERED,
-    target_state: JobState | ProposalState = JobState.NORMALIZED,
+    expected_state: MachineState = JobState.DISCOVERED,
+    target_state: MachineState = JobState.NORMALIZED,
     idempotency_key: str = "transition-0501",
-    reason: str = "normalized canonical source record",
+    reason: str = "normalized_canonical_source_record",
+    external_write_proof: ExternalWriteProof | None = None,
 ) -> TransitionCommand:
-    machine = (
-        MachineName.JOB if isinstance(expected_state, JobState) else MachineName.PROPOSAL
-    )
     return TransitionCommand(
-        aggregate_type=machine,
+        aggregate_type=machine_for_state(expected_state),
         aggregate_id=AGGREGATE_ID,
         expected_state=expected_state,
         target_state=target_state,
@@ -135,6 +161,7 @@ def command(
         reason=reason,
         correlation_id=CORRELATION_ID,
         idempotency_key=idempotency_key,
+        external_write_proof=external_write_proof,
     )
 
 
@@ -169,7 +196,7 @@ def test_transition_atomically_commits_state_and_secret_free_audit() -> None:
             from_state="DISCOVERED",
             to_state="NORMALIZED",
             actor="normalization-service",
-            reason="normalized canonical source record",
+            reason="normalized_canonical_source_record",
             correlation_id=CORRELATION_ID,
             idempotency_key="transition-0501",
             occurred_at=NOW,
@@ -178,7 +205,7 @@ def test_transition_atomically_commits_state_and_secret_free_audit() -> None:
     assert factory.created[0].commits == 1
 
 
-def test_expected_state_conflict_has_stable_error_and_no_commit() -> None:
+def test_expected_state_compare_and_swap_conflict_has_no_commit() -> None:
     repository = FakeTransitionRepository(JobState.NORMALIZED)
     transitions, factory = service(repository)
 
@@ -191,7 +218,7 @@ def test_expected_state_conflict_has_stable_error_and_no_commit() -> None:
     assert factory.created[0].commits == 0
 
 
-def test_invalid_transition_has_stable_error_and_no_staged_write() -> None:
+def test_invalid_transition_fails_before_opening_transaction() -> None:
     repository = FakeTransitionRepository(JobState.DISCOVERED)
     transitions, factory = service(repository)
 
@@ -200,36 +227,48 @@ def test_invalid_transition_has_stable_error_and_no_staged_write() -> None:
 
     assert caught.value.code == "invalid_transition"
     assert repository.pending is None
-    assert factory.created[0].rollbacks == 1
+    assert factory.created == []
 
 
-def test_idempotent_retry_returns_original_result_without_second_audit() -> None:
+def test_duplicate_delivery_returns_original_result_without_second_audit() -> None:
     repository = FakeTransitionRepository(JobState.DISCOVERED)
-    transitions, _ = service(repository)
+    first_service, _ = service(repository)
+    second_service, _ = service(repository)
 
-    original = transitions.execute(command())
-    replay = transitions.execute(command())
+    original = first_service.execute(command())
+    replay = second_service.execute(command())
 
     assert replay.replayed is True
     assert replay.audit_event_id == original.audit_event_id
     assert len(repository.audit_events) == 1
 
 
-def test_reusing_idempotency_key_for_different_command_fails() -> None:
+def test_reusing_unique_idempotency_key_for_different_command_fails() -> None:
     repository = FakeTransitionRepository(JobState.DISCOVERED)
     transitions, _ = service(repository)
     transitions.execute(command())
 
     with pytest.raises(IdempotencyConflictError) as caught:
-        transitions.execute(command(reason="different operation"))
+        transitions.execute(command(reason="different_operation"))
 
     assert caught.value.code == "idempotency_conflict"
     assert len(repository.audit_events) == 1
 
 
-def test_audit_metadata_rejects_likely_secrets_before_transaction() -> None:
+@pytest.mark.parametrize(
+    "field_value",
+    (
+        "api_key=do-not-store",
+        "bearer eyJhbGciOiJIUzI1NiJ9",
+        "owner@example.test",
+        "+94771234567",
+        "eyJhbGciOiJIUzI1NiJ9.payload.signature",
+        "free text reason",
+    ),
+)
+def test_audit_metadata_rejects_secrets_pii_and_free_text(field_value: str) -> None:
     with pytest.raises(UnsafeAuditMetadataError):
-        command(reason="api_key=do-not-store")
+        command(reason=field_value)
 
 
 def test_proposal_approval_only_transitions_reviewed_revision() -> None:
@@ -243,7 +282,7 @@ def test_proposal_approval_only_transitions_reviewed_revision() -> None:
             expected_state=ProposalState.IN_REVIEW,
             target_state=ProposalState.APPROVED,
             idempotency_key="proposal-approval-0501",
-            reason="owner approved reviewed revision",
+            reason="owner_approved_reviewed_revision",
         )
     )
 
@@ -252,7 +291,41 @@ def test_proposal_approval_only_transitions_reviewed_revision() -> None:
     assert boundary.submission_calls == []
 
 
-def test_retryable_worker_replays_transition_without_external_calls() -> None:
+def test_submitted_api_requires_bound_connector_receipt() -> None:
+    with pytest.raises(ExternalWriteProofRequiredError):
+        command(
+            expected_state=ApplicationState.PACKAGE_PREPARED,
+            target_state=ApplicationState.SUBMITTED_API,
+            idempotency_key="submit-api-0501",
+            reason="connector_receipt_recorded",
+        )
+
+
+def test_retryable_worker_cannot_record_external_submission_even_with_receipt() -> None:
+    proof = ExternalWriteProof(
+        action_id="submit-api-0501",
+        idempotency_key="submit-api-0501",
+        destination_checksum="sha256:destination",
+        receipt_reference="receipt-0501",
+        completed_at=NOW,
+    )
+    protected = command(
+        expected_state=ApplicationState.PACKAGE_PREPARED,
+        target_state=ApplicationState.SUBMITTED_API,
+        idempotency_key="submit-api-0501",
+        reason="connector_receipt_recorded",
+        external_write_proof=proof,
+    )
+    repository = FakeTransitionRepository(ApplicationState.PACKAGE_PREPARED)
+    transitions, _ = service(repository)
+    worker = RetryableTransitionHandler(transitions)
+
+    with pytest.raises(ProtectedTransitionError):
+        worker.handle(protected)
+    assert not repository.audit_events
+
+
+def test_retryable_worker_replays_local_transition_without_external_calls() -> None:
     repository = FakeTransitionRepository(JobState.DISCOVERED)
     transitions, _ = service(repository)
     boundary = TransitionAndSubmissionSpy(transitions)

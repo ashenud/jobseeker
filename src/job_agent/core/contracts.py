@@ -29,21 +29,19 @@ class TransitionResult:
 
 
 class TransitionRepository(Protocol):
-    def current_state(
-        self, aggregate_type: MachineName, aggregate_id: UUID
-    ) -> MachineState | None: ...
-
-    def find_by_idempotency_key(
-        self, aggregate_type: MachineName, idempotency_key: str
-    ) -> TransitionResult | None: ...
-
-    def stage_state_and_audit(
+    def apply_transition(
         self,
         command: TransitionCommand,
         event: AuditEvent,
         result: TransitionResult,
-    ) -> None:
-        """Stage one state update and its audit event as one persistence operation."""
+    ) -> TransitionResult:
+        """Atomically claim idempotency, compare state, and stage state plus audit.
+
+        Implementations must serialize on the aggregate row (or use equivalent
+        compare-and-swap), enforce a unique aggregate-type/idempotency-key
+        constraint, return a replay for the same fingerprint, and raise typed
+        not-found, state-conflict, or idempotency-conflict errors otherwise.
+        """
         ...
 
 

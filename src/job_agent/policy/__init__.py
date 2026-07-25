@@ -1,5 +1,6 @@
 from .exceptions import PolicyConfigurationError, PolicyDeniedError, PolicyError
 from .models import (
+    AuthorizedExternalWrite,
     PolicyAction,
     PolicyAuditEvent,
     PolicyDecision,
@@ -9,6 +10,7 @@ from .models import (
 from .service import ConfirmationTokenService, PolicyService, RuntimeFlags
 
 __all__ = [
+    "AuthorizedExternalWrite",
     "ConfirmationTokenService",
     "PolicyAction",
     "PolicyAuditEvent",

@@ -1,0 +1,54 @@
+{
+  "verdict": "NO-GO",
+  "reviewer": "policy-release-reviewer",
+  "tested_commit": "8b19070e141088f1d6df24532767c62d79b1c0b2",
+  "findings": [
+    {
+      "severity": "high",
+      "summary": "State and audit mutation paths existed outside the exclusive transition application service.",
+      "references": [
+        "src/job_agent/crm/service.py",
+        "src/job_agent/submission/service.py"
+      ]
+    },
+    {
+      "severity": "high",
+      "summary": "Every external request was not bound to a current fail-closed policy decision.",
+      "references": [
+        "src/job_agent/providers/contracts.py"
+      ]
+    },
+    {
+      "severity": "high",
+      "summary": "Confirmation consumption and submission idempotency were not authoritative and atomic.",
+      "references": [
+        "src/job_agent/policy/service.py",
+        "src/job_agent/providers/contracts.py"
+      ]
+    },
+    {
+      "severity": "high",
+      "summary": "Separate repository reads and writes left a race between expected-state and idempotency checks.",
+      "references": [
+        "src/job_agent/core/contracts.py",
+        "src/job_agent/core/transitions.py"
+      ]
+    },
+    {
+      "severity": "medium",
+      "summary": "Audit metadata accepted free text that could contain PII or bearer-like values.",
+      "references": [
+        "src/job_agent/core/audit.py"
+      ]
+    },
+    {
+      "severity": "medium",
+      "summary": "A generic retry path could assert SUBMITTED_API without a connector receipt.",
+      "references": [
+        "src/job_agent/core/commands.py",
+        "src/job_agent/workers/transitions.py"
+      ]
+    }
+  ],
+  "disposition": "Repair required; Milestone 05 remained IN_PROGRESS."
+}

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 import re
+from threading import Lock
 from typing import Callable
 
 from pydantic import ValidationError
@@ -15,6 +16,7 @@ from .exceptions import PolicyConfigurationError, PolicyDeniedError
 from .models import (
     NETWORK_MODES,
     WRITE_ACTIONS,
+    AuthorizedExternalWrite,
     PolicyAction,
     PolicyAuditEvent,
     PolicyDecision,
@@ -75,6 +77,7 @@ class ConfirmationTokenService:
         self._clock = clock
         self._max_ttl_seconds = max_ttl_seconds
         self._records: dict[str, ConfirmationRecord] = {}
+        self._lock = Lock()
 
     def issue(
         self,
@@ -97,15 +100,16 @@ class ConfirmationTokenService:
             raise ValueError("confirmation bindings must be nonempty and TTL within the maximum")
         token = secrets.token_urlsafe(32)
         digest = hashlib.sha256(token.encode()).hexdigest()
-        self._records[digest] = ConfirmationRecord(
-            digest,
-            platform_id,
-            action,
-            destination,
-            checksum,
-            action_id,
-            _safe_now(self._clock) + timedelta(seconds=ttl_seconds),
-        )
+        with self._lock:
+            self._records[digest] = ConfirmationRecord(
+                digest,
+                platform_id,
+                action,
+                destination,
+                checksum,
+                action_id,
+                _safe_now(self._clock) + timedelta(seconds=ttl_seconds),
+            )
         return token
 
     def consume(
@@ -118,20 +122,21 @@ class ConfirmationTokenService:
         *,
         action_id: str = "",
     ) -> bool:
-        record = self._records.get(hashlib.sha256(token.encode()).hexdigest())
-        if record is None or record.used or record.expires_at <= _safe_now(self._clock):
-            return False
-        expected = (record.platform_id, record.action, record.destination, record.checksum)
-        if expected != (platform_id, action, destination, checksum):
-            return False
-        if record.action_id and record.action_id != action_id:
-            return False
-        record.used = True
-        return True
+        with self._lock:
+            record = self._records.get(hashlib.sha256(token.encode()).hexdigest())
+            if record is None or record.used or record.expires_at <= _safe_now(self._clock):
+                return False
+            expected = (record.platform_id, record.action, record.destination, record.checksum)
+            if expected != (platform_id, action, destination, checksum):
+                return False
+            if record.action_id and record.action_id != action_id:
+                return False
+            record.used = True
+            return True
 
 
 class _UniqueKeyLoader(yaml.SafeLoader):
-    pass
+    """Safe YAML loader extended with duplicate-key rejection."""
 
 
 def _construct_unique_mapping(
@@ -384,3 +389,35 @@ class PolicyService:
         if not decision.allowed:
             raise PolicyDeniedError(decision)
         return decision
+
+    def authorize_external_write(
+        self,
+        platform_id: str,
+        action: PolicyAction,
+        *,
+        confirmation_token: str,
+        destination: str,
+        checksum: str,
+        action_id: str,
+    ) -> AuthorizedExternalWrite:
+        """Consume one confirmation and return its exact post-policy capability."""
+        if action not in WRITE_ACTIONS:
+            raise ValueError("external write authorization requires a write action")
+        decision = self.require(
+            platform_id,
+            action,
+            network=True,
+            confirmation_token=confirmation_token,
+            destination=destination,
+            checksum=checksum,
+            action_id=action_id,
+        )
+        return AuthorizedExternalWrite(
+            platform_id=decision.platform_id,
+            action=action,
+            destination=destination,
+            checksum=checksum,
+            action_id=decision.action_id,
+            policy_version=decision.policy_version,
+            authorized_at=_safe_now(self._clock),
+        )

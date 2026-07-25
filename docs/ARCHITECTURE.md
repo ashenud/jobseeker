@@ -52,24 +52,27 @@ proposal, and application states.
 
 `TransitionApplicationService` owns the transaction:
 
-1. Open a `UnitOfWork`.
-2. Look up the aggregate type and idempotency key.
-3. Return the recorded result when the same command is replayed; reject reuse of
-   the key for a different command.
-4. Read current state and compare it with `expected_state`.
-5. Validate the edge using the canonical graph.
-6. Stage the state update and `AuditEvent` together.
-7. Commit once.
+1. Validate the edge using the canonical graph before opening a transaction.
+2. Open a `UnitOfWork`.
+3. Call the repository's single `apply_transition` operation.
+4. Inside that operation, serialize on the aggregate row (or perform an
+   equivalent compare-and-swap), claim the unique aggregate-type/idempotency-key,
+   compare `expected_state`, and stage the state plus `AuditEvent`.
+5. Return the original result for the same fingerprint after a duplicate-key
+   race; reject a reused key, missing aggregate, or stale expected state.
+6. Commit once.
 
-The repository protocol deliberately offers `stage_state_and_audit`, not
-independent state and log writes. A concrete repository and database constraints
-belong to Milestone 06. A failed validation or conflict commits neither.
+The repository protocol deliberately does not expose separate state reads,
+idempotency reads, state writes, or audit writes to the application service.
+Concrete SQLAlchemy locking and database constraints belong to Milestone 06.
+A failed validation, unique-key race, or compare-and-swap conflict commits
+neither state nor audit.
 
-Audit events contain only structured identifiers, state names, bounded
-single-line actor/reason/idempotency metadata, correlation ID, event ID, and UTC
-time. They contain no credentials, authorization headers, cookies, raw payloads,
-or full confidential job/proposal text. Likely secret assignments are rejected
-before a transaction opens.
+Audit events contain only structured identifiers, state names, bounded lowercase
+actor/reason-code/idempotency identifiers, correlation ID, event ID, and UTC
+time. Free text, likely tokens, contact details, credentials, authorization
+headers, cookies, raw payloads, and full confidential job/proposal text are
+rejected before a transaction opens.
 
 ## Provider boundaries and external actions
 
@@ -78,20 +81,26 @@ before a transaction opens.
 provider-neutral protocols. Their types select no marketplace, model, endpoint,
 credential, or business threshold.
 
-Every external read or write requires a current explicit policy decision before
-the adapter is called. Missing, unknown, stale, `manual_only`, or `disabled`
-authority fails closed. Approval is never authority for I/O.
+Every source, scoring, drafting, embedding, evidence-retrieval, and notification
+request requires a current authoritative policy decision bound to its exact
+provider reference and action before the adapter is called. Missing, unknown,
+stale, `manual_only`, or `disabled` authority fails closed. Approval is never
+authority for I/O.
 
-A future API submission request must carry all of:
+A future API submission request carries an `AuthorizedExternalWrite` capability
+issued only after `PolicyService` has verified all of:
 
 - a current allow decision bound to the exact action and destination;
 - an owner-enabled feature flag;
-- an unexpired single-use confirmation token bound to application UUID,
-  destination, locked proposal checksum, action, and actor.
+- an unexpired single-use confirmation token bound to destination, locked
+  proposal checksum, action, and action/idempotency identifier.
 
-The connector receives that fully bound request. Package preparation and manual
-submission recording remain distinct operations. The MVP has no authorized
-official write connector.
+The policy service atomically consumes the token, then the connector receives
+only the fully bound post-consumption capability—not the raw token or a
+caller-asserted flag. Package preparation and owner-supplied manual submission
+references remain immutable local evidence; the subsequent application state
+change still requires `TransitionCommand`. The MVP has no authorized official
+write connector.
 
 ## Approval, application ownership, and workers
 
@@ -107,10 +116,11 @@ submission, and outcome data. A later persisted workflow may project an
 application transition to the matching job summary only through one
 application-service transaction; callers may not update either state ad hoc.
 
-Retryable workers accept transition commands and call the application service.
-Idempotency makes duplicate delivery safe. The retryable transition boundary has
-no `SubmissionConnector`, notification, source, or LLM dependency and therefore
-cannot turn approval or a retry into external I/O.
+Retryable workers accept local transition commands and call the application
+service. Idempotency makes duplicate delivery safe. The retryable transition
+boundary has no `SubmissionConnector`, notification, source, or LLM dependency;
+it also rejects `SUBMITTED_API` commands. Recording `SUBMITTED_API` requires a
+bound connector receipt and a protected, non-retry-worker application path.
 
 ## HTTP API and errors
 

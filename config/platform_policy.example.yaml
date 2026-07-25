@@ -10,6 +10,9 @@ platforms:
     actions:
       discover: disabled
       read_detail: disabled
+      score: disabled
+      embed: disabled
+      retrieve: disabled
       store: disabled
       notify: disabled
       draft: disabled

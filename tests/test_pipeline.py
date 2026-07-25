@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from uuid import UUID
 
 import pytest
 
@@ -9,14 +10,14 @@ from job_agent.core.states import (
     can_transition,
     require_transition,
 )
-from job_agent.crm.service import ApplicationTimeline, schedule_follow_up
+from job_agent.crm.service import funnel_metrics, schedule_follow_up
 from job_agent.evidence.service import EvidenceChunk, retrieve
 from job_agent.llm.scoring import BudgetGuard, score_job
 from job_agent.normalization.service import normalize, rule_decision
 from job_agent.proposals.service import generate_proposal
 from job_agent.security.service import neutralize_prompt_injection, redact, sanitize_html
 from job_agent.sources.adapters import ManualAdapter
-from job_agent.submission.service import build_package, mark_manual_submitted
+from job_agent.submission.service import build_package, record_manual_submission_reference
 from job_agent.web.app import create_app
 from job_agent.web.health import ComponentHealth
 from fastapi.testclient import TestClient
@@ -39,12 +40,16 @@ def test_unsupported_claim_blocks_review_warning():
     proposal=generate_proposal(sample_job(),[]); assert "unsupported_claims_block_review" in proposal.warnings
 def test_submission_manual_separation():
     pkg=build_package("manual","https://example.test/job","body"); assert pkg.status=="prepared"
-    assert mark_manual_submitted(pkg,"sent-1")["status"]=="submitted"
+    recorded = record_manual_submission_reference(
+        UUID("00000000-0000-0000-0000-000000000501"),
+        "sent-1",
+        recorded_at=datetime(2026,7,18,tzinfo=UTC),
+    )
+    assert recorded.reference == "sent-1" and pkg.status == "prepared"
 def test_crm_followup_auditable():
-    t=ApplicationTimeline()
-    t.transition(ApplicationState.PACKAGE_PREPARED, "prepare manual package")
-    t.transition(ApplicationState.SUBMITTED_MANUAL, "record manual submit")
-    due=schedule_follow_up(datetime(2026,7,18,tzinfo=UTC)); assert due.day==23 and len(t.events)==2
+    states = [ApplicationState.PACKAGE_PREPARED, ApplicationState.SUBMITTED_MANUAL]
+    due=schedule_follow_up(datetime(2026,7,18,tzinfo=UTC))
+    assert due.day==23 and funnel_metrics(states)["SUBMITTED_MANUAL"] == 1
 def test_security_sanitizes_and_redacts():
     assert "script" not in sanitize_html("<script>alert(1)</script><p>ok</p>")
     assert "[REDACTED]" in redact("api_key=secret")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, date, datetime, timedelta
 import json
 from pathlib import Path
@@ -12,7 +13,7 @@ from job_agent.policy.exceptions import PolicyConfigurationError, PolicyDeniedEr
 from job_agent.policy.models import PolicyAction, PolicyRegistry
 from job_agent.policy.service import ConfirmationTokenService, PolicyService, RuntimeFlags
 from job_agent.sources.adapters import FixtureFeedAdapter
-from job_agent.submission.service import FakeWriteConnector, build_package
+from job_agent.submission.service import SubmissionPackage, build_package
 
 
 ALL_ACTIONS = {action.value: "disabled" for action in PolicyAction}
@@ -187,8 +188,27 @@ def test_existing_connector_seams_remain_uncalled_after_policy_denial() -> None:
         source.fetch()
     assert source.network_called is False
 
+    class TestWriteConnector:
+        def __init__(self, policy: PolicyService) -> None:
+            self.policy = policy
+            self.sent: list[str] = []
+
+        def submit(
+            self, package: SubmissionPackage, confirmation_token: str | None
+        ) -> str:
+            self.policy.require(
+                package.platform_id,
+                PolicyAction.submit,
+                network=True,
+                confirmation_token=confirmation_token,
+                destination=package.destination_url,
+                checksum=package.checksum,
+            )
+            self.sent.append(package.checksum)
+            return "test-receipt"
+
     package = build_package("synthetic", "https://example.test/1", "proposal")
-    writer = FakeWriteConnector(denied_policy)
+    writer = TestWriteConnector(denied_policy)
     with pytest.raises(PolicyDeniedError):
         writer.submit(package, None)
     assert writer.sent == []
@@ -284,6 +304,31 @@ def test_confirmation_ttl_is_strictly_bounded() -> None:
         )
     with pytest.raises(ValueError, match="between 1 and 300"):
         RuntimeFlags(confirmation_ttl_seconds=301)
+
+
+def test_confirmation_consume_is_atomic_under_concurrent_attempts() -> None:
+    tokens = ConfirmationTokenService()
+    token = tokens.issue(
+        "synthetic",
+        PolicyAction.submit,
+        "https://example.test/jobs/1",
+        "checksum",
+        action_id="action-concurrent",
+    )
+
+    def consume() -> bool:
+        return tokens.consume(
+            token,
+            "synthetic",
+            PolicyAction.submit,
+            "https://example.test/jobs/1",
+            "checksum",
+            action_id="action-concurrent",
+        )
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        results = list(executor.map(lambda _: consume(), range(32)))
+    assert results.count(True) == 1
 
 
 def test_read_authority_cannot_be_reused_for_write() -> None:

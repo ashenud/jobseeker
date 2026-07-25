@@ -1,15 +1,50 @@
 """Typed, provider-neutral asynchronous integration protocols.
 
-The contracts carry bounded request metadata but choose no marketplace, model,
-endpoint, credential, or product threshold.
+Every request that may cross a process or network boundary carries the exact,
+current policy decision produced by the authoritative policy service. External
+writes instead carry a post-consumption capability: connectors never receive a
+raw confirmation token or a caller-asserted feature flag.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import UTC, datetime
 from typing import Protocol
 from uuid import UUID
+
+from job_agent.policy.models import (
+    AuthorizedExternalWrite,
+    PolicyAction,
+    PolicyDecision,
+    PolicyMode,
+)
+
+_EXTERNAL_READ_MODES = {
+    PolicyMode.public_feed,
+    PolicyMode.official_api_read,
+}
+
+
+def _require_external_policy(
+    policy: PolicyDecision,
+    *,
+    platform_id: str,
+    action: PolicyAction,
+    requested_at: datetime,
+) -> None:
+    """Fail closed unless a decision authorizes this exact external request."""
+    if requested_at.tzinfo is None or requested_at.utcoffset() is None:
+        raise ValueError("requested_at must be timezone-aware")
+    if (
+        not policy.allowed
+        or policy.platform_id != platform_id
+        or policy.action != action
+        or policy.mode not in _EXTERNAL_READ_MODES
+        or policy.review_due_at is None
+        or requested_at.astimezone(UTC).date() > policy.review_due_at
+    ):
+        raise ValueError("a current exact external policy decision is required")
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,9 +64,21 @@ class RawJob:
 class DiscoveryRequest:
     action_id: UUID
     correlation_id: UUID
-    policy_decision_id: UUID
+    source_id: str
+    policy: PolicyDecision
+    requested_at: datetime
     cursor: Cursor | None
     limit: int
+
+    def __post_init__(self) -> None:
+        _require_external_policy(
+            self.policy,
+            platform_id=self.source_id,
+            action=PolicyAction.discover,
+            requested_at=self.requested_at,
+        )
+        if not 0 < self.limit <= 100:
+            raise ValueError("discovery limit must be between 1 and 100")
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,8 +92,18 @@ class DiscoveryBatch:
 class DetailRequest:
     action_id: UUID
     correlation_id: UUID
-    policy_decision_id: UUID
+    source_id: str
+    policy: PolicyDecision
+    requested_at: datetime
     external_id: str
+
+    def __post_init__(self) -> None:
+        _require_external_policy(
+            self.policy,
+            platform_id=self.source_id,
+            action=PolicyAction.read_detail,
+            requested_at=self.requested_at,
+        )
 
 
 class SourceAdapter(Protocol):
@@ -61,9 +118,20 @@ class SourceAdapter(Protocol):
 class ScoreRequest:
     job_id: UUID
     correlation_id: UUID
+    provider_reference: str
+    policy: PolicyDecision
+    requested_at: datetime
     schema_version: str
     prompt_version: str
     canonical_job: dict[str, object]
+
+    def __post_init__(self) -> None:
+        _require_external_policy(
+            self.policy,
+            platform_id=self.provider_reference,
+            action=PolicyAction.score,
+            requested_at=self.requested_at,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,14 +142,36 @@ class ScoreResult:
 
 
 @dataclass(frozen=True, slots=True)
+class EvidenceChunk:
+    chunk_id: UUID
+    document_id: UUID
+    title: str
+    text: str
+    content_hash: str
+    verification_state: str
+    restrictions: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class ProposalRequest:
     job_id: UUID
     proposal_id: UUID
     correlation_id: UUID
+    provider_reference: str
+    policy: PolicyDecision
+    requested_at: datetime
     schema_version: str
     prompt_version: str
     canonical_job: dict[str, object]
     evidence: tuple[EvidenceChunk, ...]
+
+    def __post_init__(self) -> None:
+        _require_external_policy(
+            self.policy,
+            platform_id=self.provider_reference,
+            action=PolicyAction.draft,
+            requested_at=self.requested_at,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -102,8 +192,19 @@ class LLMProvider(Protocol):
 @dataclass(frozen=True, slots=True)
 class EmbeddingRequest:
     correlation_id: UUID
+    provider_reference: str
+    policy: PolicyDecision
+    requested_at: datetime
     texts: tuple[str, ...]
     configuration_version: str
+
+    def __post_init__(self) -> None:
+        _require_external_policy(
+            self.policy,
+            platform_id=self.provider_reference,
+            action=PolicyAction.embed,
+            requested_at=self.requested_at,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,23 +219,23 @@ class EmbeddingProvider(Protocol):
 
 
 @dataclass(frozen=True, slots=True)
-class EvidenceChunk:
-    chunk_id: UUID
-    document_id: UUID
-    title: str
-    text: str
-    content_hash: str
-    verification_state: str
-    restrictions: tuple[str, ...]
-
-
-@dataclass(frozen=True, slots=True)
 class EvidenceRequest:
     job_id: UUID
     correlation_id: UUID
+    store_reference: str
+    policy: PolicyDecision
+    requested_at: datetime
     query: str
     limit: int
     evidence_set_version: str
+
+    def __post_init__(self) -> None:
+        _require_external_policy(
+            self.policy,
+            platform_id=self.store_reference,
+            action=PolicyAction.retrieve,
+            requested_at=self.requested_at,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -151,10 +252,21 @@ class EvidenceRetriever(Protocol):
 class NotificationRequest:
     notification_id: UUID
     correlation_id: UUID
+    provider_reference: str
+    policy: PolicyDecision
+    requested_at: datetime
     recipient_reference: str
     template_id: str
     template_version: str
     context: dict[str, str]
+
+    def __post_init__(self) -> None:
+        _require_external_policy(
+            self.policy,
+            platform_id=self.provider_reference,
+            action=PolicyAction.notify,
+            requested_at=self.requested_at,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -166,37 +278,6 @@ class NotificationResult:
 
 class NotificationProvider(Protocol):
     async def notify(self, request: NotificationRequest) -> NotificationResult: ...
-
-
-@dataclass(frozen=True, slots=True)
-class PolicyDecision:
-    decision_id: UUID
-    action: str
-    destination: str
-    allowed: bool
-    current: bool
-    decided_at: datetime
-
-
-@dataclass(frozen=True, slots=True)
-class ConfirmationToken:
-    token_id: UUID
-    application_id: UUID
-    destination: str
-    proposal_checksum: str
-    action: str
-    actor: str
-    issued_at: datetime
-    expires_at: datetime
-    nonce_hash: str
-    used_at: datetime | None = None
-
-    def is_usable_at(self, now: datetime) -> bool:
-        return (
-            self.used_at is None
-            and self.issued_at <= now
-            and now < self.expires_at
-        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -221,42 +302,23 @@ class SubmissionRequest:
     correlation_id: UUID
     destination: str
     proposal_checksum: str
-    action: str
-    policy: PolicyDecision
-    owner_feature_enabled: bool
-    confirmation: ConfirmationToken
-    requested_at: datetime
-    maximum_confirmation_lifetime: timedelta
+    idempotency_key: str
+    authorization: AuthorizedExternalWrite
 
     def __post_init__(self) -> None:
-        if not self.policy.allowed or not self.policy.current:
-            raise ValueError("a current allow policy decision is required")
+        authorization = self.authorization
         if (
-            self.policy.action != self.action
-            or self.policy.destination != self.destination
+            authorization.action is not PolicyAction.submit
+            or authorization.destination != self.destination
+            or authorization.checksum != self.proposal_checksum
+            or authorization.action_id != self.idempotency_key
         ):
-            raise ValueError("policy decision is not bound to this action and destination")
-        if not self.owner_feature_enabled:
-            raise ValueError("the owner feature flag is disabled")
-        if self.maximum_confirmation_lifetime <= timedelta(0):
-            raise ValueError("maximum confirmation lifetime must be positive")
-        token = self.confirmation
-        if (
-            token.application_id != self.application_id
-            or token.destination != self.destination
-            or token.proposal_checksum != self.proposal_checksum
-            or token.action != self.action
-        ):
-            raise ValueError("confirmation token is not bound to this exact write")
-        if not token.is_usable_at(self.requested_at):
-            raise ValueError("confirmation token is expired, premature, or already used")
-        if token.expires_at - token.issued_at > self.maximum_confirmation_lifetime:
-            raise ValueError("confirmation token exceeds the configured short lifetime")
+            raise ValueError("write authorization is not bound to this exact submission")
 
 
 @dataclass(frozen=True, slots=True)
 class SubmissionReceipt:
-    action_id: UUID
+    action_id: str
     external_reference: str
     submitted_at: datetime
     request_checksum: str

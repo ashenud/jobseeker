@@ -1,0 +1,31 @@
+{
+  "result": "FAIL",
+  "reviewer": "test-evidence-analyst",
+  "tested_commit": "8b19070e141088f1d6df24532767c62d79b1c0b2",
+  "findings": [
+    {
+      "severity": "high",
+      "summary": "Legacy CRM and submission helpers mutated or asserted application state outside TransitionCommand.",
+      "references": [
+        "src/job_agent/crm/service.py",
+        "src/job_agent/submission/service.py"
+      ]
+    },
+    {
+      "severity": "high",
+      "summary": "External provider requests did not all carry current authoritative policy decisions.",
+      "references": [
+        "src/job_agent/providers/contracts.py"
+      ]
+    },
+    {
+      "severity": "high",
+      "summary": "Submission authorization used caller assertions and a reusable token-shaped value instead of a consumed capability.",
+      "references": [
+        "src/job_agent/providers/contracts.py",
+        "src/job_agent/policy/service.py"
+      ]
+    }
+  ],
+  "disposition": "Repair required; Milestone 05 remained IN_PROGRESS."
+}

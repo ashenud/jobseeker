@@ -61,7 +61,11 @@ PLACEHOLDER_SCOPE = (
     "src/job_agent/core/errors.py",
     "src/job_agent/core/states.py",
     "src/job_agent/core/transitions.py",
+    "src/job_agent/crm/service.py",
+    "src/job_agent/policy/models.py",
+    "src/job_agent/policy/service.py",
     "src/job_agent/providers/contracts.py",
+    "src/job_agent/submission/service.py",
     "src/job_agent/web/app.py",
     "src/job_agent/web/architecture_routes.py",
     "src/job_agent/web/schemas.py",
@@ -74,6 +78,8 @@ PLACEHOLDER_SCOPE = (
     "tests/test_milestone_05_http.py",
     "tests/test_milestone_05_providers.py",
     "tests/test_milestone_05_states.py",
+    "tests/test_pipeline.py",
+    "tests/test_policy.py",
 )
 
 
@@ -445,7 +451,11 @@ def main() -> int:
             "errors": "src/job_agent/core/errors.py",
             "states": "src/job_agent/core/states.py",
             "transitions": "src/job_agent/core/transitions.py",
+            "crm": "src/job_agent/crm/service.py",
+            "policy_models": "src/job_agent/policy/models.py",
+            "policy_service": "src/job_agent/policy/service.py",
             "providers": "src/job_agent/providers/contracts.py",
+            "submission": "src/job_agent/submission/service.py",
             "web_routes": "src/job_agent/web/architecture_routes.py",
             "web_schemas": "src/job_agent/web/schemas.py",
             "worker": "src/job_agent/workers/transitions.py",
@@ -455,6 +465,8 @@ def main() -> int:
             "provider_tests": "tests/test_milestone_05_providers.py",
             "http_tests": "tests/test_milestone_05_http.py",
             "evidence_tests": "tests/test_milestone_05_evidence.py",
+            "pipeline_tests": "tests/test_pipeline.py",
+            "policy_tests": "tests/test_policy.py",
         }
         for label, reference in required.items():
             repository_file(ROOT, reference, f"M05 {label}")
@@ -507,13 +519,19 @@ def main() -> int:
                 required["errors"],
                 required["contracts"],
                 required["transitions"],
+                required["crm"],
+                required["submission"],
                 required["contract_tests"],
+                required["pipeline_tests"],
                 focused,
             ],
             "M05-AC08": [
                 required["architecture"],
+                required["policy_models"],
+                required["policy_service"],
                 required["providers"],
                 required["provider_tests"],
+                required["policy_tests"],
                 policy,
             ],
             "M05-AC09": [

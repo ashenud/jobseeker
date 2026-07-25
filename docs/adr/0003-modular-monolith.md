@@ -26,9 +26,10 @@ repositories, and providers implement or invoke contracts; domain contracts do
 not import FastAPI, Celery, SQLAlchemy, or provider SDKs.
 
 State mutation occurs only through `TransitionCommand` and the transition
-application service. That service owns one UoW transaction, optimistic expected
-state, idempotency lookup, canonical edge validation, and atomic state/audit
-staging. Concrete repository/schema work is deferred to Milestone 06.
+application service. That service owns one UoW transaction, canonical edge
+validation, and a single repository operation that atomically serializes or
+compare-and-swaps expected state, claims the unique idempotency key, and stages
+state plus audit. Concrete repository/schema work is deferred to Milestone 06.
 
 Module responsibilities and forbidden duties are maintained in
 `docs/ARCHITECTURE.md` and exposed from production metadata at

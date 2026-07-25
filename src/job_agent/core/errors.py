@@ -96,5 +96,23 @@ class IdempotencyConflictError(TransitionError):
         return "idempotency key was already used for a different transition"
 
 
+@dataclass(eq=False)
+class ExternalWriteProofRequiredError(TransitionError):
+    code: ClassVar[str] = "external_write_proof_required"
+
+    @property
+    def message(self) -> str:
+        return "SUBMITTED_API requires a bound connector receipt"
+
+
+@dataclass(eq=False)
+class ProtectedTransitionError(TransitionError):
+    code: ClassVar[str] = "protected_transition"
+
+    @property
+    def message(self) -> str:
+        return "retryable transition workers cannot record external submission"
+
+
 class UnsafeAuditMetadataError(ValueError):
-    """Raised before unsafe free text can enter a structured audit event."""
+    """Raised before unsafe metadata can enter a structured audit event."""

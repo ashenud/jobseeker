@@ -134,8 +134,9 @@ Terminal states are `SUBMISSION_CANCELLED`, `WON`, `LOST`, and `WITHDRAWN`.
 `PACKAGE_PREPARED` means a local immutable package exists; it does not mean a
 remote action occurred. `SUBMITTED_MANUAL` records an owner-supplied reference
 after the owner acted outside the application. `SUBMITTED_API` is reserved for a
-future separately authorized connector and cannot be reached by approval or a
-retryable transition worker alone.
+future separately authorized connector. It requires a receipt bound to the
+command idempotency key and cannot be reached by approval or any retryable
+transition worker.
 
 ## Cross-aggregate ownership
 
@@ -160,7 +161,10 @@ mixing state types is `cross_machine_transition`. Replaying the same command/key
 returns the original result and adds no audit event. Reusing a key for a
 different command is `idempotency_conflict`.
 
-On success, the repository stages the new state and one `state_transition` audit
-event in the same UoW. The event records UUID identifiers, old/new state, actor,
-reason, correlation ID, idempotency key, and UTC time. No state write or audit
-write may survive alone.
+On success, the repository's single atomic operation serializes on the aggregate
+(or uses equivalent compare-and-swap), claims the unique idempotency key, and
+stages the new state plus one `state_transition` audit event in the same UoW.
+The event records UUID identifiers, old/new state, actor, structured reason code,
+correlation ID, idempotency key, and UTC time. No state write or audit write may
+survive alone. A duplicate-key race either returns the original same-fingerprint
+result or raises `idempotency_conflict`; it never creates a second audit event.
