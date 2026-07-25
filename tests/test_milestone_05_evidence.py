@@ -218,6 +218,18 @@ def test_m05_reviews_require_exact_roles_commit_and_acceptance(tmp_path: Path) -
     assert references == ["artifacts/reviews/evidence.json"]
 
 
+def test_m05_capture_pair_requires_same_commit_not_same_attestation_digest() -> None:
+    main = {"tested_commit": TESTED_COMMIT, "image_digest": IMAGE_DIGEST}
+    clean = {
+        "tested_commit": TESTED_COMMIT,
+        "image_digest": "sha256:" + "c" * 64,
+    }
+    GENERATOR.validate_capture_pair(main, clean)
+    clean["tested_commit"] = "d" * 40
+    with pytest.raises(GENERATOR.EvidenceError, match="different commits"):
+        GENERATOR.validate_capture_pair(main, clean)
+
+
 @pytest.mark.parametrize(
     "mutation",
     ("no_go", "unresolved", "wrong_policy_role", "wrong_evidence_role", "stale"),
